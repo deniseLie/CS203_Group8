@@ -46,9 +46,24 @@ function Login() {
         flexDirection={"column"}
         alignItems={"center"}
         justifyContent={"center"}
-        sx={{ background: "white", padding: 5, width: "33%", height: "60vh" }}
+        sx={{
+          background: "white",
+          padding: 5,
+          width: {
+            xs: "80%", // For small screens
+            sm: "50%", // For medium screens
+            lg: "25%", // For large screens
+            xl: "33%"
+          },
+          height: {
+            xs: "auto", // For small screens, auto adjusts based on content
+            md: "auto", // For large screens
+          },
+          
+          
+        }}
       >
-        <Typography component="h1" variant="h5" sx={{ mb: 2, mt: 1, fontWeight: "600" }}>
+        <Typography component="h1" variant="h5" sx={{ mb: 2, mt: 3, fontWeight: "600", letterSpacing:-1}}>
           Sign in
         </Typography>
         <Box component="form" noValidate sx={{ mt: 1, width: "90%" }}>
@@ -76,17 +91,30 @@ function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)} // Update state on input change
           />
-          <Box display={"flex"} alignContent={"center"}>
-            <Checkbox />
-            <Typography alignSelf={"center"} fontSize={'0.9em'}>Stay signed in</Typography>
+          <Box display={"flex"} alignContent={"center"} marginTop={1}>
+          <Checkbox
+  sx={{
+    color: "#d53235", // Default color
+    '&.Mui-checked': {
+      color: "#d53235", // Color when checked
+    },
+    '&:hover': {
+      backgroundColor: "transparent", // Prevents the hover background effect
+    },
+    '&:focus': {
+      outline: "none", // Removes the default focus outline
+    },
+    margin: 0, // Removes margin
+    padding: 0, // Removes padding
+  }}
+/>
+            <Typography alignSelf={"center"} fontSize={"0.9em"} marginLeft={1}>
+              Stay signed in
+            </Typography>
           </Box>
 
           {/* Center the IconButton */}
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
+          <Box display="flex" justifyContent="center" alignItems="center">
             <IconButton
               type="submit"
               sx={{
@@ -109,10 +137,10 @@ function Login() {
           </Box>
         </Box>
 
-        <Typography sx={{ letterSpacing: "0.08em", fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700", marginTop: "2%" }}>
+        <Typography  sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700", marginTop: "2%",  } }>
           CAN'T SIGN IN?
         </Typography>
-        <Typography sx={{ letterSpacing: "0.08em", fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700" }}>
+        <Typography sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700" }}>
           CREATE ACCOUNT
         </Typography>
       </Box>

@@ -3,7 +3,9 @@
   src: url('./fonts/Mark-Medium.ttf') format('truetype');
   font-weight: 500;
   font-style: medium;
+  
 }
 html {
   font-family: 'Mark', sans-serif;
+
 }

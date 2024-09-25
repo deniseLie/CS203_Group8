@@ -1,11 +1,69 @@
+/* Mark font */
 @font-face {
   font-family: 'Mark';
   src: url('./fonts/Mark-Medium.ttf') format('truetype');
   font-weight: 500;
-  font-style: medium;
-  
+  font-style: normal;
 }
+
+/* SpiegelSans SemiBold */
+@font-face {
+  font-family: 'SpiegelSans';
+  src: url('./fonts/SpiegelSansCd-6SemiBold_TRIAL.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* SpiegelSans SemiBold */
+@font-face {
+  font-family: 'Beaufort';
+  src: url('./fonts/BeaufortforLOL-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+/* Apply Mark font globally */
 html {
   font-family: 'Mark', sans-serif;
+}
 
+/* Style group for .headerPrimary */
+.headerPrimary {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Beaufort', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem !important;
+}
+
+/* Style group for .headerPrimary */
+.bodyPrimary {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.8rem !important;
+}
+
+.avatarWithGradientBorder {
+  position: relative;
+  display: inline-block;
+  width: 60px;  /* Avatar size + border size */
+  height: 60px; /* Avatar size + border size */
+  background: linear-gradient(to bottom, #EFE5D0, #C99C3F); /* Gradient background */
+  padding: 4px;  /* This padding simulates the "border" */
+  border-radius: 50%;
+}
+
+.avatarWithGradientBorder .MuiAvatar-root {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.avatarWithGradientBorder a {
+  display: block;
+  overflow: hidden; /* Ensure content (the avatar) stays within the circular border */
+  border-radius: 50%;
 }

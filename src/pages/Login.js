@@ -4,12 +4,19 @@ import { ArrowForward } from "@mui/icons-material";
 import loginSplash from "../assets/login_splash.jpg";
 import logo from "../assets/riot_logo.png";
 
-function Login() {
+function Login({ login }) { // Receive the login function as a prop
   const [username, setUsername] = useState(""); // State to track username
   const [password, setPassword] = useState(""); // State to track password
 
   // Check if both username and password are filled
   const isFormFilled = username.length > 0 && password.length > 0;
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (isFormFilled) {
+      login(); // Call the login function to simulate authentication
+    }
+  };
 
   return (
     <Box
@@ -59,14 +66,12 @@ function Login() {
             xs: "auto", // For small screens, auto adjusts based on content
             md: "auto", // For large screens
           },
-          
-          
         }}
       >
-        <Typography component="h1" variant="h5" sx={{ mb: 2, mt: 3, fontWeight: "600", letterSpacing:-1}}>
+        <Typography component="h1" variant="h5" sx={{ mb: 2, mt: 3, fontWeight: "600", letterSpacing: -1 }}>
           Sign in
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1, width: "90%" }}>
+        <Box component="form" noValidate sx={{ mt: 1, width: "90%" }} onSubmit={handleSubmit}>
           <TextField
             margin="normal"
             required
@@ -92,22 +97,22 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)} // Update state on input change
           />
           <Box display={"flex"} alignContent={"center"} marginTop={1}>
-          <Checkbox
-  sx={{
-    color: "#d53235", // Default color
-    '&.Mui-checked': {
-      color: "#d53235", // Color when checked
-    },
-    '&:hover': {
-      backgroundColor: "transparent", // Prevents the hover background effect
-    },
-    '&:focus': {
-      outline: "none", // Removes the default focus outline
-    },
-    margin: 0, // Removes margin
-    padding: 0, // Removes padding
-  }}
-/>
+            <Checkbox
+              sx={{
+                color: "#d53235", // Default color
+                '&.Mui-checked': {
+                  color: "#d53235", // Color when checked
+                },
+                '&:hover': {
+                  backgroundColor: "transparent", // Prevents the hover background effect
+                },
+                '&:focus': {
+                  outline: "none", // Removes the default focus outline
+                },
+                margin: 0, // Removes margin
+                padding: 0, // Removes padding
+              }}
+            />
             <Typography alignSelf={"center"} fontSize={"0.9em"} marginLeft={1}>
               Stay signed in
             </Typography>
@@ -137,7 +142,7 @@ function Login() {
           </Box>
         </Box>
 
-        <Typography  sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700", marginTop: "2%",  } }>
+        <Typography sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700", marginTop: "2%" }}>
           CAN'T SIGN IN?
         </Typography>
         <Typography sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700" }}>

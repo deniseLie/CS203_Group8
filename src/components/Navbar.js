@@ -14,9 +14,10 @@ function Navbar() {
       justifyContent="space-between"
       alignItems="center"
       sx={{
-        backgroundColor: '#010B13', // dark background similar to your image
+        backgroundColor: 'rgba(1, 11, 19, 0.8)', // Dark background with 80% opacity
         padding: '10px 20px',
         borderBottom: '2px solid #464F4D', // slight bottom border
+        zIndex:100
       }}
     >
       {/* Left side: Logo and Play Button */}
@@ -24,7 +25,7 @@ function Navbar() {
         <Box display="flex" alignItems="center">
         {/* Logo */}
         <Link to="/">
-          <Box component="img" src={logo} alt="Logo" sx={{ width: 45, marginRight: -1.5 }} />
+          <Box component="img" src={logo} alt="Logo" sx={{ marginLeft:3, width: 45, marginRight: -1.5 }} />
         </Link>
 
         {/* Play Button */}

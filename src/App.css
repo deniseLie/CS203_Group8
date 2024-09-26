@@ -26,6 +26,8 @@
 /* Apply Mark font globally */
 html {
   font-family: 'Mark', sans-serif;
+  background-color: #130101;
+  height: 100vh;
 }
 
 /* Style group for .headerPrimary */
@@ -49,8 +51,8 @@ html {
 .avatarWithGradientBorder {
   position: relative;
   display: inline-block;
-  width: 60px;  /* Avatar size + border size */
-  height: 60px; /* Avatar size + border size */
+  width: 50px;  /* Avatar size + border size */
+  height: 50px; /* Avatar size + border size */
   background: linear-gradient(to bottom, #EFE5D0, #C99C3F); /* Gradient background */
   padding: 4px;  /* This padding simulates the "border" */
   border-radius: 50%;

@@ -5,7 +5,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
+@Entity
 public class Tournament {
+    @Id
     private long tournamentId;
 
     private LocalDateTime timestampStart;

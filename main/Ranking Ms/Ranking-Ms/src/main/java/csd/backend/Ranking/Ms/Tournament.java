@@ -1,4 +1,4 @@
-package csd.backend.Ranking.Ms;
+package csd.backend.Ranking.MS;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Tournament {
     @Id
-    private long tournamentId;
+    private Long tournamentId;
 
     private LocalDateTime timestampStart;
     private LocalDateTime timestampEnd;

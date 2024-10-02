@@ -1,4 +1,4 @@
-package csd.backend.Ranking.Ms;
+package csd.backend.Ranking.MS;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

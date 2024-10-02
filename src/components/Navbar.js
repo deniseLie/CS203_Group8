@@ -31,10 +31,25 @@ function Navbar() {
         <Link to="/play">
           <Box component="img" src={playButton} alt="Play" sx={{ width: 150, marginRight: 3}} />
         </Link>
-      </Box>
+        </Box>
       <Typography
         component={Link}
         to="/history"
+        className="headerPrimary"
+        sx={{
+          marginRight: 3,
+          '&:hover': {
+            color: '#d4b106', // change color on hover
+          },
+        }}
+      >
+        HISTORY
+      </Typography>
+
+      {/* LEADERBOARD Link */}
+      <Typography
+        component={Link}
+        to="/leaderboard"
         className="headerPrimary"
         sx={{
           '&:hover': {
@@ -42,7 +57,7 @@ function Navbar() {
           },
         }}
       >
-        HISTORY
+        LEADERBOARD
       </Typography>
         </Box>
 

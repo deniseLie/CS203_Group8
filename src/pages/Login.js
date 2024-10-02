@@ -7,14 +7,64 @@ import logo from "../assets/riot_logo.png";
 function Login({ login }) { // Receive the login function as a prop
   const [username, setUsername] = useState(""); // State to track username
   const [password, setPassword] = useState(""); // State to track password
+  const [error, setError] = useState(""); // State to track authentication error
+  const [isLoading, setIsLoading] = useState(false); // State to track loading
 
   // Check if both username and password are filled
   const isFormFilled = username.length > 0 && password.length > 0;
 
+  // Authentication logic
+  const authenticateUser = async () => {
+    setIsLoading(true);
+    setError("");
+
+    // Simulate a small delay to mimic a real API request
+    setTimeout(() => {
+      if (username === "username" && password === "password") {
+        login();
+      } else {
+        setError("Invalid username or password");
+      }
+
+      setIsLoading(false); // Stop loading after checking credentials
+    }, 500); // Simulated delay of 0.5 second
+
+    // // Simulate a network request (USE THIS WHEN API READY)
+    // try {
+    //   const response = await fetch("https://api.example.com/login", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ username, password }),
+    //   });
+
+    //   if (response.ok) {
+    //     const data = await response.json();
+
+    //     // Simulate token received from server
+    //     const token = data.token;
+
+    //     // Store the token in localStorage for session persistence
+    //     localStorage.setItem("authToken", token);
+
+    //     // Simulate successful login by calling the login prop
+    //     login();
+    //   } else {
+    //     // Handle different types of errors
+    //     setError("Invalid username or password");
+    //   }
+    // } catch (error) {
+    //   setError("An error occurred. Please try again.");
+    // } finally {
+    //   setIsLoading(false); // Stop loading after the request is finished
+    // }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isFormFilled) {
-      login(); // Call the login function to simulate authentication
+      authenticateUser(); // Call the function to authenticate the user
     }
   };
 
@@ -71,6 +121,14 @@ function Login({ login }) { // Receive the login function as a prop
         <Typography component="h1" variant="h5" sx={{ mb: 2, mt: 3, fontWeight: "600", letterSpacing: -1 }}>
           Sign in
         </Typography>
+
+        {/* Display error message if authentication fails */}
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
+
         <Box component="form" noValidate sx={{ mt: 1, width: "90%" }} onSubmit={handleSubmit}>
           <TextField
             margin="normal"
@@ -96,6 +154,7 @@ function Login({ login }) { // Receive the login function as a prop
             value={password}
             onChange={(e) => setPassword(e.target.value)} // Update state on input change
           />
+
           <Box display={"flex"} alignContent={"center"} marginTop={1}>
             <Checkbox
               sx={{
@@ -135,9 +194,13 @@ function Login({ login }) { // Receive the login function as a prop
                   backgroundColor: isFormFilled ? "rgb(191, 34, 36)" : "#d53235", // Darker red on hover
                 },
               }}
-              disabled={!isFormFilled} // Disable the button if form is not filled
+              disabled={!isFormFilled || isLoading} // Disable the button if form is not filled or during loading
             >
-              <ArrowForward fontSize="large" /> {/* Arrow icon */}
+              {isLoading ? (
+                <Typography variant="body2" color="inherit">Loading...</Typography>
+              ) : (
+                <ArrowForward fontSize="large" /> // Arrow icon
+              )}
             </IconButton>
           </Box>
         </Box>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Checkbox, TextField, Typography, IconButton } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import loginSplash from "../assets/login_splash.jpg";
+import { Link } from 'react-router-dom';
 import logo from "../assets/riot_logo.png";
 
 function Login({ login }) { // Receive the login function as a prop
@@ -145,9 +146,13 @@ function Login({ login }) { // Receive the login function as a prop
         <Typography sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700", marginTop: "2%" }}>
           CAN'T SIGN IN?
         </Typography>
-        <Typography sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700" }}>
+        <Link to="/register" style={{ textDecoration: 'none' }}>
+        <Typography
+          sx={{ letterSpacing: -0.2, fontSize: "0.65em", color: "rgb(74, 74, 74)", fontWeight: "700" }}
+        >
           CREATE ACCOUNT
         </Typography>
+      </Link>
       </Box>
     </Box>
   );

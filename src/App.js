@@ -4,6 +4,7 @@ import Home from './pages/Landing'; // Assuming you have a Home component
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
+import Register from './pages/Register';
 
 // Create a custom theme
 const theme = createTheme({
@@ -25,6 +26,10 @@ function App() {
       <Router>
         <Routes>
           {/* Redirect to Home if authenticated, otherwise go to Login */}
+          <Route
+            path="/register"
+            element={<Register/>}
+          />
           <Route
             path="/login"
             element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />}

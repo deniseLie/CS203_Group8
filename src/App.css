@@ -67,3 +67,26 @@ html {
   overflow: hidden; /* Ensure content (the avatar) stays within the circular border */
   border-radius: 50%;
 }
+
+.bordered-box {
+  position: relative;
+  padding: 8px; /* Adjust the padding */
+}
+
+.bordered-box::before,
+.bordered-box::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px; /* Adjust thickness */
+  background: linear-gradient(to right, transparent, rgba(217, 217, 217, 0.8), rgba(217, 217, 217, 1), rgba(217, 217, 217, 0.8), transparent);
+}
+
+.bordered-box::before {
+  top: 0; /* Top border */
+}
+
+.bordered-box::after {
+  bottom: 0; /* Bottom border */
+}

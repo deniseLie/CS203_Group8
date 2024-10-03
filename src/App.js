@@ -32,6 +32,11 @@ function App() {
 
   // Check if the user is already authenticated from local storage (to persist across page refreshes)
   useState(() => {
+    // To reset login status when npm is started again TEMP
+    if (process.env.NODE_ENV === 'development') {
+      localStorage.removeItem('isAuthenticated');
+    }
+
     const storedAuth = localStorage.getItem('isAuthenticated');
     if (storedAuth) {
       setIsAuthenticated(true);

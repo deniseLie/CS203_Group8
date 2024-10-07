@@ -18,5 +18,13 @@ public class TournamentService {
     public List<Tournament> getAllTournaments() {
         return tournamentRepository.findAll();
     }
+
+    public Tournament createTournament(Tournament tournament) {
+        if (tournament.getTimestampStart().isAfter(tournament.getTimestampEnd())) {
+            throw new IllegalArgumentException("Start time cannot be after end time");
+        }
+        return tournamentRepository.save(tournament);
+    }
+    
     
 }

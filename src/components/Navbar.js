@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Avatar } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 // Import your assets
 import logo from '../assets/logo.png'; // Your logo image here
 import playButton from '../assets/play-button-disabled.png'; // Your play button image here
 import profileAvatar from '../assets/4895.jpg'; // Profile avatar image
+import PlayerIcon from './PlayerIcon';
 
 function Navbar() {
   return (
@@ -29,7 +30,7 @@ function Navbar() {
         </Link>
 
         {/* Play Button */}
-        <Link to="/play">
+        <Link to="/">
           <Box component="img" src={playButton} alt="Play" sx={{ width: 150, marginRight: 3}} />
         </Link>
       </Box>
@@ -51,15 +52,14 @@ function Navbar() {
 
       {/* Right side: Profile Avatar and Username */}
       <Box display="flex" alignItems="center">
-      <div className="avatarWithGradientBorder">
-        <Link to="/profile">
-          <Avatar
-            alt="Hide on bush"
-            src={profileAvatar}
-            sx={{ width: 50, height: 50, borderRadius: '50%' }} // Avatar remains circular
-          />
-        </Link>
-      </div>
+      <PlayerIcon
+          alt="Hide on bush" 
+          src={profileAvatar} 
+          width={2} 
+          height={2} 
+          link="/profile" 
+          clickable={true} // Explicitly set clickable to true
+        />
 
         <Box display={'flex'} flexDirection={'column'} sx={{marginLeft:3, marginRight:2}}  >
         <Typography

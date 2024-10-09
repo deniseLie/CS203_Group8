@@ -1,9 +1,12 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import { Box, Typography } from '@mui/material';
-import backgroundImage from '../assets/arena-background.jpg'; // Correct import
-import arenaIcon from '../assets/arena-icon.png'; // Correct import
-import diamondBanner from '../assets/rankedBorder/diamond.png'; // Import the diamond banner image
+import backgroundImage from '../assets/background-with-banner.png';
+import arenaIcon from '../assets/arena-icon.png';
+import PlayerIcon from '../components/PlayerIcon';
+import profileAvatar from '../assets/4895.jpg';
+import findMatch from '../assets/button-accept-disabled.png';
+import championSelected from '../assets/champions/0.png';
 
 const FindTournament = () => {
   return (
@@ -28,18 +31,18 @@ const FindTournament = () => {
       {/* Main content area */}
       <Box
         sx={{
-          flexGrow: 1, // Allow this area to take up the remaining space
+          flexGrow: 1,
           position: 'relative', // Required for positioning elements
-          backgroundImage: `url(${backgroundImage})`, // Set background image
-          backgroundSize: 'cover', // Ensure image covers the entire area
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: 'space-between', // Adjusted for bottom positioning
+          flexDirection: 'column', // Layout as column
         }}
       >
-        {/* Arena Icon and Arena Ranked */}
+        {/* Top content: Arena Icon and Arena Ranked */}
         <Box
           sx={{
             position: 'absolute',
@@ -51,11 +54,12 @@ const FindTournament = () => {
           }}
         >
           <Box display="flex" alignItems="center">
-            <Box component="img" src={arenaIcon} alt="Arena" sx={{ marginLeft: 3, width: 30, marginTop: '1px', marginRight: 1 }} />
+            <Box component="img" src={arenaIcon} alt="Arena" sx={{ marginLeft: 3, width: '3vw', marginTop: '1px', marginRight: 1 }} />
             <Typography
               variant="h1"
               className="headerPrimary"
               sx={{
+                fontSize: '3vw',
                 display: 'inline-flex',
                 alignItems: 'center',
               }}
@@ -64,12 +68,12 @@ const FindTournament = () => {
               <Box
                 component="span"
                 sx={{
-                  width: '4px',
-                  height: '4px',
+                  width: '0.5vw',
+                  height: '0.5vw',
                   backgroundColor: '#F0E6D2',
                   borderRadius: '50%',
                   display: 'inline-block',
-                  marginX: '8px',
+                  marginX: '1vw',
                 }}
               />
               RANKED
@@ -77,17 +81,48 @@ const FindTournament = () => {
           </Box>
         </Box>
 
-        {/* Centered Banner */}
+        {/* Centered content: profile pic, rank, etc. */}
         <Box
-          component="img"
-          src={diamondBanner}
-          alt="Diamond Banner"
           sx={{
-            width: '300px', // Adjust size as needed
-            transform: 'translate(0%,-35%)',
-            zIndex: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop:10
           }}
-        />
+        >
+          <PlayerIcon
+            alt="Hide on bush"
+            src={profileAvatar}
+            width={6}
+            height={6}
+            clickable={false}
+          />
+          <Typography className="headerPrimary" >
+            hide on bush
+          </Typography>
+          <Typography className="bodySecondary" >
+            Diamond I
+          </Typography>
+
+          {/* Choose champion and select a champion text */}
+          <Box alignSelf={'center'} display={'flex'} flexDirection={'column'} marginTop={4} alignItems={'center'}>
+            <Box component="img" src={championSelected} alt="findMatch" alignSelf={'center'} justifyContent={'center'} sx={{ border: 2, borderColor: '#775A27', width: '10vh', height: '10vh' }} />
+            <Typography className="bodySecondary" sx={{ marginTop: 1 }}>
+              Select a Champion
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Bottom content: Find Match button */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center', // Center the button horizontally
+            marginBottom: '2vh', // Slight bottom margin
+          }}
+        >
+          <Box component="img" src={findMatch} alt="Find Match" sx={{ width: '12vw' }} />
+        </Box>
       </Box>
     </Box>
   );

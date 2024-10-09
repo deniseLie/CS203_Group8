@@ -39,9 +39,17 @@ html {
   font-size: 1rem !important;
 }
 
-/* Style group for .headerPrimary */
 .bodyPrimary {
   color: #F0E6D2;          /* Set text color */
+  font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.8rem !important;
+}
+
+
+.bodySecondary {
+  color: #949083;          /* Set text color */
   font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
   font-weight: 700;
   text-decoration: none;
@@ -51,21 +59,19 @@ html {
 .avatarWithGradientBorder {
   position: relative;
   display: inline-block;
-  width: 50px;  /* Avatar size + border size */
-  height: 50px; /* Avatar size + border size */
   background: linear-gradient(to bottom, #EFE5D0, #C99C3F); /* Gradient background */
   padding: 4px;  /* This padding simulates the "border" */
   border-radius: 50%;
 }
 
 .avatarWithGradientBorder .MuiAvatar-root {
-  width: 100%;
-  height: 100%;
+  width: 100%; /* Avatar takes up full space inside the container */
+  height: 100%; /* Avatar takes up full space inside the container */
   border-radius: 50%;
 }
 
 .avatarWithGradientBorder a {
   display: block;
-  overflow: hidden; /* Ensure content (the avatar) stays within the circular border */
+  overflow: hidden;
   border-radius: 50%;
 }

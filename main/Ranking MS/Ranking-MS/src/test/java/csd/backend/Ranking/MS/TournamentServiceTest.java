@@ -1,7 +1,6 @@
 package csd.backend.Ranking.MS;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,11 +28,11 @@ public class TournamentServiceTest {
     @InjectMocks
     private TournamentService tournamentService;
 
-    // // CREATE
+    // CREATE
     // @Test
     // public void createTournament_ValidInput_ReturnsCreatedTournament() {
     //     // Arrange
-    //     Tournament newTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     Tournament newTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
 
     //     // Act
     //     when(tournamentRepository.save(newTournament)).thenReturn(newTournament);
@@ -41,7 +40,7 @@ public class TournamentServiceTest {
 
     //     // Assert
     //     assertThat(createdTournament).isNotNull();
-    //     assertThat(createdTournament.getTournamentId()).isEqualTo(1);
+    //     assertThat(createdTournament.getTournamentId()).isEqualTo(1L);
 
     //     // Verify
     //     verify(tournamentRepository, times(1)).save(newTournament);
@@ -51,7 +50,7 @@ public class TournamentServiceTest {
     // @Test
     // public void createTournament_ValidWithoutEndTime_ReturnsCreatedTournament() {
     //     // Arrange
-    //     Tournament newTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), null);
+    //     Tournament newTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), null);
 
     //     // Act
     //     when(tournamentRepository.save(newTournament)).thenReturn(newTournament);
@@ -59,7 +58,7 @@ public class TournamentServiceTest {
 
     //     // Assert
     //     assertThat(createdTournament).isNotNull();
-    //     assertThat(createdTournament.getTournamentId()).isEqualTo(1);
+    //     assertThat(createdTournament.getTournamentId()).isEqualTo(1L);
     //     assertThat(createdTournament.getTimestampEnd()).isNull();  // End time should be null
 
     //     // Verify
@@ -80,11 +79,11 @@ public class TournamentServiceTest {
     // @Test
     // public void createTournament_DuplicateId_ThrowsDuplicateIdException() {
     //     // Arrange
-    //     Tournament existingTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(existingTournament));
+    //     Tournament existingTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(existingTournament));
 
     //     // Act & Assert
-    //     Tournament duplicateTournament = new Tournament(1, LocalDateTime.of(2023, 9, 2, 10, 0), LocalDateTime.of(2023, 9, 2, 18, 0));
+    //     Tournament duplicateTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 2, 10, 0), LocalDateTime.of(2023, 9, 2, 18, 0));
     //     assertThatThrownBy(() -> tournamentService.createTournament(duplicateTournament))
     //         .isInstanceOf(DuplicateIdException.class)
     //         .hasMessageContaining("Tournament with ID already exists");
@@ -124,7 +123,7 @@ public class TournamentServiceTest {
     // @Test
     // public void createTournament_StartTimeEqualToEndTime_ThrowsIllegalArgumentException() {
     //     // Arrange
-    //     Tournament invalidTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 10, 0));
+    //     Tournament invalidTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 10, 0));
 
     //     // Act & Assert
     //     assertThatThrownBy(() -> tournamentService.createTournament(invalidTournament))
@@ -139,7 +138,7 @@ public class TournamentServiceTest {
     // @Test
     // public void getAllTournaments_MultipleTournaments_ReturnsListOfTournaments() {
     //     // Arrange
-    //     Tournament tournament1 = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     Tournament tournament1 = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
     //     Tournament tournament2 = new Tournament(2L, LocalDateTime.of(2023, 9, 2, 10, 0), LocalDateTime.of(2023, 9, 2, 18, 0));
     //     List<Tournament> mockTournaments = Arrays.asList(tournament1, tournament2);
 
@@ -161,31 +160,31 @@ public class TournamentServiceTest {
     // @Test
     // public void getTournamentById_TournamentExists_ReturnsTournament() {
     //     // Arrange
-    //     Tournament mockTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     Tournament mockTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
 
     //     // Act
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(mockTournament));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(mockTournament));
 
     //     // Act
-    //     Tournament result = tournamentService.getTournamentById(1);
+    //     Tournament result = tournamentService.getTournamentById(1L);
 
     //     // Assert
     //     assertThat(result).isNotNull();
-    //     assertThat(result.getTournamentId()).isEqualTo(1);
+    //     assertThat(result.getTournamentId()).isEqualTo(1L);
 
     //     // Verify
-    //     verify(tournamentRepository, times(1)).findById(1);
+    //     verify(tournamentRepository, times(1)).findById(1L);
     // }
 
     // // UPDATE
     // @Test
     // public void updateTournament_ValidUpdate_SuccessfullyUpdatesStartAndEndTime() {
     //     // Arrange
-    //     Tournament existingTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
-    //     Tournament updatedTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 12, 0), LocalDateTime.of(2023, 9, 1, 20, 0)); // Both start and end times updated
+    //     Tournament existingTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     Tournament updatedTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 12, 0), LocalDateTime.of(2023, 9, 1, 20, 0)); // Both start and end times updated
 
     //     // Act
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(existingTournament));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(existingTournament));
     //     when(tournamentRepository.save(any(Tournament.class))).thenReturn(updatedTournament);
 
     //     // Call the update method
@@ -202,8 +201,8 @@ public class TournamentServiceTest {
     // @Test
     // public void updateTournament_NoChanges_DoesNotModifyTournament() {
     //     // Arrange
-    //     Tournament existingTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(existingTournament));
+    //     Tournament existingTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(existingTournament));
 
     //     // Act
     //     Tournament result = tournamentService.updateTournament(existingTournament);
@@ -216,8 +215,8 @@ public class TournamentServiceTest {
     // @Test
     // public void updateTournament_TournamentNotFound_ThrowsRuntimeException() {
     //     // Arrange
-    //     Tournament nonExistentTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.empty());
+    //     Tournament nonExistentTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
     //     // Act & Assert
     //     assertThatThrownBy(() -> tournamentService.updateTournament(nonExistentTournament))
@@ -242,11 +241,11 @@ public class TournamentServiceTest {
     // @Test
     // public void updateTournament_InvalidTimestamps_ThrowsIllegalArgumentException() {
     //     // Arrange
-    //     Tournament existingTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
-    //     Tournament invalidTournament = new Tournament(1, LocalDateTime.of(2023, 9, 2, 18, 0), LocalDateTime.of(2023, 9, 2, 10, 0));
+    //     Tournament existingTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     Tournament invalidTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 2, 18, 0), LocalDateTime.of(2023, 9, 2, 10, 0));
 
     //     // Mock repository behavior
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(existingTournament));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(existingTournament));
 
     //     // Act & Assert
     //     assertThatThrownBy(() -> tournamentService.updateTournament(invalidTournament))
@@ -260,13 +259,13 @@ public class TournamentServiceTest {
     // @Test
     // public void updateTournament_ValidStartTimeAndNullEndTime_SuccessfullyUpdates() {
     //     // Arrange
-    //     Tournament existingTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     Tournament existingTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
 
     //     // Tournament with updated start time but no end time
-    //     Tournament updatedTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 12, 0), null);
+    //     Tournament updatedTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 12, 0), null);
 
     //     // Mock repository behavior
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(existingTournament));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(existingTournament));
     //     when(tournamentRepository.save(any(Tournament.class))).thenReturn(updatedTournament);
 
     //     // Act
@@ -280,33 +279,32 @@ public class TournamentServiceTest {
     //     verify(tournamentRepository, times(1)).save(any(Tournament.class));
     // }
 
-
     // // DELETE
     // @Test
     // public void deleteTournament_TournamentExists_DeletesSuccessfully() {
     //     // Arrange
-    //     Tournament existingTournament = new Tournament(1, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.of(existingTournament));
+    //     Tournament existingTournament = new Tournament(1L, LocalDateTime.of(2023, 9, 1, 10, 0), LocalDateTime.of(2023, 9, 1, 18, 0));
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.of(existingTournament));
 
     //     // Act
-    //     tournamentService.deleteTournament(1);
+    //     tournamentService.deleteTournament(1L);
 
     //     // Assert
-    //     verify(tournamentRepository, times(1)).deleteById(1);
+    //     verify(tournamentRepository, times(1)).deleteById(1L);
     // }
 
     // @Test
     // public void deleteTournament_TournamentNotFound_ThrowsRuntimeException() {
     //     // Arrange
-    //     when(tournamentRepository.findById(1)).thenReturn(java.util.Optional.empty());
+    //     when(tournamentRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
     //     // Act & Assert
-    //     assertThatThrownBy(() -> tournamentService.deleteTournament(1))
+    //     assertThatThrownBy(() -> tournamentService.deleteTournament(1L))
     //         .isInstanceOf(RuntimeException.class)
     //         .hasMessageContaining("Tournament not found");
 
     //     // Verify
-    //     verify(tournamentRepository, never()).deleteById(1);
+    //     verify(tournamentRepository, never()).deleteById(1L);
     // }
 
     // @Test
@@ -323,7 +321,7 @@ public class TournamentServiceTest {
     // @Test
     // public void deleteTournament_InvalidId_ThrowsIllegalArgumentException() {
     //     // Act & Assert
-    //     assertThatThrownBy(() -> tournamentService.deleteTournament(-1))
+    //     assertThatThrownBy(() -> tournamentService.deleteTournament(-1L))
     //         .isInstanceOf(IllegalArgumentException.class)
     //         .hasMessageContaining("Invalid tournament ID");
 

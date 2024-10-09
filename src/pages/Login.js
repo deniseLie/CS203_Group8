@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Box, Checkbox, TextField, Typography, IconButton } from "@mui/material";
-import { ArrowForward } from "@mui/icons-material";
+import { Box, Checkbox, TextField, Typography, IconButton, InputAdornment } from "@mui/material";
+import { ArrowForward, Visibility, VisibilityOff } from "@mui/icons-material";
 import loginSplash from "../assets/login_splash.jpg";
 import { Link } from 'react-router-dom';
 import logo from "../assets/riot_logo.png";
@@ -8,9 +8,12 @@ import logo from "../assets/riot_logo.png";
 function Login({ login }) { // Receive the login function as a prop
   const [username, setUsername] = useState(""); // State to track username
   const [password, setPassword] = useState(""); // State to track password
+  const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
 
   // Check if both username and password are filled
   const isFormFilled = username.length > 0 && password.length > 0;
+
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -85,17 +88,28 @@ function Login({ login }) { // Receive the login function as a prop
             value={username}
             onChange={(e) => setUsername(e.target.value)} // Update state on input change
           />
+
+          {/* Password Field */}
           <TextField
             margin="normal"
             required
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update state on input change
+            onChange={(e) => setPassword(e.target.value)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleClickShowPassword} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <Box display={"flex"} alignContent={"center"} marginTop={1}>
             <Checkbox

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import { Box, Typography } from '@mui/material';
 import backgroundImage from '../assets/background-with-banner.png';
@@ -7,8 +7,16 @@ import PlayerIcon from '../components/PlayerIcon';
 import profileAvatar from '../assets/4895.jpg';
 import findMatch from '../assets/button-accept-disabled.png';
 import championSelected from '../assets/champions/0.png';
+import SelectChampionModal from './SelectChampionModal';
+import diamondRank from '../assets/rankIcon/diamond.png';
+
 
 const FindTournament = () => {
+  const [open, setOpen] = useState(false); // State to control modal open/close
+
+  const handleOpen = () => setOpen(true); // Function to open modal
+  const handleClose = () => setOpen(false); // Function to close modal
+
   return (
     <Box
       sx={{
@@ -87,7 +95,7 @@ const FindTournament = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            marginTop:10
+            marginTop: 10
           }}
         >
           <PlayerIcon
@@ -97,16 +105,35 @@ const FindTournament = () => {
             height={6}
             clickable={false}
           />
-          <Typography className="headerPrimary" >
+          {/* replace with API later */}
+          <Typography className="headerPrimary">
             hide on bush
           </Typography>
-          <Typography className="bodySecondary" >
+          <Box display={'flex'} alignItems={'center'}>
+            <Box component="img" src={diamondRank} alt="Rank" sx={{width:'3vh', height:'3vh', marginRight: 1}} />
+
+          <Typography className="bodySecondary">
             Diamond I
           </Typography>
-
+          </Box>
           {/* Choose champion and select a champion text */}
           <Box alignSelf={'center'} display={'flex'} flexDirection={'column'} marginTop={4} alignItems={'center'}>
-            <Box component="img" src={championSelected} alt="findMatch" alignSelf={'center'} justifyContent={'center'} sx={{ border: 2, borderColor: '#775A27', width: '10vh', height: '10vh' }} />
+            {/* Add onClick to open modal */}
+            <Box
+              component="img"
+              src={championSelected}
+              alt="Select Champion"
+              alignSelf={'center'}
+              justifyContent={'center'}
+              sx={{
+                border: 2,
+                borderColor: '#775A27',
+                width: '10vh',
+                height: '10vh',
+                cursor: 'pointer', // Make it clear this is clickable
+              }}
+              onClick={handleOpen} // Open the modal on click
+            />
             <Typography className="bodySecondary" sx={{ marginTop: 1 }}>
               Select a Champion
             </Typography>
@@ -121,8 +148,11 @@ const FindTournament = () => {
             marginBottom: '2vh', // Slight bottom margin
           }}
         >
-          <Box component="img" src={findMatch} alt="Find Match" sx={{ width: '12vw' }} />
+          <Box component="img" src={findMatch} alt="Find Match" sx={{ width: '14vw' }} />
         </Box>
+
+        {/* SelectChampionModal Component */}
+        <SelectChampionModal open={open} handleClose={handleClose} />
       </Box>
     </Box>
   );

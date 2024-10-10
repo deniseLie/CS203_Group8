@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Typography, Modal } from '@mui/material';
+import { Box, Typography, Modal, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close'
 
 // Manually importing all the role icons
 import assassinIcon from '../assets/championClass/roleicon-assassin.png';
@@ -39,9 +40,30 @@ const SelectChampionModal = ({ open, handleClose }) => {
           p: 4,
         }}
       >
-        <Typography id="champion-modal-title" className="headerPrimary" component="h2">
+        {/* Flex container for title and close button */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography id="champion-modal-title" className="headerPrimary" component="h2">
+            CHOOSE YOUR CHAMPION
+          </Typography>
+          {/* Close button */}
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              color: '#F0E6D2',
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        {/* <Typography id="champion-modal-title" className="headerPrimary" component="h2">
           CHOOSE YOUR CHAMPION
-        </Typography>
+        </Typography> */}
 
         {/* Iterate through role icons */}
         <Box

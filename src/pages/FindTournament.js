@@ -13,9 +13,16 @@ import diamondRank from '../assets/rankIcon/diamond.png';
 
 const FindTournament = () => {
   const [open, setOpen] = useState(false); // State to control modal open/close
+  const [selectedChampion, setSelectedChampion] = useState(null); // State for selected champion
 
   const handleOpen = () => setOpen(true); // Function to open modal
   const handleClose = () => setOpen(false); // Function to close modal
+
+  // Function to update the selected champion
+  const handleChampionSelect = (champion) => {
+    setSelectedChampion(champion); // Update the selected champion
+    handleClose(); // Close the modal after selection
+  };
 
   return (
     <Box
@@ -121,7 +128,7 @@ const FindTournament = () => {
             {/* Add onClick to open modal */}
             <Box
               component="img"
-              src={championSelected}
+              src={selectedChampion ? selectedChampion.src : championSelected}
               alt="Select Champion"
               alignSelf={'center'}
               justifyContent={'center'}
@@ -135,7 +142,7 @@ const FindTournament = () => {
               onClick={handleOpen} // Open the modal on click
             />
             <Typography className="bodySecondary" sx={{ marginTop: 1 }}>
-              Select a Champion
+              {selectedChampion ? selectedChampion.name : 'Select a Champion'}
             </Typography>
           </Box>
         </Box>
@@ -151,8 +158,8 @@ const FindTournament = () => {
           <Box component="img" src={findMatch} alt="Find Match" sx={{ width: '14vw' }} />
         </Box>
 
-        {/* SelectChampionModal Component */}
-        <SelectChampionModal open={open} handleClose={handleClose} />
+        {/* Pass the handleChampionSelect function to the modal */}
+        <SelectChampionModal open={open} handleClose={handleClose} onChampionSelect={handleChampionSelect} />
       </Box>
     </Box>
   );

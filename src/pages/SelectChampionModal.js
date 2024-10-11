@@ -69,7 +69,7 @@ const champions = [
   { src: kaynImage, alt: 'Kayn', name: 'Kayn', role: ['assassin', 'fighter'] }
 ];
 
-const SelectChampionModal = ({ open, handleClose }) => {
+const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
   // State to track the selected role, sorting option, and search query
   const [selectedRole, setSelectedRole] = useState(null);
   const [sortOption, setSortOption] = useState('latest');
@@ -297,6 +297,7 @@ const SelectChampionModal = ({ open, handleClose }) => {
                   maxWidth: '80px',
                   textAlign: 'center'
                 }}
+                onClick={() => onChampionSelect(champion)} // Call onChampionSelect when clicked
               >
                 <Box
                   component="img"

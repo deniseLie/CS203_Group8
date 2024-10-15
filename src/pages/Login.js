@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Typography, IconButton, InputAdornment } from "@mui/material";
+import { Box, TextField, Typography, IconButton, InputAdornment, Alert } from "@mui/material";
 import { ArrowForward, Visibility, VisibilityOff } from "@mui/icons-material";
 import loginSplash from "../assets/login_splash.jpg";
 import { Link } from 'react-router-dom';
@@ -20,7 +20,7 @@ function Login({ login }) {
     event.preventDefault();
     if (isFormFilled) {
       try {
-        const response = await axios.post(`${env.SERVER_URL}/auth/login`, {
+        const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/login`, {
           username: username,
           password: password
         });
@@ -45,7 +45,7 @@ function Login({ login }) {
   };
 
   return (
-    // <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}> {/* Wrap your component in GoogleOAuthProvider */}
+    <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}> {/* Wrap your component in GoogleOAuthProvider */}
       <Box
         display="flex"
         flexDirection="column"
@@ -97,6 +97,11 @@ function Login({ login }) {
           <Typography component="h1" variant="h5" sx={{ mb: 2, mt: 3, fontWeight: "600", letterSpacing: -1 }}>
             Sign in
           </Typography>
+          {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2, width: "100%" }}>
+            {errorMessage}
+          </Alert>
+        )}
           <Box component="form" noValidate sx={{ mt: 1, width: "90%" }} onSubmit={handleSubmit}>
             <TextField
               margin="normal"
@@ -133,18 +138,13 @@ function Login({ login }) {
               }}
             />
 
-            {errorMessage && (
-              <Typography color="error" sx={{ mt: 1 }}>
-                {errorMessage}
-              </Typography>
-            )}
             {/* Google Login Button */}
-            {/* <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+            <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
               <GoogleLogin
                 onSuccess={handleGoogleLoginSuccess}
                 onError={handleGoogleLoginFailure}
               />
-            </Box> */}
+            </Box>
 
             <Box display="flex" justifyContent="center" alignItems="center">
               <IconButton
@@ -186,7 +186,7 @@ function Login({ login }) {
           </Box>
         </Box>
       </Box>
-    // </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

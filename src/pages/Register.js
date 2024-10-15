@@ -39,12 +39,12 @@ function Register() {
       setErrorMessage(""); // Clear any previous error message
       if (isFormFilled) {
         try {
-          const response = await axios.post(`${env.SERVER_URL}/auth/register`, {
+          const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/register`, {
             username: username,
             email: email,
             playername: playername,
             password: password,
-            authprovider: "LOCAL",
+            authProvider: "LOCAL",
           });
     
           if (response.status === 200) {

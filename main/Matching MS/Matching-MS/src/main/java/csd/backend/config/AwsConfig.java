@@ -3,7 +3,6 @@ package csd.backend.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -15,7 +14,7 @@ public class AwsConfig {
     @Bean
     public DynamoDbClient dynamoDbClient() {
         return DynamoDbClient.builder()
-            .region(Region.US_EAST_1) // need to change
+            .region(Region.AP_SOUTHEAST_1)
             .credentialsProvider(ProfileCredentialsProvider.create())
             .build();
     }
@@ -23,8 +22,8 @@ public class AwsConfig {
     @Bean
     public SqsClient sqsClient() {
         return SqsClient.builder()
-            .region(Region.US_EAST_1)
-            .credentialsProvider(DefaultCredentialsProvider.create())
+            .region(Region.AP_SOUTHEAST_1)
+            .credentialsProvider(ProfileCredentialsProvider.create())
             .build();
     }
 }

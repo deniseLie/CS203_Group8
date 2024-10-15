@@ -1,9 +1,9 @@
 import './App.css';
 import Login from './pages/Login';
-import Home from './pages/Landing'; // Assuming you have a Home component
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
+import FindTournament from './pages/FindTournament';
 import Register from './pages/Register';
 
 // Create a custom theme
@@ -38,7 +38,7 @@ function App() {
           {/* Protected route for Home */}
           <Route
             path="/"
-            element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
+            element={isAuthenticated ? <FindTournament /> : <Navigate to="/login" />}
           />
           
           {/* Catch-all route to redirect to login if no route matches */}

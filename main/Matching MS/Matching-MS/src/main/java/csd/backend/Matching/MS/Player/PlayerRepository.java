@@ -1,10 +1,10 @@
-package csd.backend.Matching.MS.Player;
+// package csd.backend.Matching.MS.Player;
 
-import java.util.List;
+// import java.util.List;
 
-import org.springframework.data.repository.CrudRepository;
+// import org.springframework.data.repository.CrudRepository;
 
-public interface PlayerRepository extends CrudRepository<Player, Integer> {
-    List<Player> findByUsername(String username);
-    Player findById(int id);
-}
+// public interface PlayerRepository extends CrudRepository<Player, Integer> {
+//     List<Player> findByUsername(String username);
+//     Player findById(int id);
+// }

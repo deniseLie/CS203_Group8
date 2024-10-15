@@ -6,42 +6,32 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState } from 'react';
 import Register from './pages/Register';
 
-// Create a custom theme
 const theme = createTheme({
   typography: {
-    fontFamily: 'Mark, sans-serif', // Define custom font
+    fontFamily: 'Mark, sans-serif',
   },
 });
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Dummy authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Dummy function to simulate login (You can integrate this with real auth later)
+  // Dummy login function
   const login = () => {
     setIsAuthenticated(true);
+  };
+
+  // Logout function
+  const logout = () => {
+    setIsAuthenticated(false);
   };
 
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <Routes>
-          {/* Redirect to Home if authenticated, otherwise go to Login */}
-          <Route
-            path="/register"
-            element={<Register/>}
-          />
-          <Route
-            path="/login"
-            element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />}
-          />
-          
-          {/* Protected route for Home */}
-          <Route
-            path="/"
-            element={isAuthenticated ? <Home /> : <Navigate to="/login" />}
-          />
-          
-          {/* Catch-all route to redirect to login if no route matches */}
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
+          <Route path="/" element={isAuthenticated ? <Home logout={logout} /> : <Navigate to="/login" />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

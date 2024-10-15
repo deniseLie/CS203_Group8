@@ -5,34 +5,58 @@ import {
   Typography,
   IconButton,
   InputAdornment,
+  Alert,
 } from "@mui/material";
 import { ArrowForward, ArrowBack, Visibility, VisibilityOff } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import loginSplash from "../assets/login_splash.jpg";
 import logo from "../assets/riot_logo.png";
+import axios from "axios";
+import env from "react-dotenv";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [playername, setPlayername] = useState("");
+  const [playernameError, setPlayernameError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [emailError, setEmailError] = useState(false); // State to track email validation error
+  const [emailError, setEmailError] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // State to store the error message
 
-  const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for confirm password visibility
+  const navigate = useNavigate(); // Use navigate for redirecting
 
   const isFormFilled =
     username.length > 0 &&
     password.length > 0 &&
     password === confirmPassword &&
-    email.length > 0 && !emailError; // Ensure email is filled and valid
+    email.length > 0 && !emailError;
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (isFormFilled) {
-      // Submit logic here
-    }
-  };
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+      setErrorMessage(""); // Clear any previous error message
+      if (isFormFilled) {
+        try {
+          const response = await axios.post(`${env.SERVER_URL}/auth/register`, {
+            username: username,
+            email: email,
+            playername: playername,
+            password: password,
+            authprovider: "LOCAL",
+          });
+    
+          if (response.status === 200) {
+            navigate("/login"); // Redirect to login page if registration is successful
+          }
+        } catch (error) {
+          console.error("Registration error:", error);
+          // Set the error message to be displayed
+          setErrorMessage("Registration failed. Please try again.");
+        }
+      }
+    };
 
   const handleEmailChange = (e) => {
     const value = e.target.value;
@@ -41,6 +65,12 @@ function Register() {
     // Validate email format with regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setEmailError(!emailRegex.test(value)); // Set error if email format is invalid
+  };
+
+  const handlePlayernameChange = (e) => {
+    const value = e.target.value;
+    setPlayername(value);
+    setPlayernameError(playername.length > 20);
   };
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
@@ -119,7 +149,11 @@ function Register() {
         >
           Create Account
         </Typography>
-
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2, width: "100%" }}>
+            {errorMessage}
+          </Alert>
+        )}
         {/* Form */}
         <Box
           component="form"
@@ -141,6 +175,22 @@ function Register() {
             onChange={handleEmailChange}
             error={emailError} // Show error state if email is invalid
             helperText={emailError ? "Please enter a valid email" : ""} // Error message for invalid email
+          />
+
+          {/* playername Field with Validation */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="playername"
+            label="Player Name"
+            name="playername"
+            autoComplete="playername"
+            autoFocus
+            value={playername}
+            onChange={handlePlayernameChange}
+            error={playernameError} // Show error state if playername is invalid
+            helperText={playernameError ? "Please enter a valid playername" : ""} // Error message for invalid playername
           />
 
           <TextField

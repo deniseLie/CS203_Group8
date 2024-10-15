@@ -2,7 +2,7 @@ import './App.css';
 import Login from './pages/Login';
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FindTournament from './pages/FindTournament';
 import Register from './pages/Register';
 
@@ -10,18 +10,28 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Mark, sans-serif',
   },
+  
 });
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Dummy login function
+  // Check if the user is authenticated by checking localStorage for JWT
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  // Login function to set the authenticated state
   const login = () => {
     setIsAuthenticated(true);
   };
 
   // Logout function
   const logout = () => {
+    localStorage.removeItem('jwtToken');
     setIsAuthenticated(false);
   };
 

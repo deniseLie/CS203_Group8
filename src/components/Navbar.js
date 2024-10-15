@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Avatar, Popover } from '@mui/material';
+import { Box, Typography, Popover } from '@mui/material';
 import logo from '../assets/logo.png'; // Your logo image here
 import playButton from '../assets/play-button-disabled.png'; // Your play button image here
 import profileAvatar from '../assets/4895.jpg'; // Profile avatar image
+import PlayerIcon from './PlayerIcon';
 
 function Navbar({ logout }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
+  // Handle click to open the popover
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget); // Set the anchor element (the clicked Box)
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(null); // Close the popover
   };
 
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl); // Determine if the popover is open
   const id = open ? 'profile-popover' : undefined;
 
   return (
@@ -28,6 +30,7 @@ function Navbar({ logout }) {
         backgroundColor: '#010B13',
         padding: '10px 20px',
         borderBottom: '2px solid #464F4D',
+        zIndex: 100,
       }}
     >
       {/* Left side: Logo and Play Button */}
@@ -35,11 +38,11 @@ function Navbar({ logout }) {
         <Box display="flex" alignItems="center">
           {/* Logo */}
           <Link to="/">
-            <Box component="img" src={logo} alt="Logo" sx={{ width: 45, marginRight: -1.5 }} />
+            <Box component="img" src={logo} alt="Logo" sx={{ marginLeft: 3, width: 45, marginRight: -1.5 }} />
           </Link>
 
           {/* Play Button */}
-          <Link to="/play">
+          <Link to="/">
             <Box component="img" src={playButton} alt="Play" sx={{ width: 150, marginRight: 3 }} />
           </Link>
         </Box>
@@ -58,19 +61,24 @@ function Navbar({ logout }) {
         </Typography>
       </Box>
 
-      {/* Right side: Profile Avatar and Username */}
-      <Box display="flex" alignItems="center" onClick={handleClick}>
-        <div className="avatarWithGradientBorder">
-          <Avatar
-            alt="Hide on bush"
-            src={profileAvatar}
-            sx={{ width: 50, height: 50, borderRadius: '50%', cursor: 'pointer' }}
-          />
-        </div>
+      {/* Right side: Profile Avatar, Name, and Rank */}
+      <Box
+        display="flex"
+        alignItems="center"
+        onClick={handleClick} // Trigger the popover when the entire section is clicked
+        sx={{ cursor: 'pointer' }} // Make the whole section clickable
+      >
+        <PlayerIcon
+          alt="Hide on bush"
+          src={profileAvatar}
+          width={2}
+          height={2}
+          link="/profile"
+          clickable={false} // Disable direct linking since the whole section is clickable
+        />
 
         <Box display="flex" flexDirection="column" sx={{ marginLeft: 3, marginRight: 2 }}>
           <Typography
-            component={Link}
             className="headerPrimary"
             sx={{
               '&:hover': {
@@ -114,7 +122,7 @@ function Navbar({ logout }) {
               '&:hover': {
                 color: '#d4b106',
               },
-              cursor: 'pointer', // Make it clickable
+              cursor: 'pointer',
             }}
             onClick={() => {
               handleClose(); // Close the popover first

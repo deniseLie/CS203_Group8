@@ -10,8 +10,8 @@ import java.util.HashMap;
  * Players Table Schema:
  * - playerName (String) 
  * - email (String, Primary Key)
- * - status (String) [queue / not queue]
- * - rank (rankId)
+ * - queueStatus (String) [queue / not queue]
+ * - rankId (int)
  *
  * Matches Table Schema:
  * - matchId (Number, Primary Key)
@@ -41,12 +41,10 @@ public class CreateDynamoTables {
     //     --table-name Players
     //     --endpoint-url http://localhost:8000
     
-    // Populate
-    // aws dynamodb put-item --table-name Players --item "{\"playerName\": {\"S\": \"Player1\"}, \"status\": {\"S\": \"queue\"}, \"rankId\": {\"N\": \"1\"}, \"email\": {\"S\": \"player1@example.com\"}}" --endpoint-url http://localhost:8000
-    // aws dynamodb put-item --table-name Players --item "{\"playerName\": {\"S\": \"Player2\"}, \"status\": {\"S\": \"queue\"}, \"rankId\": {\"N\": \"2\"}, \"email\": {\"S\": \"player2@example.com\"}}" --endpoint-url http://localhost:8000
-    // aws dynamodb put-item --table-name Players --item "{\"playerName\": {\"S\": \"Player3\"}, \"status\": {\"S\": \"not queue\"}, \"rankId\": {\"N\": \"3\"}, \"email\": {\"S\": \"player3@example.com\"}}" --endpoint-url http://localhost:8000
+    // // Populate
+    // aws dynamodb put-item --table-name Players --item "{\"email\": {\"S\": \"player1@example.com\"}, \"playerName\": {\"S\": \"Player1\"}, \"queueStatus\": {\"S\": \"queue\"}, \"rankId\": {\"N\": \"1\"}}"
 
-    
+
     // ------------------------ Matches Table ----------------------------------
 
     //  CLI command : create the Matches table in local DynamoDB.
@@ -75,4 +73,8 @@ public class CreateDynamoTables {
      *
      * aws dynamodb list-tables --endpoint-url http://localhost:8000 --output json
      */
+
+     // BUild docker
+     // docker build -t match-making-ms .
+
 }

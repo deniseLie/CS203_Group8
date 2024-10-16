@@ -6,14 +6,16 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 // import csd.backend.Matching.MS.Player.Player;
 // import csd.backend.Matching.MS.Player.PlayerRepository;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"csd.backend.config", "csd.backend.Matching.MS"})
 public class MatchingMsApplication {
 
-	private static final Logger log = LoggerFactory.getLogger(MatchingMsApplication.class);
+	// private static final Logger log = LoggerFactory.getLogger(MatchingMsApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(MatchingMsApplication.class, args);
 	}

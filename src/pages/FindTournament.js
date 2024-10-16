@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, IconButton, Button } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'; // Import the icon
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import backgroundImage from '../assets/background-with-banner.png';
 import arenaIcon from '../assets/arena-icon.png';
 import PlayerIcon from '../components/PlayerIcon';
@@ -13,78 +13,81 @@ import SelectChampionModal from './SelectChampionModal';
 import diamondRank from '../assets/rankIcon/diamond.png';
 import Navbar from '../components/Navbar';
 import SpeedUpModal from '../components/SpeedupModal';
+import speedupQueueIcon from '../assets/speedQueue.png'; // Import speed-up queue icon
 
 const FindTournament = ({ logout }) => {
-  const [open, setOpen] = useState(false); // State to control modal open/close
-  const [selectedChampion, setSelectedChampion] = useState(null); // State for selected champion
-  const [inQueueState, setInQueueState] = useState(false); // New state to track if the user is in queue
-  const [timer, setTimer] = useState(0); // Timer state for tracking seconds
-  const [showSpeedUpModal, setShowSpeedUpModal] = useState(false); // State for controlling the speed up queue rectangle
+  const [open, setOpen] = useState(false); 
+  const [selectedChampion, setSelectedChampion] = useState(null); 
+  const [inQueueState, setInQueueState] = useState(false); 
+  const [timer, setTimer] = useState(0); 
+  const [showSpeedUpModal, setShowSpeedUpModal] = useState(false); 
+  const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false); // Track if user is in speed-up queue
 
-  // Function to handle Find Match button click
   const handleFindMatchClick = () => {
     if (selectedChampion) {
-      setInQueueState(true); // Set the state to inQueue when clicked
-      setTimer(0); // Reset the timer when entering the queue
+      setInQueueState(true); 
+      setTimer(0); 
     }
   };
 
-  const handleOpen = () => setOpen(true); // Function to open modal
-  const handleClose = () => setOpen(false); // Function to close modal
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  // Function to update the selected champion
   const handleChampionSelect = (champion) => {
-    setSelectedChampion(champion); // Update the selected champion
-    handleClose(); // Close the modal after selection
+    setSelectedChampion(champion); 
+    handleClose(); 
   };
 
-  // Function to handle canceling the queue (reset inQueueState)
   const handleCancelQueue = () => {
-    setInQueueState(false); // Reset the queue state
-    setTimer(0); // Reset timer when leaving the queue
-    setShowSpeedUpModal(false); // Close modal if queue is cancelled
+    setInQueueState(false);
+    setTimer(0);
+    setShowSpeedUpModal(false); 
+    setInSpeedUpQueue(false); // Reset the speed-up queue state
   };
 
-  // Timer Effect: Start the timer when inQueueState is true
   useEffect(() => {
     let interval;
     if (inQueueState) {
       interval = setInterval(() => {
-        setTimer(prevTime => {
+        setTimer((prevTime) => {
           const newTime = prevTime + 1;
-          if (newTime > 5) { // When the timer reaches 1:30 (90 seconds)
-            setShowSpeedUpModal(true); // Show the modal
+          if (newTime > 5) {
+            setShowSpeedUpModal(true);
           }
           return newTime;
         });
       }, 1000);
     } else {
-      clearInterval(interval); // Clear the interval if not in queue
+      clearInterval(interval);
     }
 
-    return () => clearInterval(interval); // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, [inQueueState]);
 
-  // Helper function to format time as mm:ss
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
+  const handleSpeedUpQueue = () => {
+    setInSpeedUpQueue(true); // User has joined the speed-up queue
+    setShowSpeedUpModal(false); // Close the speed-up modal
+  };
+
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column', // Vertical layout
-        height: '100vh', // Take up full screen height
-        overflow: 'hidden', // Prevent scrollbar from appearing
+        flexDirection: 'column', 
+        height: '100vh',
+        overflow: 'hidden', 
       }}
     >
       {/* Navbar */}
       <Box
         sx={{
-          flexShrink: 0, // Prevent navbar from shrinking
+          flexShrink: 0, 
           zIndex: 100,
         }}
       >
@@ -95,14 +98,14 @@ const FindTournament = ({ logout }) => {
       <Box
         sx={{
           flexGrow: 1,
-          position: 'relative', // Required for positioning elements
+          position: 'relative', 
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           display: 'flex',
-          justifyContent: 'space-between', // Adjusted for bottom positioning
-          flexDirection: 'column', // Layout as column
+          justifyContent: 'space-between', 
+          flexDirection: 'column', 
         }}
       >
         {/* Top content: Arena Icon and Arena Ranked */}
@@ -185,7 +188,7 @@ const FindTournament = ({ logout }) => {
                 height: '10vh',
                 cursor: 'pointer',
               }}
-              onClick={handleOpen} // Open the modal on click
+              onClick={handleOpen} 
             />
             <Typography className="bodySecondary" sx={{ marginTop: 1 }}>
               {selectedChampion ? selectedChampion.name : 'Select a Champion'}
@@ -196,19 +199,19 @@ const FindTournament = ({ logout }) => {
         {/* Bottom content: Find Match button and optional cancel icon */}
         <Box
           sx={{
-            position: 'relative', // Position the container relatively
+            position: 'relative', 
             display: 'flex',
-            justifyContent: 'center', // Center the button horizontally
+            justifyContent: 'center', 
             marginBottom: '2vh',
-            alignItems: 'center', // Vertically align the cancel icon
+            alignItems: 'center', 
           }}
         >
           {inQueueState && (
             <IconButton
-              onClick={handleCancelQueue} // Cancel the queue when clicked
+              onClick={handleCancelQueue} 
               sx={{
                 position: 'absolute',
-                left: 'calc(50% - 11vw)', // Adjust left position of the icon relative to the center
+                left: 'calc(50% - 11vw)', 
               }}
             >
               <HighlightOffIcon fontSize="large" sx={{ color: "#D8A13A" }} />
@@ -220,41 +223,57 @@ const FindTournament = ({ logout }) => {
             src={selectedChampion ? (inQueueState ? inQueue : findMatch) : findMatchDisabled}
             alt="Find Match"
             sx={{ width: '14vw', cursor: selectedChampion ? 'pointer' : 'not-allowed' }}
-            onClick={selectedChampion && !inQueueState ? handleFindMatchClick : null} // Only handle click if not in queue and a champion is selected
+            onClick={selectedChampion && !inQueueState ? handleFindMatchClick : null} 
           />
         </Box>
 
-        {/* Timer and "Finding Match" Text */}
         {inQueueState && (
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: '4vh',
-              left: '2vw',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Typography variant="h6" className='findMatch'>
-              FINDING MATCH
-            </Typography>
-            <Typography variant="h6" className="timer" sx={{ marginTop: -2 }}>
-              {formatTime(timer)}
-            </Typography>
-            <Typography className='estimated' sx={{ color: "#0AC1DC", marginTop: -1.5 }}>
-              Estimated: 1:12
-            </Typography>
+  <Box
+    sx={{
+      position: 'absolute',
+      bottom: '4vh',
+      left: '2vw',
+      display: 'flex',
+      flexDirection: 'column', // Stack elements vertically
+      alignItems: 'flex-start', // Align items to the start
+    }}
+  >
+    {/* FINDING MATCH */}
+    <Typography variant="h6" className='findMatch' sx={{marginBottom:-2.5}}>
+      FINDING MATCH
+    </Typography>
 
-            {/* Show rectangle above the timer */}
-            {showSpeedUpModal && (
-            <SpeedUpModal 
-              show={showSpeedUpModal} 
-              onClose={() => setShowSpeedUpModal(false)} 
-            />
-            )}
-          </Box>
-        )}
+    {/* Timer with speed-up icon next to it */}
+    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: -2.5 }}>
+      <Typography variant="h6" className="timer" sx={{ marginRight: '0.5rem' }}>
+        {formatTime(timer)}
+      </Typography>
+
+      {/* Show speed-up icon next to timer if user is in the speed-up queue */}
+      {inSpeedUpQueue && (
+        <Box
+          component="img"
+          src={speedupQueueIcon}
+          alt="Speed Up Queue"
+          sx={{ width: '1.5rem', height: '1.5rem', marginLeft: '0.5rem' }} // Adjust icon size and spacing
+        />
+      )}
+    </Box>
+
+    {/* Estimated Time */}
+    <Typography className='estimated' sx={{ color: "#0AC1DC", marginTop: '0.5rem' }}>
+      Estimated: 1:12
+    </Typography>
+
+    {/* Speed up modal above the timer */}
+    {showSpeedUpModal && (
+      <SpeedUpModal 
+        show={showSpeedUpModal} 
+        onClose={handleSpeedUpQueue} 
+      />
+    )}
+  </Box>
+)}
 
         {/* Pass the handleChampionSelect function to the modal */}
         <SelectChampionModal open={open} handleClose={handleClose} onChampionSelect={handleChampionSelect} />

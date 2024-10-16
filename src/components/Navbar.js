@@ -47,6 +47,7 @@ function Navbar({ logout }) {
           </Link>
         </Box>
 
+        {/* History link */}
         <Typography
           component={Link}
           to="/history"
@@ -55,6 +56,7 @@ function Navbar({ logout }) {
             '&:hover': {
               color: '#d4b106',
             },
+            marginLeft: '20px', // Add some spacing if needed
           }}
         >
           HISTORY
@@ -65,8 +67,8 @@ function Navbar({ logout }) {
       <Box
         display="flex"
         alignItems="center"
-        onClick={handleClick} // Trigger the popover when the entire section is clicked
-        sx={{ cursor: 'pointer' }} // Make the whole section clickable
+        sx={{ cursor: 'pointer' }} // Make the profile section clickable
+        onClick={handleClick} // Trigger the popover when this section is clicked
       >
         <PlayerIcon
           alt="Hide on bush"

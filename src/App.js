@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, useEffect } from 'react';
 import FindTournament from './pages/FindTournament';
 import Register from './pages/Register';
+import History from './pages/History';
 
 const theme = createTheme({
   typography: {
@@ -42,6 +43,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
           <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
+          <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} />
+          {/* <Route path="/history" element={<History/>} /> */}
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

@@ -2,29 +2,32 @@ package csd.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 @Configuration
 public class AwsConfig {
-    
+
+    private final String accessKey = "AKIA5G2VGHWTNA65RHNJ"; 
+    private final String secretKey = "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"; 
+    private final String region = "ap-southeast-1";  
+
     @Bean
     public DynamoDbClient dynamoDbClient() {
         return DynamoDbClient.builder()
-            .region(Region.US_EAST_1) // need to change
-            .credentialsProvider(ProfileCredentialsProvider.create())
+            .region(Region.of(region))
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
             .build();
     }
 
     @Bean
     public SqsClient sqsClient() {
         return SqsClient.builder()
-            .region(Region.US_EAST_1)
-            .credentialsProvider(DefaultCredentialsProvider.create())
+            .region(Region.of(region))
+            .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create(accessKey, secretKey)))
             .build();
     }
 }

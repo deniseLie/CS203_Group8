@@ -8,7 +8,7 @@
 
 /* SpiegelSans SemiBold */
 @font-face {
-  font-family: 'SpiegelSans';
+  font-family: 'Spiegel';
   src: url('./fonts/SpiegelSansCd-6SemiBold_TRIAL.ttf') format('truetype');
   font-weight: 600;
   font-style: normal;
@@ -39,12 +39,40 @@ html {
   font-size: 1rem !important;
 }
 
+
+/* Style group for .headerPrimary */
+.timer {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Beaufort', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 3em !important;
+}
+/* Style group for .headerPrimary */
+.findMatch {
+  color: #cbc7ba;          /* Set text color */
+  font-family: 'Beaufort', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.5em !important;
+}
+
+.estimated {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem !important;
+  letter-spacing: 0.05em;
+}
+
 .bodyPrimary {
   color: #F0E6D2;          /* Set text color */
   font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
   font-weight: 700;
   text-decoration: none;
   font-size: 0.8rem !important;
+  letter-spacing: 0.05em;
 }
 
 

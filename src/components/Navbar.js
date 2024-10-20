@@ -6,7 +6,7 @@ import playButton from '../assets/play-button-disabled.png'; // Your play button
 import profileAvatar from '../assets/4895.jpg'; // Profile avatar image
 import PlayerIcon from './PlayerIcon';
 
-function Navbar({ logout }) {
+function Navbar({ logout, activePage }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   // Handle click to open the popover
@@ -53,6 +53,8 @@ function Navbar({ logout }) {
           to="/history"
           className="headerPrimary"
           sx={{
+            marginRight: 3,
+            ...(activePage === 'history' && { color: '#d4b106' }), // Highlight if active
             '&:hover': {
               color: '#d4b106',
             },
@@ -61,8 +63,22 @@ function Navbar({ logout }) {
         >
           HISTORY
         </Typography>
-      </Box>
 
+        {/* LEADERBOARD Link */}
+        <Typography
+          component={Link}
+          to="/leaderboard"
+          className="headerPrimary" // Use the headerPrimary class for default styles
+          sx={{
+            ...(activePage === 'leaderboard' && { color: '#d4b106' }), // Highlight if active
+            '&:hover': {
+              color: '#d4b106', // Hover color
+            },
+          }}
+        >
+          LEADERBOARD
+        </Typography>
+      </Box>
       {/* Right side: Profile Avatar, Name, and Rank */}
       <Box
         display="flex"

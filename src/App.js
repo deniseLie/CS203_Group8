@@ -1,11 +1,12 @@
 import './App.css';
 import Login from './pages/Login';
+import History from './pages/History'; // Import the History page
+import Leaderboard from './pages/Leaderboard'; // Import the Leaderboard page
 import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import FindTournament from './pages/FindTournament';
 import Register from './pages/Register';
-import History from './pages/History';
 
 const theme = createTheme({
   typography: {
@@ -28,6 +29,7 @@ function App() {
   // Login function to set the authenticated state
   const login = () => {
     setIsAuthenticated(true);
+    localStorage.setItem('isAuthenticated', 'true'); // Store the authentication state
   };
 
   // Logout function
@@ -44,7 +46,10 @@ function App() {
           <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
           <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
           <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} />
-          {/* <Route path="/history" element={<History/>} /> */}
+          <Route
+            path="/leaderboard"
+            element={isAuthenticated ? <Leaderboard /> : <Navigate to="/login" />}
+          />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

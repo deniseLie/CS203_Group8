@@ -12,7 +12,6 @@ const theme = createTheme({
   typography: {
     fontFamily: 'Mark, sans-serif',
   },
-  
 });
 
 function App() {

@@ -1,0 +1,128 @@
+/* Mark font */
+@font-face {
+  font-family: 'Mark';
+  src: url('./fonts/Mark-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* SpiegelSans SemiBold */
+@font-face {
+  font-family: 'Spiegel';
+  src: url('./fonts/SpiegelSansCd-6SemiBold_TRIAL.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* SpiegelSans SemiBold */
+@font-face {
+  font-family: 'Beaufort';
+  src: url('./fonts/BeaufortforLOL-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+/* Apply Mark font globally */
+html {
+  font-family: 'Mark', sans-serif;
+  background-color: #130101;
+  height: 100vh;
+}
+
+/* Style group for .headerPrimary */
+.headerPrimary {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Beaufort', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem !important;
+}
+
+
+/* Style group for .headerPrimary */
+.timer {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Beaufort', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 3em !important;
+}
+/* Style group for .headerPrimary */
+.findMatch {
+  color: #cbc7ba;          /* Set text color */
+  font-family: 'Beaufort', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.5em !important;
+}
+
+.estimated {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1rem !important;
+  letter-spacing: 0.05em;
+}
+
+.bodyPrimary {
+  color: #F0E6D2;          /* Set text color */
+  font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+
+
+.bodySecondary {
+  color: #949083;          /* Set text color */
+  font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.8rem !important;
+}
+
+.avatarWithGradientBorder {
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(to bottom, #EFE5D0, #C99C3F); /* Gradient background */
+  padding: 4px;  /* This padding simulates the "border" */
+  border-radius: 50%;
+}
+
+.avatarWithGradientBorder .MuiAvatar-root {
+  width: 100%; /* Avatar takes up full space inside the container */
+  height: 100%; /* Avatar takes up full space inside the container */
+  border-radius: 50%;
+}
+
+.avatarWithGradientBorder a {
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.bordered-box {
+  position: relative;
+  padding: 8px; /* Adjust the padding */
+}
+
+.bordered-box::before,
+.bordered-box::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px; /* Adjust thickness */
+  background: linear-gradient(to right, transparent, rgba(217, 217, 217, 0.8), rgba(217, 217, 217, 1), rgba(217, 217, 217, 0.8), transparent);
+}
+
+.bordered-box::before {
+  top: 0; /* Top border */
+}
+
+.bordered-box::after {
+  bottom: 0; /* Bottom border */
+}

@@ -44,7 +44,6 @@ function Register() {
             email: email,
             playername: playername,
             password: password,
-            authProvider: "LOCAL",
           });
     
           if (response.status === 200) {

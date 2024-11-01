@@ -139,12 +139,14 @@ function Login({ login }) {
             />
 
             {/* Google Login Button */}
-            <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
-              <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={handleGoogleLoginFailure}
-              />
-            </Box>
+            <Link to="http://localhost:8080/oauth2/authorization/google">
+              <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+                <GoogleLogin
+                  // onSuccess={handleGoogleLoginSuccess}
+                  // onError={handleGoogleLoginFailure}
+                />
+              </Box>
+            </Link>
 
             <Box display="flex" justifyContent="center" alignItems="center">
               <IconButton

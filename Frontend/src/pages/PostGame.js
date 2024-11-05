@@ -1,21 +1,22 @@
-import React from 'react';
-import { Box, Typography, Avatar, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, Button, Dialog, DialogContent, DialogActions } from '@mui/material';
+import { Link } from 'react-router-dom';
 import playAgain from '../assets/play-again-button.png';
 import playerIcon from '../assets/4895.jpg';
 import background from '../assets/srbackground.png';
 import arenaIcon from '../assets/arena-icon.png';
 import rankCircle from '../assets/ranked-frame.png';
-import { Link } from 'react-router-dom';
 
+// Sample data with an AFK flag for demonstration
 const leaderboardData = [
-  { standing: '1ST', champion: 'Ahri', playerName: 'hide on bush', kd: '8/0', kda: '8.0 KDA' },
+  { standing: '1ST', champion: 'Ahri', playerName: 'ARAMLOVER', kd: '8/0', kda: '8.0 KDA' },
   { standing: '2ND', champion: 'Sett', playerName: 'Rodan', kd: '8/0', kda: '8.0 KDA' },
   { standing: '3RD', champion: 'Bel\'Veth', playerName: 'xDivineSword', kd: '8/0', kda: '8.0 KDA' },
   { standing: '4TH', champion: 'Miss Fortune', playerName: 'lilWanton', kd: '8/0', kda: '8.0 KDA' },
   { standing: '5TH', champion: 'Galio', playerName: 'GodanRoose', kd: '8/0', kda: '8.0 KDA' },
   { standing: '6TH', champion: 'Zac', playerName: 'Radon', kd: '8/0', kda: '8.0 KDA' },
   { standing: '7TH', champion: 'Jinx', playerName: 'LikeFromArcane', kd: '1/1', kda: '1.0 KDA' },
-  { standing: '8TH', champion: 'Vi', playerName: 'ARAMLOVER', kd: '0/1', kda: '0.0 KDA' },
+  { standing: '8TH', champion: 'Vi', playerName: 'hide on bush', kd: '0/1', kda: '0.0 KDA', isAFK: true },
 ];
 
 const currentPlayer = 'hide on bush';
@@ -25,6 +26,19 @@ const PostGame = () => {
   const currentPlayerData = leaderboardData.find(entry => entry.playerName === currentPlayer);
   const currentPlayerStanding = currentPlayerData ? currentPlayerData.standing : null;
 
+  // State for showing the AFK modal
+  const [isAFKModalOpen, setAFKModalOpen] = useState(false);
+
+  // Check if the current player is marked as AFK
+  useEffect(() => {
+    if (currentPlayerData?.isAFK) {
+      setAFKModalOpen(true);
+    }
+  }, [currentPlayerData]);
+
+  const handleAgree = () => {
+    setAFKModalOpen(false); // Close the modal on clicking "I AGREE"
+  };
   return (
     <Box
       sx={{
@@ -60,7 +74,7 @@ const PostGame = () => {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1}}>
-            <Avatar src={arenaIcon} sx={{ width: 40, height: 40, mr: 1 }} />
+            <Box component="img" src={arenaIcon} sx={{ width: 40, height: 40, mr: 1 }} />
             <Box>
               {currentPlayerStanding && (
                 <Typography className='headerPrimary' fontWeight="bold">
@@ -83,12 +97,35 @@ const PostGame = () => {
             STANDING
           </Typography>
           {leaderboardData.map((entry, index) => (
-            <Box key={index} display="flex" alignItems="center" sx={{  height: '50px' }}>
-              <Typography variant="body2" sx={{ width: '50px', fontWeight: 'bold', color: '#F0E6D2', fontSize: '1.2rem' }} className='headerPrimary'>
+            <Box key={index} display="flex" alignItems="center" sx={{ height: '50px' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  width: '50px',
+                  fontWeight: 'bold',
+                  color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2',
+                  fontSize: '1.2rem'
+                }}
+                className='headerPrimary'
+              >
                 {entry.standing}
               </Typography>
-              <Avatar src={require(`../assets/champions/${entry.champion.toLowerCase().replace(/[\s']/g, '')}.png`)} sx={{ width: 40, height: 40, mr: 2 }} />
-              <Typography className='headerPrimary' variant="body2" sx={{ color: '#F0E6D2' }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  mr: 2,
+                  backgroundImage: `url(${require(`../assets/champions/${entry.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  borderLeft: entry.playerName === currentPlayer ? '5px solid #D8A13A' : 'none',
+                }}
+              />
+              <Typography
+                className='headerPrimary'
+                variant="body2"
+                sx={{ color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2' }}
+              >
                 {entry.champion}
               </Typography>
             </Box>
@@ -102,8 +139,12 @@ const PostGame = () => {
           </Typography>
           {leaderboardData.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" justifyContent="flex-start" sx={{ height: '50px' }}>
-              <Avatar src={playerIcon} sx={{ width: 30, height: 30, mr: 1 }} />
-              <Typography variant="body2" className='headerPrimary' sx={{ color: '#F0E6D2', fontWeight: entry.playerName === currentPlayer ? 'bold' : 'normal' }}>
+              <Box component="img" src={playerIcon} sx={{ width: 30, height: 30, mr: 1 }} />
+              <Typography
+                variant="body2"
+                className='headerPrimary'
+                sx={{ color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2', fontWeight: entry.playerName === currentPlayer ? 'bold' : 'normal' }}
+              >
                 {entry.playerName}
               </Typography>
             </Box>
@@ -117,7 +158,11 @@ const PostGame = () => {
           </Typography>
           {leaderboardData.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" flexDirection="column" sx={{ height: '50px' }}>
-              <Typography variant="body2" sx={{ color: '#F0E6D2' }} className='headerPrimary'>
+              <Typography
+                variant="body2"
+                sx={{ color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2' }}
+                className='headerPrimary'
+              >
                 {entry.kd}
               </Typography>
               <Typography variant="caption" color="#949083" className='bodySecondary'>
@@ -128,11 +173,11 @@ const PostGame = () => {
         </Box>
 
         {/* LP Section with Ranked Circle */}
-        <Box sx={{ flex: 1, textAlign: 'center', position: 'relative' , alignContent: 'center'}}>
+        <Box sx={{ flex: 1, textAlign: 'center', position: 'relative', alignContent: 'center'}}>
           <Box
             sx={{
               position: 'relative',
-              width: '15vw', // Adjust the size as needed
+              width: '15vw',
               height: '15vw',
               backgroundImage: `url(${rankCircle})`,
               backgroundSize: 'cover',
@@ -154,7 +199,7 @@ const PostGame = () => {
               </Typography>
             </Box>
             <Box sx={{ position: 'absolute', bottom: '20%', textAlign: 'center' }}>
-              <Typography variant="caption"  className='headerPrimary'>
+              <Typography variant="caption" className='headerPrimary'>
                 DIAMOND I
               </Typography>
             </Box>
@@ -171,7 +216,7 @@ const PostGame = () => {
           width: '100%',
         }}
         component={Link}
-        to={"/"}
+        to="/"
       >
         <Button
           sx={{
@@ -190,6 +235,49 @@ const PostGame = () => {
         >
         </Button>
       </Box>
+
+            {/* AFK Warning Modal */}
+            <Dialog
+        open={isAFKModalOpen}
+        onClose={handleAgree}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          style: {
+            backgroundColor: '#1F2326',
+            border: '1px solid #775A27',
+            boxShadow: 'none',
+          },
+        }}
+      >
+        <DialogContent>
+          <Typography variant="h6" fontWeight="bold" color="#F0E6D2" align="center" className='headerPrimary'>
+            LEAVERBUSTER WARNING
+          </Typography>
+          <Typography variant="body1" color="#F0E6D2" align="center" sx={{ mt: 2 }} className='bodyPrimary'>
+            Abandoning a match (or going AFK) makes the match unfair for your teammates
+            and carries a penalty in League. Do you agree not to leave any further games?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ justifyContent: 'center' }}>
+          <Button
+            onClick={handleAgree}
+            sx={{
+              backgroundColor: '#775A27',
+              color: '#F0E6D2',
+              fontWeight: 'bold',
+              px: 4,
+              py: 1,
+              marginBottom:2,
+              '&:hover': {
+                backgroundColor: '#b88f31',
+              },
+            }}
+          >
+            I AGREE
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

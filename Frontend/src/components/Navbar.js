@@ -63,6 +63,23 @@ function Navbar({ logout, activePage }) {
         >
           HISTORY
         </Typography>
+
+        {/* History link */}
+        <Typography
+          component={Link}
+          to="/postgame"
+          className="headerPrimary"
+          sx={{
+            marginRight: 3,
+            ...(activePage === 'postgame' && { color: '#d4b106' }), // Highlight if active
+            '&:hover': {
+              color: '#d4b106',
+            },
+            marginLeft: '20px', // Add some spacing if needed
+          }}
+        >
+          POSTGAME
+        </Typography>
         {/* LEADERBOARD Link */}
         <Typography
           component={Link}

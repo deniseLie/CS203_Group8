@@ -12,28 +12,28 @@ import supportIcon from '../assets/championClass/roleicon-support.png';
 import tankIcon from '../assets/championClass/roleicon-tank.png';
 
 // Manually importing all the champion images
-import annieImage from '../assets/champions/1.png';
-import galioImage from '../assets/champions/3.png';
-import leBlancImage from '../assets/champions/7.png';
-import masterYiImage from '../assets/champions/11.png';
-import sorakaImage from '../assets/champions/16.png';
-import teemoImage from '../assets/champions/17.png';
-import tristanaImage from '../assets/champions/18.png';
-import missFortuneImage from '../assets/champions/21.png';
-import singedImage from '../assets/champions/27.png';
-import sonaImage from '../assets/champions/37.png';
-import ahriImage from '../assets/champions/103.png';
-import kaynImage from '../assets/champions/141.png';
-import kaiSaImage from '../assets/champions/145.png';
-import zacImage from '../assets/champions/154.png';
-import yasuoImage from '../assets/champions/157.png';
-import belVethImage from '../assets/champions/200.png';
-import jinxImage from '../assets/champions/222.png';
-import sennaImage from '../assets/champions/235.png';
-import zedImage from '../assets/champions/238.png';
-import viImage from '../assets/champions/254.png';
-import namiImage from '../assets/champions/267.png';
-import settImage from '../assets/champions/875.png';
+import annieImage from '../assets/champions/annie.png';
+import galioImage from '../assets/champions/galio.png';
+import leBlancImage from '../assets/champions/leblanc.png';
+import masterYiImage from '../assets/champions/masteryi.png';
+import sorakaImage from '../assets/champions/soraka.png';
+import teemoImage from '../assets/champions/teemo.png';
+import tristanaImage from '../assets/champions/tristana.png';
+import missFortuneImage from '../assets/champions/missfortune.png';
+import singedImage from '../assets/champions/singed.png';
+import sonaImage from '../assets/champions/sona.png';
+import ahriImage from '../assets/champions/ahri.png';
+import kaynImage from '../assets/champions/kayn.png';
+import kaiSaImage from '../assets/champions/kaisa.png';
+import zacImage from '../assets/champions/zac.png';
+import yasuoImage from '../assets/champions/yasuo.png';
+import belVethImage from '../assets/champions/belveth.png';
+import jinxImage from '../assets/champions/jinx.png';
+import sennaImage from '../assets/champions/senna.png';
+import zedImage from '../assets/champions/zed.png';
+import viImage from '../assets/champions/vi.png';
+import namiImage from '../assets/champions/nami.png';
+import settImage from '../assets/champions/sett.png';
 
 const roleIcons = [
   { src: assassinIcon, alt: 'Assassin' },

@@ -122,10 +122,9 @@ const FindTournament = ({ logout }) => {
           <Box display="flex" alignItems="center">
             <Box component="img" src={arenaIcon} alt="Arena" sx={{ marginLeft: 3, width: '3vw', marginTop: '1px', marginRight: 1 }} />
             <Typography
-              variant="h1"
               className="headerPrimary"
               sx={{
-                fontSize: '3vw',
+                fontSize: '2vw',
                 display: 'inline-flex',
                 alignItems: 'center',
               }}

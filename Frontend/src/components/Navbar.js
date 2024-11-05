@@ -63,7 +63,6 @@ function Navbar({ logout, activePage }) {
         >
           HISTORY
         </Typography>
-
         {/* LEADERBOARD Link */}
         <Typography
           component={Link}

@@ -81,7 +81,7 @@ html {
   font-family: 'Spiegel', sans-serif !important; /* Set custom font family */
   font-weight: 700;
   text-decoration: none;
-  font-size: 0.8rem !important;
+  font-size: 0.8rem;
 }
 
 .avatarWithGradientBorder {

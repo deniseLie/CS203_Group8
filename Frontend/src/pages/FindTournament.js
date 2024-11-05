@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, IconButton, Button } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import backgroundImage from '../assets/background-with-banner.png';
 import arenaIcon from '../assets/arena-icon.png';
@@ -13,7 +13,9 @@ import SelectChampionModal from './SelectChampionModal';
 import diamondRank from '../assets/rankIcon/diamond.png';
 import Navbar from '../components/Navbar';
 import SpeedUpModal from '../components/SpeedupModal';
-import speedupQueueIcon from '../assets/speedQueue.png'; // Import speed-up queue icon
+import speedupQueueIcon from '../assets/speedQueue.png';
+import redWarning from '../assets/red-warning.png'; // Import the red warning icon
+import LowPriorityQueue from '../components/LowPriorityQueue';
 
 const FindTournament = ({ logout }) => {
   const [open, setOpen] = useState(false); 
@@ -21,12 +23,16 @@ const FindTournament = ({ logout }) => {
   const [inQueueState, setInQueueState] = useState(false); 
   const [timer, setTimer] = useState(0); 
   const [showSpeedUpModal, setShowSpeedUpModal] = useState(false); 
-  const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false); // Track if user is in speed-up queue
-
+  const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false);
+  const [showLowPriority, setShowLowPriority] = useState(false); // Track if low priority queue should be shown
+  
+  // constant : how many seconds to show speed up q
+  const SPEED_UP_SECONDS = 5;
   const handleFindMatchClick = () => {
     if (selectedChampion) {
       setInQueueState(true); 
       setTimer(0); 
+      setShowLowPriority(true); // Show low priority box when entering queue
     }
   };
 
@@ -42,7 +48,8 @@ const FindTournament = ({ logout }) => {
     setInQueueState(false);
     setTimer(0);
     setShowSpeedUpModal(false); 
-    setInSpeedUpQueue(false); // Reset the speed-up queue state
+    setInSpeedUpQueue(false); 
+    setShowLowPriority(false); // Hide low priority queue box when exiting queue
   };
 
   useEffect(() => {
@@ -51,7 +58,7 @@ const FindTournament = ({ logout }) => {
       interval = setInterval(() => {
         setTimer((prevTime) => {
           const newTime = prevTime + 1;
-          if (newTime > 5) {
+          if (newTime > SPEED_UP_SECONDS && !showLowPriority) {
             setShowSpeedUpModal(true);
           }
           return newTime;
@@ -71,8 +78,8 @@ const FindTournament = ({ logout }) => {
   };
 
   const handleSpeedUpQueue = () => {
-    setInSpeedUpQueue(true); // User has joined the speed-up queue
-    setShowSpeedUpModal(false); // Close the speed-up modal
+    setInSpeedUpQueue(true); 
+    setShowSpeedUpModal(false); 
   };
 
   return (
@@ -85,12 +92,7 @@ const FindTournament = ({ logout }) => {
       }}
     >
       {/* Navbar */}
-      <Box
-        sx={{
-          flexShrink: 0, 
-          zIndex: 100,
-        }}
-      >
+      <Box sx={{ flexShrink: 0, zIndex: 100 }}>
         <Navbar logout={logout} />
       </Box>
 
@@ -121,14 +123,7 @@ const FindTournament = ({ logout }) => {
         >
           <Box display="flex" alignItems="center">
             <Box component="img" src={arenaIcon} alt="Arena" sx={{ marginLeft: 3, width: '3vw', marginTop: '1px', marginRight: 1 }} />
-            <Typography
-              className="headerPrimary"
-              sx={{
-                fontSize: '2vw',
-                display: 'inline-flex',
-                alignItems: 'center',
-              }}
-            >
+            <Typography className="headerPrimary" sx={{ fontSize: '1.25em', display: 'inline-flex', alignItems: 'center' }}>
               ARENA
               <Box
                 component="span"
@@ -162,12 +157,12 @@ const FindTournament = ({ logout }) => {
             height={6}
             clickable={false}
           />
-          <Typography className="headerPrimary">
+          <Typography className="headerPrimary" fontSize={'1.25em'}>
             hide on bush
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Box component="img" src={diamondRank} alt="Rank" sx={{ width: '3vh', height: '3vh', marginRight: 1 }} />
-            <Typography className="bodySecondary">
+            <Typography className="bodySecondary" fontSize={'1em'}>
               Diamond I
             </Typography>
           </Box>
@@ -226,53 +221,59 @@ const FindTournament = ({ logout }) => {
           />
         </Box>
 
+        {/* Low Priority Queue and Timer section */}
         {inQueueState && (
-  <Box
-    sx={{
-      position: 'absolute',
-      bottom: '4vh',
-      left: '2vw',
-      display: 'flex',
-      flexDirection: 'column', // Stack elements vertically
-      alignItems: 'flex-start', // Align items to the start
-    }}
-  >
-    {/* FINDING MATCH */}
-    <Typography variant="h6" className='findMatch' sx={{marginBottom:-2.5}}>
-      FINDING MATCH
-    </Typography>
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: '4vh',
+              left: '2vw',
+              display: 'flex',
+              flexDirection: 'column', // Stack elements vertically
+              alignItems: 'flex-start',
+            }}
+          >
+            {/* Low Priority Queue Warning - shows only when in queue */}
+            {showLowPriority && (
+              <LowPriorityQueue/>
+            )}
 
-    {/* Timer with speed-up icon next to it */}
-    <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: -2.5 }}>
-      <Typography variant="h6" className="timer" sx={{ marginRight: '0.5rem' }}>
-        {formatTime(timer)}
-      </Typography>
+            {/* FINDING MATCH */}
+            <Typography variant="h6" className='findMatch' sx={{ marginBottom: -2.5 }}>
+              FINDING MATCH
+            </Typography>
 
-      {/* Show speed-up icon next to timer if user is in the speed-up queue */}
-      {inSpeedUpQueue && (
-        <Box
-          component="img"
-          src={speedupQueueIcon}
-          alt="Speed Up Queue"
-          sx={{ width: '1.5rem', height: '1.5rem', marginLeft: '0.5rem' }} // Adjust icon size and spacing
-        />
-      )}
-    </Box>
+            {/* Timer with speed-up icon next to it */}
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: -2.5 }}>
+              <Typography variant="h6" className="timer" sx={{ marginRight: '0.5rem' }}>
+                {formatTime(timer)}
+              </Typography>
 
-    {/* Estimated Time */}
-    <Typography className='estimated' sx={{ color: "#0AC1DC", marginTop: '0.5rem' }}>
-      Estimated: 1:12
-    </Typography>
+              {/* Show speed-up icon next to timer if user is in the speed-up queue */}
+              {inSpeedUpQueue && (
+                <Box
+                  component="img"
+                  src={speedupQueueIcon}
+                  alt="Speed Up Queue"
+                  sx={{ width: '1.5rem', height: '1.5rem', marginLeft: '0.5rem' }}
+                />
+              )}
+            </Box>
 
-    {/* Speed up modal above the timer */}
-    {showSpeedUpModal && (
-      <SpeedUpModal 
-        show={showSpeedUpModal} 
-        onClose={handleSpeedUpQueue} 
-      />
-    )}
-  </Box>
-)}
+            {/* Estimated Time */}
+            <Typography className='estimated' sx={{ color: "#0AC1DC", marginTop: '0.5rem' }}>
+              Estimated: 1:12
+            </Typography>
+
+            {/* Speed up modal above the timer */}
+            {showSpeedUpModal && (
+              <SpeedUpModal 
+                show={showSpeedUpModal} 
+                onClose={handleSpeedUpQueue} 
+              />
+            )}
+          </Box>
+        )}
 
         {/* Pass the handleChampionSelect function to the modal */}
         <SelectChampionModal open={open} handleClose={handleClose} onChampionSelect={handleChampionSelect} />

@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
-import software.amazon.awssdk.services.sqs.SqsClient; 
 import software.amazon.awssdk.services.dynamodb.model.*;
+import software.amazon.awssdk.services.sqs.model.*;
 
 import java.util.*;
 
@@ -17,11 +17,14 @@ public class PenaltyService {
     @Autowired
     private DynamoDbClient dynamoDbClient;
 
+    private final SqsService sqsService;
+
     @Autowired
-    private SqsClient sqsClient;
+    public PenaltyService(SqsService sqsService) {
+        this.sqsService = sqsService;
+    }
 
     private static final String PLAYERS_TABLE = "Players";
-    private static final String SQS_QUEUE_URL = "https://sqs.ap-southeast-1.amazonaws.com/your_account_id/your_queue_name"; // Update with actual SQS URL
     private static final Logger logger = LoggerFactory.getLogger(PenaltyService.class);
 
     // Constant for base ban duration in seconds
@@ -64,8 +67,7 @@ public class PenaltyService {
         // Add 60 seconds for each previous ban
         int dynamicDuration = BASE_BAN_DURATION_IN_SECONDS + (banCount * 60); 
 
-        // Calculate ban end time
-        // Convert seconds to milliseconds
+        // Calculate ban end time - convert seconds to milliseconds
         long banEndTime = System.currentTimeMillis() + (dynamicDuration * 1000); 
 
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
@@ -103,15 +105,16 @@ public class PenaltyService {
     // Check player status and return remaining ban time if banned
     public Map<String, Object> checkPlayerStatus(String playerName) {
 
-        // Get Players
+        // Get Player details from database
         Map<String, AttributeValue> player = getPlayerDetails(playerName);
         Map<String, Object> status = new HashMap<>();
 
-        if (player != null) {
+        if (player != null && player.containsKey("playerName") && player.containsKey("queueStatus") && player.containsKey("banUntil")) {
+            // Safely retrieve fields from player map
             status.put("playerName", player.get("playerName").s());
             status.put("queueStatus", player.get("queueStatus").s());
             long banUntil = Long.parseLong(player.get("banUntil").n());
-
+    
             // Check if the player is still banned
             if (banUntil > System.currentTimeMillis()) {
                 // Calculate remaining ban time
@@ -121,10 +124,10 @@ public class PenaltyService {
                 status.put("remainingTime", 0); // Not banned
             }
         } else {
-            logger.warn("Player {} not found", playerName);
+            // Log a warning and return an error if the player data is incomplete or missing
+            logger.warn("Player {} not found or missing required fields", playerName);
             status.put("error", "Player not found");
         }
-
         return status;
     }
 
@@ -185,58 +188,18 @@ public class PenaltyService {
         dynamoDbClient.updateItem(updateRequest);
         logger.info("Updated player {} status to {}", playerName, queueStatus);
     }
-    
-    // Method to handle SQS message processing
-    public void processSqsMessages() {
-        ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-                .queueUrl(SQS_QUEUE_URL)
-                .maxNumberOfMessages(10)
-                .waitTimeSeconds(20)
+
+    // Send a message to the Penalty Queue
+    public void sendMessageToPenaltyQueue(String messageBody, Map<String, MessageAttributeValue> messageAttributes) {
+        SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
+                .queueUrl(sqsService.getPenaltyQueueUrl())
+                .messageBody(messageBody)
+                .messageAttributes(messageAttributes)
+                .messageGroupId("PenaltyServiceGroup") // Required for FIFO queues
+                .messageDeduplicationId(String.valueOf(messageBody.hashCode())) // Ensures unique messages in FIFO
                 .build();
 
-        // Receive messages from the SQS queue
-        List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
-
-        for (Message message : messages) {
-            String body = message.body();
-
-            // Parse the SQS message body and get player data
-            Map<String, Object> playerData = parseMessage(body);
-            String email = (String) playerData.get("email");
-            String playerName = (String) playerData.get("playerName");
-            String queueStatus = (String) playerData.get("queueStatus");
-
-            // Add player to the matchmaking pool and handle any exceptions
-            try {
-                addPlayerToPool(playerName, email, queueStatus);
-                logger.info("Successfully added player {} to the pool from SQS message.", playerName);
-            } catch (Exception e) {
-                logger.error("Error adding player {} to the pool from SQS message: {}", playerName, e.getMessage());
-                continue; // Skip this message and proceed to the next
-            }
-
-            // Delete the message from the queue after processing
-            DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
-                    .queueUrl(SQS_QUEUE_URL)
-                    .receiptHandle(message.receiptHandle())
-                    .build();
-
-            try {
-                sqsClient.deleteMessage(deleteMessageRequest);
-                logger.info("Deleted message for player {} from the SQS queue.", playerName);
-            } catch (Exception e) {
-                logger.error("Failed to delete message for player {}: {}", playerName, e.getMessage());
-            }
-        }
-    }
-
-    private Map<String, Object> parseMessage(String body) {
-        // Parse the SQS message body and return player data as a map
-        // You can replace this with JSON deserialization in a real-world case
-        Map<String, Object> playerData = new HashMap<>();
-        playerData.put("email", "player1@example.com"); // Replace with actual parsing
-        playerData.put("playerName", "Player1"); // Replace with actual parsing
-        playerData.put("queueStatus", "queue"); // Replace with actual parsing
-        return playerData;
+        SendMessageResponse response = sqsService.getSqsClient().sendMessage(sendMsgRequest);
+        System.out.println("Message sent to Penalty Queue with MessageId: " + response.messageId());
     }
 }

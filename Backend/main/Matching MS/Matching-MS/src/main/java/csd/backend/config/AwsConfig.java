@@ -13,7 +13,7 @@ public class AwsConfig {
 
     private final String accessKey = "AKIA5G2VGHWTNA65RHNJ"; 
     private final String secretKey = "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"; 
-    private final String region = "ap-southeast-1";  
+    private final String region = "AP_SOUTHEAST_1";  
 
     @Bean
     public DynamoDbClient dynamoDbClient() {

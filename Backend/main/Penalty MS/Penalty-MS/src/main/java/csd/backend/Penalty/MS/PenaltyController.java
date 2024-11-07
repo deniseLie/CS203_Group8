@@ -22,7 +22,7 @@ public class PenaltyController {
         logger.info("Received request to ban player: {}, Duration: {} minutes", playerName);
         try {
             penaltyService.banPlayer(playerName);
-            return "Player banned successfully for ";
+            return "Player banned successfully";
         } catch (Exception e) {
             logger.error("Error occurred while banning player: {}", playerName, e);
             return "Error banning player.";
@@ -34,19 +34,5 @@ public class PenaltyController {
     public Map<String, Object> checkPlayerStatus(@RequestParam String playerName) {
         logger.info("Checking status for player: {}", playerName);
         return penaltyService.checkPlayerStatus(playerName);
-    }
-
-    // Endpoint to trigger SQS processing manually (for testing)
-    @PostMapping("/processSqs")
-    public String processSqsMessages() {
-        logger.info("Processing SQS messages...");
-        try {
-            penaltyService.processSqsMessages();
-            logger.info("SQS Messages processed successfully.");
-            return "SQS Messages processed!";
-        } catch (Exception e) {
-            logger.error("Error occurred while processing SQS messages", e);
-            return "Error processing SQS messages.";
-        }
     }
 }

@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Penalty.MS;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +18,11 @@ public class PenaltyController {
 
     // API endpoint to ban a player for a specified duration
     @PostMapping("/ban")
-    public String banPlayer(@RequestParam String playerName, @RequestParam int duration) {
-        logger.info("Received request to ban player: {}, Duration: {} minutes", playerName, duration);
+    public String banPlayer(@RequestParam String playerName) {
+        logger.info("Received request to ban player: {}, Duration: {} minutes", playerName);
         try {
-            penaltyService.banPlayer(playerName, duration);
-            return "Player banned successfully for " + duration + " minutes.";
+            penaltyService.banPlayer(playerName);
+            return "Player banned successfully for ";
         } catch (Exception e) {
             logger.error("Error occurred while banning player: {}", playerName, e);
             return "Error banning player.";
@@ -41,7 +41,7 @@ public class PenaltyController {
     public String processSqsMessages() {
         logger.info("Processing SQS messages...");
         try {
-            matchmakingService.processSqsMessages();
+            penaltyService.processSqsMessages();
             logger.info("SQS Messages processed successfully.");
             return "SQS Messages processed!";
         } catch (Exception e) {

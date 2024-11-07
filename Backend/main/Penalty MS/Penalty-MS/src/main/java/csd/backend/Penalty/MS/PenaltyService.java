@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Penalty.MS;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+import software.amazon.awssdk.services.sqs.SqsClient; 
 import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.*;
@@ -16,7 +17,11 @@ public class PenaltyService {
     @Autowired
     private DynamoDbClient dynamoDbClient;
 
+    @Autowired
+    private SqsClient sqsClient;
+
     private static final String PLAYERS_TABLE = "Players";
+    private static final String SQS_QUEUE_URL = "https://sqs.ap-southeast-1.amazonaws.com/your_account_id/your_queue_name"; // Update with actual SQS URL
     private static final Logger logger = LoggerFactory.getLogger(PenaltyService.class);
 
     // Constant for base ban duration in seconds
@@ -29,7 +34,7 @@ public class PenaltyService {
         item.put("email", AttributeValue.builder().s(email).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("banUntil", AttributeValue.builder().n("0").build());
-        item.put("banCount", AttributeValue.builder().n("0").build()); // Initialize ban count
+        item.put("banCount", AttributeValue.builder().n("0").build());
 
         PutItemRequest putItemRequest = PutItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
@@ -161,5 +166,77 @@ public class PenaltyService {
 
         GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
         return getItemResponse.item();
+    }
+
+    // Update player's status
+    public void updatePlayerStatus(String playerName, String queueStatus) {
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+        updates.put("queueStatus", AttributeValueUpdate.builder()
+                .value(AttributeValue.builder().s(queueStatus).build())
+                .action(AttributeAction.PUT)
+                .build());
+
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+                .attributeUpdates(updates)
+                .build();
+
+        dynamoDbClient.updateItem(updateRequest);
+        logger.info("Updated player {} status to {}", playerName, queueStatus);
+    }
+    
+    // Method to handle SQS message processing
+    public void processSqsMessages() {
+        ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
+                .queueUrl(SQS_QUEUE_URL)
+                .maxNumberOfMessages(10)
+                .waitTimeSeconds(20)
+                .build();
+
+        // Receive messages from the SQS queue
+        List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
+
+        for (Message message : messages) {
+            String body = message.body();
+
+            // Parse the SQS message body and get player data
+            Map<String, Object> playerData = parseMessage(body);
+            String email = (String) playerData.get("email");
+            String playerName = (String) playerData.get("playerName");
+            String queueStatus = (String) playerData.get("queueStatus");
+
+            // Add player to the matchmaking pool and handle any exceptions
+            try {
+                addPlayerToPool(playerName, email, queueStatus);
+                logger.info("Successfully added player {} to the pool from SQS message.", playerName);
+            } catch (Exception e) {
+                logger.error("Error adding player {} to the pool from SQS message: {}", playerName, e.getMessage());
+                continue; // Skip this message and proceed to the next
+            }
+
+            // Delete the message from the queue after processing
+            DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
+                    .queueUrl(SQS_QUEUE_URL)
+                    .receiptHandle(message.receiptHandle())
+                    .build();
+
+            try {
+                sqsClient.deleteMessage(deleteMessageRequest);
+                logger.info("Deleted message for player {} from the SQS queue.", playerName);
+            } catch (Exception e) {
+                logger.error("Failed to delete message for player {}: {}", playerName, e.getMessage());
+            }
+        }
+    }
+
+    private Map<String, Object> parseMessage(String body) {
+        // Parse the SQS message body and return player data as a map
+        // You can replace this with JSON deserialization in a real-world case
+        Map<String, Object> playerData = new HashMap<>();
+        playerData.put("email", "player1@example.com"); // Replace with actual parsing
+        playerData.put("playerName", "Player1"); // Replace with actual parsing
+        playerData.put("queueStatus", "queue"); // Replace with actual parsing
+        return playerData;
     }
 }

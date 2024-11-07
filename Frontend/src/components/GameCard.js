@@ -1,45 +1,167 @@
-import React from 'react';
-import { Box, Typography, Avatar } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Collapse, List, ListItem, ListItemText, Avatar, Divider } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import PlayerIcon from './PlayerIcon';
+import profilePic from '../assets/4895.jpg'
+function GameCard({ players, currentPlayer }) {
+  const [open, setOpen] = useState(false); // State to control dropdown visibility
 
-function GameCard({ rank, champion, kda, lpChange, time }) {
+  // Get current player's data
+  const currentPlayerData = players.find(player => player.playerName === currentPlayer);
+
   return (
     <Box 
       display="flex" 
-      alignItems="center" 
-      justifyContent="space-between" 
+      flexDirection="column"
       sx={{ 
         position: 'relative',
-        padding: 1,
-        '&:before, &:after': {
-          content: '""',
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          height: '1px',
-          background: 'linear-gradient(to right, transparent, rgba(100, 100, 100, 0.8), rgba(100, 100, 100, 1), rgba(100, 100, 100, 0.8), transparent)', // Darker gray
-        },
-        '&:before': {
-          top: 0,  // Top border
-        },
-        '&:after': {
-          bottom: 0,  // Bottom border
-        },
+        padding:1,
+        cursor: 'pointer',
+        paddingBottom:3,
+        borderBottom:1,
+        borderBottomColor:"#464F4D",
+        justifyContent:'center',
+        alignContent:'center'
       }}
+      onClick={() => setOpen(!open)} // Toggle dropdown on click
     >
-      <Box display="flex" alignItems="center">
-        <Typography variant="h6" sx={{ color: rank === 1 ? '#ffd700' : '#fff', fontWeight: 'bold' }}>
-          {rank === 1 ? '1ST' : `${rank}TH`}
+    <Box display="flex" justifyContent="space-between" alignItems="center" flexDirection={'row'} width="100%">
+  <Box display="flex" alignItems="center">
+    {/* Standing */}
+    <Typography className="headerPrimary" sx={{ marginRight: 2, fontSize: '1.5em', color: '#fff', fontWeight: 'bold', minWidth:'5vw'}}>
+      {currentPlayerData ? currentPlayerData.standing : ''}
+    </Typography>
+
+    {/* Champion Icon */}
+    {currentPlayerData && (
+      <Box
+        sx={{
+          width: 50,
+          height: 50,
+          mr: 1,
+          backgroundImage: `url(${require(`../assets/champions/${currentPlayerData.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          
+        }}
+      />
+    )}
+
+    {/* Champion Name */}
+    <Box sx={{minWidth:'12vw'}}>
+
+    <Typography className="headerPrimary" sx={{ color: '#fff', marginRight: 2}}>
+      {currentPlayerData ? currentPlayerData.champion : ''}
+    </Typography>
+    </Box>
+
+    {/* Divider */}
+    <Divider orientation="vertical" sx={{ bgcolor: '#464F4D', height: '4vw', width:'0.05vw', margin: '0 10px', alignSelf:'center' }}  flexItem />
+
+    {/* KDA */}
+    <Box display={'flex'} minWidth={'10vw'} flexDirection={'column'} alignItems={'center'}>
+    <Typography className="headerPrimary" sx={{ color: currentPlayerData && currentPlayerData.kd ? '#fff' : '#dc3545', fontWeight: 'bold', marginLeft:2 }}>
+      {currentPlayerData ? `${currentPlayerData.kd}` : ''}
+    </Typography>
+
+    <Typography className="bodyPrimary"  sx={{ color: currentPlayerData && currentPlayerData.kd ? '#fff' : '#dc3545', fontWeight: 'bold', marginLeft:2 }}>
+      {currentPlayerData ? `${currentPlayerData.kda}` : ''}
+    </Typography>
+
+    </Box>
+
+    {/* match time */}
+    <Typography className="bodySecondary" minWidth={'5vw'} sx={{ color: currentPlayerData && currentPlayerData.kd ? '#fff' : '#dc3545', fontWeight: 'bold', marginLeft:2 }}>
+      31:25
+    </Typography>
+
+    
+    {/* date */}
+    <Typography className="bodySecondary" minWidth={'8vw'} sx={{ color: currentPlayerData && currentPlayerData.kd ? '#fff' : '#dc3545', fontWeight: 'bold', marginLeft:2 }}>
+      8/11/2024
+    </Typography>
+  </Box>
+  <ExpandMoreIcon
+          sx={{
+            color: '#fff',
+            fontSize: '2em',
+            transition: 'transform 0.3s ease',
+            transform: open ? 'rotate(-180deg)' : 'rotate(0deg)',
+          }}
+        />
+</Box>
+
+      {/* Dropdown Player List */}
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <Box sx={{ marginTop:3, marginLeft:2, borderRadius: 1, borderTop:1 , borderTopColor:'#464F4D'}}>
+        <List>
+  {players.map((player, index) => (
+    <ListItem key={index} sx={{ padding: 0, display: 'flex', alignItems: 'center' }}>
+      
+      {/* Standing */}
+      <Typography
+        className='headerPrimary'
+        sx={{ width: '40px', marginRight: 2, color: player.playerName === currentPlayer ? '#FFD700' : '#fff' }}
+      >
+        {player.standing}
+      </Typography>
+      
+      {/* Champion Icon */}
+      <Box
+        sx={{
+          width: 40,
+          height: 40,
+          mr: 2,
+          backgroundImage: `url(${require(`../assets/champions/${player.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderLeft: player.playerName === currentPlayer ? '5px solid #D8A13A' : 'none',
+        }}
+      />
+      {/* Player Name */}
+      <Typography
+        className='headerPrimary'
+        sx={{
+          minWidth: '120px', // Adjust this width as needed
+          color: player.playerName === currentPlayer ? '#FFD700' : '#fff',
+          marginRight: 5,
+          marginLeft:2,
+          minWidth:'15vw'
+        }}
+      >
+        {player.champion}
+      </Typography>
+      <PlayerIcon src={profilePic} height={-4} width={-4}/>
+
+      {/* Player Name */}
+      <Typography
+        className='headerPrimary'
+        sx={{
+          minWidth: '120px', // Adjust this width as needed
+          color: player.playerName === currentPlayer ? '#FFD700' : '#fff',
+          marginRight: 5,
+          marginLeft:2,
+          minWidth:'15vw'
+        }}
+      >
+        {player.playerName}
+      </Typography>
+
+      {/* KDA Alignment Container */}
+      <Box display="flex" alignSelf={'center'} flexDirection={'column'} justifyContent={'center'} sx={{ minWidth: '100px', textAlign: 'right' }}>
+        <Typography className='headerPrimary' sx={{ width: '40px', textAlign: 'right', color: player.playerName === currentPlayer ? '#FFD700' : '#fff' }}>
+          {player.kd}
         </Typography>
-        <Avatar src={champion.image} alt={champion.name} sx={{ marginLeft: 2, width: 50, height: 50 }} />
-        <Typography sx={{ marginLeft: 2, color: '#fff', fontWeight: 'bold' }}>{champion.name}</Typography>
-      </Box>
-      <Box display="flex" alignItems="center">
-        <Typography sx={{ color: lpChange > 0 ? '#28a745' : '#dc3545', fontWeight: 'bold', marginRight: 2 }}>
-          {lpChange > 0 ? `+${lpChange} LP` : `${lpChange} LP`}
+        <Typography className='headerPrimary' sx={{ width: '60px', textAlign: 'center', fontSize: '0.8em' }}>
+          {player.kda}
         </Typography>
-        <Typography sx={{ color: '#fff' }}>{kda} KDA</Typography>
-        <Typography sx={{ marginLeft: 2, color: '#bbb' }}>{time}</Typography>
       </Box>
+    </ListItem>
+  ))}
+</List>
+
+        </Box>
+      </Collapse>
     </Box>
   );
 }

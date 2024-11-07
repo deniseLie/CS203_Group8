@@ -124,7 +124,7 @@ const FindTournament = ({ logout }) => {
             <Typography
               className="headerPrimary"
               sx={{
-                fontSize: '2vw',
+                fontSize: '1.5vw',
                 display: 'inline-flex',
                 alignItems: 'center',
               }}

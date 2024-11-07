@@ -17,10 +17,10 @@ const Sidebar = () => {
       setActivePage('Ongoing');
     } else if (path.includes('tournaments/completed')) {
       setActivePage('Completed');
-    } else if (path.includes('matches/ongoing')) {
-      setActivePage('Matches Ongoing');
-    } else if (path.includes('matches/completed')) {
-      setActivePage('Matches Completed');
+    } else if (path.includes('tournaments/configure')) {
+        setActivePage('Configure');
+    } else if (path.includes('tournaments/add')) {
+        setActivePage('Add');
     } else if (path.includes('players/dataset')) {
       setActivePage('Dataset');
     } else if (path.includes('players/leaderboards')) {
@@ -54,7 +54,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Tournaments"
           icon={<SportsEsports />}
-          subItems={['Ongoing', 'Completed']}
+          subItems={['Ongoing', 'Completed', 'Configure', 'Add']}
           isOpen={openMenus['Tournaments']}
           onToggle={() => handleToggle('Tournaments')}
           onClick={(subPage) => {

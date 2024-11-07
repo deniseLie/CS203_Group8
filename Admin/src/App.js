@@ -8,6 +8,8 @@ import OngoingTournamentsPage from './pages/Tournaments/OngoingTournamentsPage';
 import CompletedTournamentsPage from './pages/Tournaments/CompletedTournamentsPage';
 import PlayerDatasetPage from './pages/Players/Dataset';
 import LeaderboardsPage from './pages/Players/Leaderboards';
+import ConfigureTournamentPage from './pages/Tournaments/ConfigureTournamentPage';
+import AddTournamentPage from './pages/Tournaments/AddTournamentPage';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/tournaments/ongoing" element={<OngoingTournamentsPage />} />
         <Route path="/tournaments/completed" element={<CompletedTournamentsPage />} />
+        <Route path="/tournaments/configure" element={<ConfigureTournamentPage />} />
+        <Route path="/tournaments/add" element={<AddTournamentPage />} />
         <Route path="/players/dataset" element={<PlayerDatasetPage />} />
         <Route path="/players/leaderboards" element={<LeaderboardsPage />} />
         {/* <Route path="*" element={<NotFound />} /> */}

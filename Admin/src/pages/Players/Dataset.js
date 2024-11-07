@@ -6,30 +6,11 @@ import FilterBar from '../../components/FilterBar'; // Ensure this is imported i
 import PlayerTable from '../../components/PlayerTable';
 
 const PlayerDatasetPage = () => {
+  // Example data for the leaderboard
   const playerData = [
-    {
-      id: "#9093",
-      username: "Daniel Park",
-      elo: 2563,
-      rankIcon: '/path/to/rank_icon.png', // replace with your rank image source
-      avgPlace: 2.13,
-      firstPlacePercentage: '61.7%',
-      avgKdRate: 3.1,
-      totalWins: 34,
-      totalMatchNumber: 68
-    },
-    {
-      id: "#9094", // Changed to a unique ID
-      username: "Jane Doe",
-      elo: 2450,
-      rankIcon: '/path/to/rank_icon.png', // replace with your rank image source
-      avgPlace: 3.00,
-      firstPlacePercentage: '50.0%',
-      avgKdRate: 2.5,
-      totalWins: 20,
-      totalMatchNumber: 50
-    },
-    // Add more unique player objects as needed
+    { id: "#9093", username: "Daniel Park", elo: 2563, totalWins: 34, totalMatches: 68 },
+    { id: "#9094", username: "Jane Doe", elo: 2450, totalWins: 20, totalMatches: 50 },
+    // Add more player data as needed
   ];
 
   return (

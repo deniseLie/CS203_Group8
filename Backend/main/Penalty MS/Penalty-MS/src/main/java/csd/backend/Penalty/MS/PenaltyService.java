@@ -31,9 +31,9 @@ public class PenaltyService {
     private static final int BASE_BAN_DURATION_IN_SECONDS = 300; // 5 minutes
 
     // Add a player to the matchmaking pool
-    public void addPlayerToPool(String playerName, String email, String queueStatus) {
-        Map<String, AttributeValue> item = new HashMap<>();
-        item.put("playerName", AttributeValue.builder().s(playerName).build());
+    public void addPlayerToPool(Integer playerId, String email, String queueStatus) {
+        Map<Integer, AttributeValue> item = new HashMap<>();
+        item.put("playerId", AttributeValue.builder().n(playerId).build());
         item.put("email", AttributeValue.builder().s(email).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("banUntil", AttributeValue.builder().n("0").build());
@@ -45,20 +45,20 @@ public class PenaltyService {
                 .build();
 
         try {
-            logger.info("Attempting to add player {} with item: {}", playerName, item);
+            logger.info("Attempting to add player {} with item: {}", playerId, item);
             dynamoDbClient.putItem(putItemRequest);
-            logger.info("Successfully added player {} to the pool", playerName);
+            logger.info("Successfully added player {} to the pool", playerId);
         } catch (Exception e) {
-            logger.error("Error adding player {} to pool", playerName, e);
+            logger.error("Error adding player {} to pool", playerId, e);
             throw new RuntimeException("Error adding player to pool");
         }
     }
 
     // Ban player for a specified duration based on their ban count
-    public void banPlayer(String playerName) {
+    public void banPlayer(Integer playerId) {
 
         // Retrieve the player's current ban count
-        Map<String, AttributeValue> player = getPlayerDetails(playerName);
+        Map<Integer, AttributeValue> player = getPlayerDetails(playerId);
         int banCount = player != null && player.containsKey("banCount")
                 ? Integer.parseInt(player.get("banCount").n())
                 : 0;
@@ -93,26 +93,26 @@ public class PenaltyService {
         // Prepare and execute the update request
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
                 .attributeUpdates(updates)
                 .build();
 
         // Update in the database
         dynamoDbClient.updateItem(updateRequest);
-        logger.info("Player {} banned for {} seconds (dynamic duration)", playerName, dynamicDuration);
+        logger.info("Player {} banned for {} seconds (dynamic duration)", playerId, dynamicDuration);
     }
 
     // Check player status and return remaining ban time if banned
-    public Map<String, Object> checkPlayerStatus(String playerName) {
+    public Map<Integer, Object> checkPlayerStatus(Integer playerId) {
 
         // Get Player details from database
-        Map<String, AttributeValue> player = getPlayerDetails(playerName);
-        Map<String, Object> status = new HashMap<>();
+        Map<Integer, AttributeValue> player = getPlayerDetails(playerId);
+        Map<Integer, Object> status = new HashMap<>();
 
-        if (player != null && player.containsKey("playerName") && player.containsKey("queueStatus") && player.containsKey("banUntil")) {
+        if (player != null && player.containsKey("playerId") && player.containsKey("queueStatus") && player.containsKey("banUntil")) {
             // Safely retrieve fields from player map
-            status.put("playerName", player.get("playerName").s());
-            status.put("queueStatus", player.get("queueStatus").s());
+            status.put("playerId", player.get("playerId").n());
+            status.put("queueStatus", player.get("queueStatus").n());
             long banUntil = Long.parseLong(player.get("banUntil").n());
     
             // Check if the player is still banned
@@ -125,7 +125,7 @@ public class PenaltyService {
             }
         } else {
             // Log a warning and return an error if the player data is incomplete or missing
-            logger.warn("Player {} not found or missing required fields", playerName);
+            logger.warn("Player {} not found or missing required fields", playerId);
             status.put("error", "Player not found");
         }
         return status;
@@ -145,26 +145,26 @@ public class PenaltyService {
         ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
 
         // Loop through players
-        for (Map<String, AttributeValue> player : scanResponse.items()) {
+        for (Map<Integer, AttributeValue> player : scanResponse.items()) {
 
             // Get the player name and ban until
-            String playerName = player.get("playerName").s();
+            Integer playerId = player.get("playerId").n();
             long banUntil = Long.parseLong(player.get("banUntil").n());
 
             // Check if the ban has expired
             if (banUntil <= System.currentTimeMillis()) {
-                updatePlayerStatus(playerName, "available"); // Change status to available
-                logger.info("Player {} has been unbanned and is now available", playerName);
+                updatePlayerStatus(playerId, "available"); // Change status to available
+                logger.info("Player {} has been unbanned and is now available", playerId);
             }
         }
     }
 
     // Retrieve player details from the database
-    private Map<String, AttributeValue> getPlayerDetails(String playerName) {
+    private Map<Integer, AttributeValue> getPlayerDetails(Integer playerId) {
         // Get player details
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
                 .build();
 
         GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
@@ -172,8 +172,8 @@ public class PenaltyService {
     }
 
     // Update player's status
-    public void updatePlayerStatus(String playerName, String queueStatus) {
-        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+    public void updatePlayerStatus(Integer playerId, String queueStatus) {
+        Map<Integer, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("queueStatus", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder().s(queueStatus).build())
                 .action(AttributeAction.PUT)
@@ -181,12 +181,12 @@ public class PenaltyService {
 
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
                 .attributeUpdates(updates)
                 .build();
 
         dynamoDbClient.updateItem(updateRequest);
-        logger.info("Updated player {} status to {}", playerName, queueStatus);
+        logger.info("Updated player {} status to {}", playerId, queueStatus);
     }
 
     // Send a message to the Penalty Queue

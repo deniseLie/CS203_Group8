@@ -18,21 +18,21 @@ public class PenaltyController {
 
     // API endpoint to ban a player for a specified duration
     @PostMapping("/ban")
-    public String banPlayer(@RequestParam String playerName) {
-        logger.info("Received request to ban player: {}, Duration: {} minutes", playerName);
+    public String banPlayer(@RequestParam Integer playerId) {
+        logger.info("Received request to ban player: {}, Duration: {} minutes", playerId);
         try {
-            penaltyService.banPlayer(playerName);
+            penaltyService.banPlayer(playerId);
             return "Player banned successfully";
         } catch (Exception e) {
-            logger.error("Error occurred while banning player: {}", playerName, e);
+            logger.error("Error occurred while banning player: {}", playerId, e);
             return "Error banning player.";
         }
     }
 
     // API endpoint to check the status of a player
     @GetMapping("/check-status")
-    public Map<String, Object> checkPlayerStatus(@RequestParam String playerName) {
-        logger.info("Checking status for player: {}", playerName);
-        return penaltyService.checkPlayerStatus(playerName);
+    public Map<String, Object> checkPlayerStatus(@RequestParam Integer playerId) {
+        logger.info("Checking status for player: {}", playerId);
+        return penaltyService.checkPlayerStatus(playerId);
     }
 }

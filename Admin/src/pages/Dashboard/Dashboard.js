@@ -1,10 +1,11 @@
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
-import Sidebar from '../components/Sidebar';
-import TopBar from '../components/TopBar';
-import DashboardCard from '../components/DashboardCard';
-import RecentTournaments from '../components/RecentTournaments';
+import { Box, Typography, Stack, Button } from '@mui/material';
+import Sidebar from '../../components/Sidebar';
+import TopBar from '../../components/TopBar';
+import DashboardCard from '../../components/DashboardCard';
+import RecentTournaments from '../../components/RecentTournaments';
 import { Dashboard, SportsEsports, People } from '@mui/icons-material';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const DashboardPage = () => {
   return (
@@ -18,14 +19,18 @@ const DashboardPage = () => {
         <TopBar />
 
         {/* Dashboard Content */}
-        <Typography variant="h4" sx={{ mb: 2 }}>
-          Dashboard
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+          <Typography variant="h4">Dashboard</Typography>
+          <Button variant="contained" color="primary" sx={{ backgroundColor: '#1976d2' }}>
+            Create New Project
+          </Button>
+        </Box>
+        
         <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
           <DashboardCard title="Tournaments" count="19" subCount="2 Ongoing" icon={<Dashboard />} />
           <DashboardCard title="Matches" count="132" subCount="14 Ongoing" icon={<SportsEsports />} />
           <DashboardCard title="Players" count="238" subCount="45 Online" icon={<People />} />
-          <DashboardCard title="Top Players" content={['Faker - 100%', 'KylieHill - 87.6%', 'TonyStark - 79.2%']} />
+          <DashboardCard title="Top Players" content={['Faker - 100%', 'KylieHill - 87.6%', 'TonyStark - 79.2%']} icon={<EmojiEventsIcon />} />
         </Stack>
 
         {/* Most Recent Tournaments Table */}

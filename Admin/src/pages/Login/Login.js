@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Avatar, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import logo from '../assets/logo.png'; // Import the logo image
+import logo from '../../assets/logo.png'; // Import the logo image
 
 const Login = () => {
   const [username, setUsername] = useState('');

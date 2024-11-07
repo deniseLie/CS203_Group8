@@ -9,9 +9,7 @@ import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MatchmakingService {
@@ -24,7 +22,7 @@ public class MatchmakingService {
 
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final String SQS_QUEUE_URL = "https://sqs.us-east-1.amazonaws.com/YOUR_ACCOUNT_ID/your-queue";
+    private static final String SQS_QUEUE_URL = "https://sqs.ap-southeast-1.amazonaws.com/908027379110/Message_Bus.fifo";
     private static final int MAX_PLAYERS = 8;
 
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
@@ -53,8 +51,25 @@ public class MatchmakingService {
         }
     }
 
-    // Check if there are enough players in the pool to start a match
-    public List<Map<String, AttributeValue>> checkPlayersInQueue(int rankId) {
+    // Check Match : Enough Players with same rankId
+    public boolean checkForMatch(int rankId) {
+
+        // Get players queueing + same rankId
+        List<Map<String, AttributeValue>> players = checkPlayersInQueue(rankId);
+
+        // check do we have enough players
+        if (players.size() >= MAX_PLAYERS) {
+
+            // Take the first MAX_PLAYERS players and create a match
+            List<Map<String, AttributeValue>> playersToMatch = players.subList(0, MAX_PLAYERS);
+            createMatch(playersToMatch);
+            return true;
+        }
+        return false;
+    }
+
+    // Get Queueing players with the same rankId
+    private List<Map<String, AttributeValue>> checkPlayersInQueue(int rankId) {
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(PLAYERS_TABLE)
                 .filterExpression("queueStatus = :queueStatus and rankId = :rankId")
@@ -89,23 +104,45 @@ public class MatchmakingService {
         }
     }
 
-    // Create a new match with 8 players
-    public void createMatch(List<Map<String, AttributeValue>> players) {
+    // Update player's queue status in database
+    public void updatePlayerStatus(String playerName, String queueStatus) {
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+
+        updates.put("queueStatus", AttributeValueUpdate.builder()
+            .value(AttributeValue.builder().s(queueStatus).build())
+            .action(AttributeAction.PUT)
+            .build());
+
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+            .tableName(PLAYERS_TABLE)
+            .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+            .attributeUpdates(updates)
+            .build();
+        
+        dynamoDbClient.updateItem(updateRequest);
+        logger.info("Updated player status to '{}' for player: {}", queueStatus, playerName);
+    }
+
+    // Create a new match with players from the database
+    private void createMatch(List<Map<String, AttributeValue>> players) {
         Map<String, AttributeValue> matchItem = new HashMap<>();
-        matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // matchId as timestamp
-
-        // Add player emails to the match
-        List<AttributeValue> playerList = players.stream()
-                .map(player -> AttributeValue.builder().s(player.get("playerName").s()).build())
-                .toList();
-
+        matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // Use timestamp as matchId
+    
+        // Add player names to the match and update their queue status
+        List<AttributeValue> playerList = new ArrayList<>();
+        for (Map<String, AttributeValue> player : players) {
+            String playerName = player.get("playerName").s();
+            playerList.add(AttributeValue.builder().s(playerName).build());
+            updatePlayerStatus(playerName, "unqueue");  
+        }
+    
         matchItem.put("players", AttributeValue.builder().l(playerList).build());
-
+    
         PutItemRequest matchRequest = PutItemRequest.builder()
                 .tableName(MATCHES_TABLE)
                 .item(matchItem)
                 .build();
-
+    
         try {
             dynamoDbClient.putItem(matchRequest);
             logger.info("Match created successfully with players: {}", players);
@@ -113,6 +150,17 @@ public class MatchmakingService {
             logger.error("Error creating match", e);
             throw new RuntimeException("Error creating match");
         }
+    }
+
+    // Method to retrieve player details from the database
+    private Map<String, AttributeValue> getPlayerDetails(String playerName) {
+        GetItemRequest getItemRequest = GetItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerName", AttributeValue.builder().s(playerName).build())) // Use primary key to retrieve player
+                .build();
+
+        GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
+        return getItemResponse.item(); // Return the player details if found
     }
 
     // Method to handle SQS message processing

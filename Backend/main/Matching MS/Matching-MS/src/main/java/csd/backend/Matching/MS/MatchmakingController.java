@@ -22,27 +22,32 @@ public class MatchmakingController {
     private MatchmakingService matchmakingService;
 
     @PostMapping("/join")
-    public String joinMatchmaking(@RequestParam String playerName, @RequestParam String email) {
-        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerName, email);
-        int rankId = 1;
+    public String joinMatchmaking(@RequestParam String playerName, @RequestParam String rank) {
+        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerName, rank);
+        int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
+        int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
+        int rankId = Integer.parseInt(rank);  // Parse rankId to integer if needed
+
         try {
-            // Add player to matchmaking pool
-            matchmakingService.addPlayerToPool(playerName, email, "queue", rankId);
-            logger.info("Player added to matchmaking pool. Player: {}", playerName);
+            // Queue Player 
+            matchmakingService.updatePlayerStatus(playerName, "queue");
+            logger.info("Player status updated to 'queue'. Player: {}", playerName);
 
-            // Check if enough players are available for a match
-            List<Map<String, AttributeValue>> players = matchmakingService.checkPlayersInQueue(rankId);
+            for (int attempt = 0; attempt < maxAttempts; attempt++) {
 
-            if (players.size() >= 8) {
-                // If enough players, create a match and remove them from the queue
-                matchmakingService.createMatch(players);
-                matchmakingService.removePlayersFromQueue(players);
-                logger.info("Match created with players: {}", players);
-                return "Match started with players: " + players;
+                if (matchmakingService.checkForMatch(rankId)) {
+                    logger.info("Match successfully created for rank: {}", rankId);
+                    return "Match created successfully.";
+                }
+
+                // Log and wait before the next check
+                logger.info("Not enough players to start a match. Retrying in {} ms...", checkInterval);
+                Thread.sleep(checkInterval);
             }
 
-            logger.info("Not enough players to start a match. Current pool size: {}", players.size());
-            return "Waiting for more players ... Current pool size: " + players.size();
+            // If the max attempts are reached without finding a match, return a timeout message
+            logger.info("Max attempts reached without finding a match for player: {}", playerName);
+            return "Timeout: Unable to find enough players to start a match.";
         } catch (Exception e) {
             logger.error("Error occurred while processing join matchmaking request for player: {}", playerName, e);
             return "Error joining matchmaking.";

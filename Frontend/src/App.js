@@ -47,11 +47,16 @@ function App() {
           <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
           <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
           <Route path="/postgame" element={isAuthenticated ? <PostGame   logout={logout} /> : <Navigate to="/login" />} />
-          <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} />
+          {/* <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} /> */}
+          <Route path="/history" element={<History />} />
           <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket logout={logout} /> : <Navigate to="/login" />} />
-          <Route
+          {/* <Route
             path="/leaderboard"
             element={isAuthenticated ? <Leaderboard /> : <Navigate to="/login" />}
+          /> */}
+          <Route
+            path="/leaderboard"
+            element={<Leaderboard />}
           />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

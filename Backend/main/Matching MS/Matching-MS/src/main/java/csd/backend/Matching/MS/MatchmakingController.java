@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class MatchmakingController {
 
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingController.class);
-    
+
     @Autowired
     private MatchmakingService matchmakingService;
 
@@ -45,6 +45,38 @@ public class MatchmakingController {
             return "Waiting for more players ... Current pool size: " + players.size();
         } catch (Exception e) {
             logger.error("Error occurred while processing join matchmaking request for player: {}", playerName, e);
+            return "Error joining matchmaking.";
+        }
+    }
+
+    @PostMapping("/join/speedupQueue")
+    public String joinSpeedUpMatchmaking(@RequestParam String playerName, @RequestParam String email,
+            @RequestParam int rankId) {
+        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerName, email);
+        try {
+            // Add player to matchmaking pool
+            matchmakingService.addPlayerToPool(playerName, email, "queue", rankId);
+            logger.info("Player added to matchmaking pool. Player: {}", playerName);
+
+            // Check if enough players are available for a match
+            List<Map<String, AttributeValue>> players = matchmakingService.checkPlayersInSpeedUpQueue(rankId);
+
+            if (players.size() >= 8) {
+                // If enough players, create a match and remove them from the queue
+                matchmakingService.createMatch(players);
+                matchmakingService.removePlayersFromQueue(players);
+                logger.info("Match created with players of rank range {} to {}: {}", rankId - 1, rankId + 1, players);
+                return "Match started with players of rank range " + (rankId - 1) + " to " + (rankId + 1) + ": "
+                        + players;
+            }
+
+            logger.info("Not enough players to start a match for rank range {} to {}. Current pool size: {}",
+                    rankId - 1, rankId + 1, players.size());
+            return "Waiting for more players of rank range " + (rankId - 1) + " to " + (rankId + 1)
+                    + " ... Current pool size: " + players.size();
+        } catch (Exception e) {
+            logger.error("Error occurred while processing join matchmaking request for player: {}, Rank: {}",
+                    playerName, rankId, e);
             return "Error joining matchmaking.";
         }
     }

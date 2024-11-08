@@ -33,7 +33,7 @@ public class MatchmakingService {
     public void addPlayerToPool(String playerName, String email, String queueStatus, int rankId) {
 
         Map<String, AttributeValue> item = new HashMap<>();
-        item.put("playerName", AttributeValue.builder().s(playerName).build()); 
+        item.put("playerName", AttributeValue.builder().s(playerName).build());
         item.put("email", AttributeValue.builder().s(email).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("rankId", AttributeValue.builder().n(String.valueOf(rankId)).build());
@@ -44,7 +44,7 @@ public class MatchmakingService {
                 .build();
 
         try {
-            logger.info("Attempting to add player {} with item: {}", playerName, item); 
+            logger.info("Attempting to add player {} with item: {}", playerName, item);
             dynamoDbClient.putItem(putItemRequest);
             logger.info("Successfully added player {} to the pool", playerName);
         } catch (Exception e) {
@@ -59,8 +59,23 @@ public class MatchmakingService {
                 .tableName(PLAYERS_TABLE)
                 .filterExpression("queueStatus = :queueStatus and rankId = :rankId")
                 .expressionAttributeValues(Map.of(
-                    ":queueStatus", AttributeValue.builder().s("queue").build(),
-                    ":rankId", AttributeValue.builder().n(String.valueOf(rankId)).build()))
+                        ":queueStatus", AttributeValue.builder().s("queue").build(),
+                        ":rankId", AttributeValue.builder().n(String.valueOf(rankId)).build()))
+                .build();
+
+        ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
+        return scanResponse.items();
+    }
+
+    // Check if there are enough players in the pool to start a match
+    public List<Map<String, AttributeValue>> checkPlayersInSpeedUpQueue(int rankId) {
+        ScanRequest scanRequest = ScanRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .filterExpression("queueStatus = :queueStatus and rankId BETWEEN :minRankId AND :maxRankId")
+                .expressionAttributeValues(Map.of(
+                        ":queueStatus", AttributeValue.builder().s("queue").build(),
+                        ":minRankId", AttributeValue.builder().n(String.valueOf(rankId - 1)).build(),
+                        ":maxRankId", AttributeValue.builder().n(String.valueOf(rankId + 1)).build()))
                 .build();
 
         ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
@@ -72,7 +87,7 @@ public class MatchmakingService {
         for (Map<String, AttributeValue> player : players) {
             String playerName = player.get("playerName").s();
 
-           // Update the player's queueStatus to 'not queue' after they are matched
+            // Update the player's queueStatus to 'not queue' after they are matched
             Map<String, AttributeValueUpdate> updates = new HashMap<>();
             updates.put("queueStatus", AttributeValueUpdate.builder()
                     .value(AttributeValue.builder().s("not queue").build())
@@ -92,7 +107,9 @@ public class MatchmakingService {
     // Create a new match with 8 players
     public void createMatch(List<Map<String, AttributeValue>> players) {
         Map<String, AttributeValue> matchItem = new HashMap<>();
-        matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // matchId as timestamp
+        matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // matchId
+                                                                                                                  // as
+                                                                                                                  // timestamp
 
         // Add player emails to the match
         List<AttributeValue> playerList = players.stream()
@@ -141,7 +158,7 @@ public class MatchmakingService {
             List<Map<String, AttributeValue>> players = checkPlayersInQueue(rank);
             if (players.size() >= MAX_PLAYERS) {
                 createMatch(players);
-                removePlayersFromQueue(players); 
+                removePlayersFromQueue(players);
                 System.out.println("Match created with players: " + players);
             }
 

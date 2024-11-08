@@ -54,17 +54,4 @@ public class MatchmakingController {
         }
     }
 
-    // Endpoint to trigger SQS processing manually (for testing)
-    @PostMapping("/processSqs")
-    public String processSqsMessages() {
-        logger.info("Processing SQS messages...");
-        try {
-            matchmakingService.processSqsMessages();
-            logger.info("SQS Messages processed successfully.");
-            return "SQS Messages processed!";
-        } catch (Exception e) {
-            logger.error("Error occurred while processing SQS messages", e);
-            return "Error processing SQS messages.";
-        }
-    }
 }

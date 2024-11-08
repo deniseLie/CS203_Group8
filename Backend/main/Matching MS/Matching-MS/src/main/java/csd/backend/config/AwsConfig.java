@@ -1,5 +1,6 @@
 package csd.backend.config;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -11,9 +12,11 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 @Configuration
 public class AwsConfig {
 
-    private final String accessKey = "AKIA5G2VGHWTNA65RHNJ"; 
-    private final String secretKey = "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"; 
-    private final String region = "ap-southeast-1";  
+    private final Dotenv dotenv = Dotenv.load();
+
+    private final String accessKey = dotenv.get("AWS_ACCESS_KEY_ID");
+    private final String secretKey = dotenv.get("AWS_SECRET_ACCESS_KEY");
+    private final String region = dotenv.get("AWS_REGION");
 
     @Bean
     public DynamoDbClient dynamoDbClient() {

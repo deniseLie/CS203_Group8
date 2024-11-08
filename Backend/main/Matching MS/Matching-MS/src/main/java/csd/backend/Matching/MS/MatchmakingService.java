@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
-import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 
 import java.util.*;
@@ -17,14 +16,16 @@ public class MatchmakingService {
     @Autowired
     private DynamoDbClient dynamoDbClient;
 
+    private final SqsService sqsService;
+
     @Autowired
-    private SqsClient sqsClient;
+    public MatchmakingService(SqsService sqsService) {
+        this.sqsService = sqsService;
+    }
 
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final String SQS_QUEUE_URL = "https://sqs.ap-southeast-1.amazonaws.com/908027379110/Message_Bus.fifo";
     private static final int MAX_PLAYERS = 8;
-
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
 
     // Add a player to the matchmaking pool
@@ -150,66 +151,6 @@ public class MatchmakingService {
             logger.error("Error creating match", e);
             throw new RuntimeException("Error creating match");
         }
-    }
-
-    // Method to retrieve player details from the database
-    private Map<String, AttributeValue> getPlayerDetails(String playerName) {
-        GetItemRequest getItemRequest = GetItemRequest.builder()
-                .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerName", AttributeValue.builder().s(playerName).build())) // Use primary key to retrieve player
-                .build();
-
-        GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
-        return getItemResponse.item(); // Return the player details if found
-    }
-
-    // Method to handle SQS message processing
-    public void processSqsMessages() {
-        ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-                .queueUrl(SQS_QUEUE_URL)
-                .maxNumberOfMessages(10)
-                .waitTimeSeconds(20)
-                .build();
-
-        List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
-
-        for (Message message : messages) {
-            String body = message.body();
-
-            Map<String, Object> playerData = parseMessage(body);
-            String email = (String) playerData.get("email");
-            String playerName = (String) playerData.get("playerName");
-            String queueStatus = (String) playerData.get("queueStatus");
-            int rank = 1;
-
-            // Add player to the matchmaking pool
-            addPlayerToPool(playerName, email, queueStatus, rank);
-
-            /// Check if there are enough players in the queue to create a match
-            List<Map<String, AttributeValue>> players = checkPlayersInQueue(rank);
-            if (players.size() >= MAX_PLAYERS) {
-                createMatch(players);
-                removePlayersFromQueue(players); 
-                System.out.println("Match created with players: " + players);
-            }
-
-            // Delete the message from the queue after processing
-            DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
-                    .queueUrl(SQS_QUEUE_URL)
-                    .receiptHandle(message.receiptHandle())
-                    .build();
-            sqsClient.deleteMessage(deleteMessageRequest);
-        }
-    }
-
-    private Map<String, Object> parseMessage(String body) {
-        // Parse the SQS message body and return player data as a map
-        // You can replace this with JSON deserialization in a real-world case
-        Map<String, Object> playerData = new HashMap<>();
-        playerData.put("email", "player1@example.com"); // Replace with actual parsing
-        playerData.put("playerName", "Player1"); // Replace with actual parsing
-        playerData.put("queueStatus", "queue"); // Replace with actual parsing
-        return playerData;
     }
 
     public void triggerMatchmaking(String playerId) {

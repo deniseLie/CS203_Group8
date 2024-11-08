@@ -20,6 +20,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.loltournament.loginservice.filter.JwtRequestFilter;
 import com.loltournament.loginservice.service.CustomOidcUserService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 /**
  * I removed the googleAuth parts
  */
@@ -39,15 +41,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disabled CSRF protection
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll() // Allow access to authentication
-                                                                                    // endpoints (Login +
+                                                                 // endpoints (Login +
                         // Register)
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
                         // .defaultSuccessUrl("http://localhost:3000", true)
-                        .successHandler(redirectToFrontendWithToken())
-                        )
+                        .successHandler(redirectToFrontendWithToken()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Make Spring Security stateless
                 );
@@ -90,8 +91,19 @@ public class SecurityConfig {
             var oidcUser = (OidcUser) authentication.getPrincipal();
             String jwtToken = (String) oidcUser.getAttributes().get("jwtToken");
 
-            // Redirect to the React frontend with the JWT token as a URL parameter
-            response.sendRedirect("http://localhost:3000/login?jwtToken=" + jwtToken);
+            // Construct the response body
+            String responseBody = "{ \"jwtToken\": \"" + jwtToken + "\" }";
+
+            // Set the Authorization header
+            response.setHeader("Authorization", "Bearer " + jwtToken);
+
+            // Set response attributes
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            // Write the response body
+            response.getWriter().write(responseBody);
         };
     }
 }

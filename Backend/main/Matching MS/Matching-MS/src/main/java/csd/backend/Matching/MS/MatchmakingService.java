@@ -140,7 +140,7 @@ public class MatchmakingService {
     }
 
     // Create a new match with players from the database
-    private void createMatch(List<Map<String, AttributeValue>> players) {
+    public void createMatch(List<Map<String, AttributeValue>> players) {
         Map<String, AttributeValue> matchItem = new HashMap<>();
         matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // Use timestamp as matchId
     

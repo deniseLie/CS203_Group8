@@ -22,16 +22,16 @@ public class MatchmakingController {
     private MatchmakingService matchmakingService;
 
     @PostMapping("/join")
-    public String joinMatchmaking(@RequestParam String playerName, @RequestParam String rank) {
-        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerName, rank);
+    public String joinMatchmaking(@RequestParam String playerId, @RequestParam String rank) {
+        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerId, rank);
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
         int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
         int rankId = Integer.parseInt(rank);  // Parse rankId to integer if needed
 
         try {
             // Queue Player 
-            matchmakingService.updatePlayerStatus(playerName, "queue");
-            logger.info("Player status updated to 'queue'. Player: {}", playerName);
+            matchmakingService.updatePlayerStatus(playerId, "queue");
+            logger.info("Player status updated to 'queue'. Player: {}", playerId);
 
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
 
@@ -46,22 +46,22 @@ public class MatchmakingController {
             }
 
             // If the max attempts are reached without finding a match, return a timeout message
-            logger.info("Max attempts reached without finding a match for player: {}", playerName);
+            logger.info("Max attempts reached without finding a match for player: {}", playerId);
             return "Timeout: Unable to find enough players to start a match.";
         } catch (Exception e) {
-            logger.error("Error occurred while processing join matchmaking request for player: {}", playerName, e);
+            logger.error("Error occurred while processing join matchmaking request for player: {}", playerId, e);
             return "Error joining matchmaking.";
         }
     }
 
     @PostMapping("/join/speedupQueue")
-    public String joinSpeedUpMatchmaking(@RequestParam String playerName, @RequestParam String email,
+    public String joinSpeedUpMatchmaking(@RequestParam String playerId, @RequestParam String email,
             @RequestParam int rankId) {
-        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerName, email);
+        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerId, email);
         try {
             // Add player to matchmaking pool
-            matchmakingService.addPlayerToPool(playerName, email, "queue", rankId);
-            logger.info("Player added to matchmaking pool. Player: {}", playerName);
+            matchmakingService.addPlayerToPool(playerId, email, "queue", rankId);
+            logger.info("Player added to matchmaking pool. Player: {}", playerId);
 
             // Check if enough players are available for a match
             List<Map<String, AttributeValue>> players = matchmakingService.checkPlayersInSpeedUpQueue(rankId);
@@ -81,22 +81,8 @@ public class MatchmakingController {
                     + " ... Current pool size: " + players.size();
         } catch (Exception e) {
             logger.error("Error occurred while processing join matchmaking request for player: {}, Rank: {}",
-                    playerName, rankId, e);
+                    playerId, rankId, e);
             return "Error joining matchmaking.";
-        }
-    }
-
-    // Endpoint to trigger SQS processing manually (for testing)
-    @PostMapping("/processSqs")
-    public String processSqsMessages() {
-        logger.info("Processing SQS messages...");
-        try {
-            matchmakingService.processSqsMessages();
-            logger.info("SQS Messages processed successfully.");
-            return "SQS Messages processed!";
-        } catch (Exception e) {
-            logger.error("Error occurred while processing SQS messages", e);
-            return "Error processing SQS messages.";
         }
     }
 }

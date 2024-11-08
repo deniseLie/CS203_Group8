@@ -39,7 +39,7 @@
 
 //         // Mock the SqsClient in SqsService
 //         when(sqsService.getSqsClient()).thenReturn(sqsClient);
-//         when(sqsService.getPenaltyQueueUrl()).thenReturn("https://sqs.ap-southeast-1.amazonaws.com/123123/Penalty-Queue.fifo");
+//         when(sqsService.getQueueUrl("penalty")).thenReturn("https://sqs.ap-southeast-1.amazonaws.com/123123/Penalty-Queue.fifo");
 //     }
 
 //     @Test
@@ -140,7 +140,7 @@
 //         penaltyService.sendMessageToPenaltyQueue(messageBody, messageAttributes);
 
 //         // Assert
-//         verify(sqsService, times(1)).getPenaltyQueueUrl();
+//         verify(sqsService, times(1)).getQueueUrl("penalty");
 //         // verify(sqsClient, times(1)).sendMessage(any(SendMessageRequest.class));
 //     }
 // }

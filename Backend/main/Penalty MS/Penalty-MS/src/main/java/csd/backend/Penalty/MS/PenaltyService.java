@@ -31,9 +31,9 @@ public class PenaltyService {
     private static final int BASE_BAN_DURATION_IN_SECONDS = 300; // 5 minutes
 
     // Add a player to the matchmaking pool
-    public void addPlayerToPool(Integer playerId, String email, String queueStatus) {
-        Map<Integer, AttributeValue> item = new HashMap<>();
-        item.put("playerId", AttributeValue.builder().n(playerId).build());
+    public void addPlayerToPool(String playerId, String email, String queueStatus) {
+        Map<String, AttributeValue> item = new HashMap<>();
+        item.put("playerId", AttributeValue.builder().s(playerId).build());
         item.put("email", AttributeValue.builder().s(email).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("banUntil", AttributeValue.builder().n("0").build());
@@ -55,10 +55,10 @@ public class PenaltyService {
     }
 
     // Ban player for a specified duration based on their ban count
-    public void banPlayer(Integer playerId) {
+    public void banPlayer(String playerId) {
 
         // Retrieve the player's current ban count
-        Map<Integer, AttributeValue> player = getPlayerDetails(playerId);
+        Map<String, AttributeValue> player = getPlayerDetails(playerId);
         int banCount = player != null && player.containsKey("banCount")
                 ? Integer.parseInt(player.get("banCount").n())
                 : 0;
@@ -103,15 +103,15 @@ public class PenaltyService {
     }
 
     // Check player status and return remaining ban time if banned
-    public Map<Integer, Object> checkPlayerStatus(Integer playerId) {
+    public Map<String, Object> checkPlayerStatus(String playerId) {
 
         // Get Player details from database
-        Map<Integer, AttributeValue> player = getPlayerDetails(playerId);
-        Map<Integer, Object> status = new HashMap<>();
+        Map<String, AttributeValue> player = getPlayerDetails(playerId);
+        Map<String, Object> status = new HashMap<>();
 
         if (player != null && player.containsKey("playerId") && player.containsKey("queueStatus") && player.containsKey("banUntil")) {
             // Safely retrieve fields from player map
-            status.put("playerId", player.get("playerId").n());
+            status.put("playerId", player.get("playerId").s());
             status.put("queueStatus", player.get("queueStatus").n());
             long banUntil = Long.parseLong(player.get("banUntil").n());
     
@@ -145,10 +145,10 @@ public class PenaltyService {
         ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
 
         // Loop through players
-        for (Map<Integer, AttributeValue> player : scanResponse.items()) {
+        for (Map<String, AttributeValue> player : scanResponse.items()) {
 
             // Get the player name and ban until
-            Integer playerId = player.get("playerId").n();
+            String playerId = player.get("playerId").s();
             long banUntil = Long.parseLong(player.get("banUntil").n());
 
             // Check if the ban has expired
@@ -160,11 +160,11 @@ public class PenaltyService {
     }
 
     // Retrieve player details from the database
-    private Map<Integer, AttributeValue> getPlayerDetails(Integer playerId) {
+    private Map<String, AttributeValue> getPlayerDetails(String playerId) {
         // Get player details
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
+                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build()))
                 .build();
 
         GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
@@ -172,8 +172,8 @@ public class PenaltyService {
     }
 
     // Update player's status
-    public void updatePlayerStatus(Integer playerId, String queueStatus) {
-        Map<Integer, AttributeValueUpdate> updates = new HashMap<>();
+    public void updatePlayerStatus(String playerId, String queueStatus) {
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("queueStatus", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder().s(queueStatus).build())
                 .action(AttributeAction.PUT)
@@ -181,7 +181,7 @@ public class PenaltyService {
 
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
+                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build()))
                 .attributeUpdates(updates)
                 .build();
 
@@ -192,7 +192,7 @@ public class PenaltyService {
     // Send a message to the Penalty Queue
     public void sendMessageToPenaltyQueue(String messageBody, Map<String, MessageAttributeValue> messageAttributes) {
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
-                .queueUrl(sqsService.getPenaltyQueueUrl())
+                .queueUrl(sqsService.getQueueUrl("penalty"))
                 .messageBody(messageBody)
                 .messageAttributes(messageAttributes)
                 .messageGroupId("PenaltyServiceGroup") // Required for FIFO queues

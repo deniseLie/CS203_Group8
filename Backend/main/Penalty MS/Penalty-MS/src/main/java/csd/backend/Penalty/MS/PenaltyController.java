@@ -18,7 +18,7 @@ public class PenaltyController {
 
     // API endpoint to ban a player for a specified duration
     @PostMapping("/ban")
-    public String banPlayer(@RequestParam Integer playerId) {
+    public String banPlayer(@RequestParam String playerId) {
         logger.info("Received request to ban player: {}, Duration: {} minutes", playerId);
         try {
             penaltyService.banPlayer(playerId);
@@ -31,7 +31,7 @@ public class PenaltyController {
 
     // API endpoint to check the status of a player
     @GetMapping("/check-status")
-    public Map<String, Object> checkPlayerStatus(@RequestParam Integer playerId) {
+    public Map<String, Object> checkPlayerStatus(@RequestParam String playerId) {
         logger.info("Checking status for player: {}", playerId);
         return penaltyService.checkPlayerStatus(playerId);
     }

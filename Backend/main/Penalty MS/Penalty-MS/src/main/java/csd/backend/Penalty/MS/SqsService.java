@@ -2,6 +2,7 @@ package csd.backend.Penalty.MS;
 
 import java.util.Map;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
@@ -12,18 +13,31 @@ import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 public class SqsService {
 
     private static final SqsClient sqsClient = SqsClient.builder().build();
-    private static final String PENALTY_QUEUE_URL = "https://sqs.ap-southeast-1.amazonaws.com/123123/Penalty-Queue.fifo";
+
+    private final Dotenv dotenv = Dotenv.load();
+    private final String accountQueueUrl = dotenv.get("ACCOUNT_QUEUE_URL");
+    private final String matchmakingQueueUrl = dotenv.get("MATCHMAKING_QUEUE_URL");
+    private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
 
     // Method to get the SqsClient instance
     public SqsClient getSqsClient() {
         return sqsClient;
     }
-
-    // Method to get the Penalty Queue URL
-    public String getPenaltyQueueUrl() {
-        return PENALTY_QUEUE_URL;
-    }
     
+    // Get Queue URL based on name
+    public String getQueueUrl(String queueName) {
+        switch (queueName) {
+            case "matchmaking":
+                return matchmakingQueueUrl;
+            case "penalty":
+                return penaltyQueueUrl;
+            case "account":
+                return accountQueueUrl;
+            default:
+                throw new IllegalArgumentException("Invalid queue name");
+        }
+    }
+
     // Send message to SQS Queue
     public void sendMessageToQueue(String queueName, String messageBody, Map<String, MessageAttributeValue> messageAttributes) {
         String queueUrl = getQueueUrl(queueName);

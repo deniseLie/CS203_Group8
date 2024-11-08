@@ -211,4 +211,17 @@ public class MatchmakingService {
         playerData.put("queueStatus", "queue"); // Replace with actual parsing
         return playerData;
     }
+
+    public void triggerMatchmaking(String playerId) {
+        // Create message attributes if needed
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("AttributeKey", MessageAttributeValue.builder().stringValue("AttributeValue").dataType("String").build());
+
+        // Define message body
+        String messageBody = "{\"action\": \"match_players\", \"player_id\": \"" + playerId + "\"}";
+
+        // Send message to the matchmaking queue
+        sqsService.sendMessageToQueue("matchmaking", messageBody, messageAttributes);
+        System.out.println("Automatically triggered matchmaking for player: " + playerId);
+    }
 }

@@ -1,6 +1,5 @@
 package com.loltournament.loginservice.service;
 
-import com.loltournament.loginservice.SqsService;
 import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.repository.PlayerRepository;
 
@@ -18,13 +17,6 @@ public class PlayerService implements UserDetailsService {
 
     @Autowired
     private PlayerRepository userRepository;
-
-    private final SqsService sqsService;
-
-    @Autowired
-    public PlayerService(SqsService sqsService) {
-        this.sqsService = sqsService;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

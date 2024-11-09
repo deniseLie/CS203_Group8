@@ -8,8 +8,8 @@ import PlayerTable from '../../components/PlayerTable';
 const PlayerDatasetPage = () => {
   // Example data for the leaderboard
   const playerData = [
-    { id: "#9093", username: "Daniel Park", elo: 2563, totalWins: 34, totalMatches: 68 },
-    { id: "#9094", username: "Jane Doe", elo: 2450, totalWins: 20, totalMatches: 50 },
+    { id: "#9093", username: "Daniel Park", playername: 'Hide on rock', email: 'danielpark@gmail.com', authProvider: 'LOCAL' },
+    { id: "#9094", username: "Jane Doe", playername: 'Keria', email: 'janedoe@gmail.com', authProvider: 'LOCAL' },
     // Add more player data as needed
   ];
 

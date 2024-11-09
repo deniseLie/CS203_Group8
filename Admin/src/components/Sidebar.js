@@ -78,7 +78,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Players"
           icon={<People />}
-          subItems={['Dataset', 'Leaderboards']}
+          subItems={['Dataset', 'Leaderboards', 'Add']}
           isOpen={openMenus['Players']}
           onToggle={() => handleToggle('Players')}
           onClick={(subPage) => {

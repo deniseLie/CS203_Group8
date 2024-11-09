@@ -5,27 +5,25 @@ import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow } fro
 const PlayerTable = ({ data }) => {
   return (
     <Box sx={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', p: 2 }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>Leaderboard</Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>Player Table</Typography>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Rank</TableCell>
             <TableCell>Player Id</TableCell>
             <TableCell>Username</TableCell>
-            <TableCell>ELO</TableCell>
-            <TableCell>Total Wins</TableCell>
-            <TableCell>Total Matches</TableCell>
+            <TableCell>Playername</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Auth Provider</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {data.map((player, index) => (
             <TableRow key={index}>
-              <TableCell>{index + 1}</TableCell>
               <TableCell>{player.id}</TableCell>
               <TableCell>{player.username}</TableCell>
-              <TableCell>{player.elo}</TableCell>
-              <TableCell>{player.totalWins}</TableCell>
-              <TableCell>{player.totalMatches}</TableCell>
+              <TableCell>{player.playername}</TableCell>
+              <TableCell>{player.email}</TableCell>
+              <TableCell>{player.authProvider}</TableCell>
             </TableRow>
           ))}
         </TableBody>

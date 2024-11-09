@@ -7,6 +7,7 @@ import Login from './pages/Login/Login';
 import OngoingTournamentsPage from './pages/Tournaments/OngoingTournamentsPage';
 import CompletedTournamentsPage from './pages/Tournaments/CompletedTournamentsPage';
 import PlayerDatasetPage from './pages/Players/Dataset';
+import AddPlayerPage from './pages/Players/AddPlayerPage';
 import LeaderboardsPage from './pages/Players/Leaderboards';
 import ConfigureTournamentPage from './pages/Tournaments/ConfigureTournamentPage';
 import AddTournamentPage from './pages/Tournaments/AddTournamentPage';
@@ -23,6 +24,7 @@ function App() {
         <Route path="/tournaments/add" element={<AddTournamentPage />} />
         <Route path="/players/dataset" element={<PlayerDatasetPage />} />
         <Route path="/players/leaderboards" element={<LeaderboardsPage />} />
+        <Route path="/players/add" element={<LeaderboardsPage />} />
         {/* <Route path="*" element={<NotFound />} /> */}
         {/* <Route path="/users" element={<Users />} />
         <Route path="/reports" element={<Reports />} /> */}

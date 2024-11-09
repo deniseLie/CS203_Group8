@@ -1,6 +1,6 @@
 // src/pages/TournamentPage.js
 import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
 import FilterBar from '../../components/FilterBar';

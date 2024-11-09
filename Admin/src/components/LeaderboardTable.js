@@ -3,7 +3,7 @@ import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow } fro
 
 const LeaderboardTable = ({ data }) => (
     <Box sx={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', p: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Player Table</Typography>
+      <Typography variant="h5" sx={{ mb: 2 }}>Leaderboards</Typography>
       <Table>
         <TableHead>
           <TableRow>

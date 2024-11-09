@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.loltournament.loginservice.repository.PlayerRepository;
 import com.loltournament.loginservice.service.GoogleAttributes.GoogleUserInfo;
 import com.loltournament.loginservice.util.JwtUtil;
+import com.loltournament.loginservice.SqsService;
 import com.loltournament.loginservice.model.Player;
 import java.util.Optional;
 import java.util.Map;
@@ -21,6 +22,13 @@ public class CustomOidcUserService extends OidcUserService {
 
     @Autowired
     private PlayerRepository userRepository;
+
+    private final SqsService sqsService;
+
+    @Autowired
+    public CustomOidcUserService(SqsService sqsService) {
+        this.sqsService = sqsService;
+    }
 
     @Autowired
     private JwtUtil jwtUtil;

@@ -18,9 +18,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * Should ask jeremy to edit the environment variables to add your
  * OAuth client id and secret key
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.loltournament.loginservice", "com.loltournament.loginservice.config"})
 @EnableJpaRepositories("com.loltournament.loginservice.repository")
 @EntityScan("com.loltournament.loginservice.model")
+
 public class LoginServiceApplication {
 
 	public static void main(String[] args) {

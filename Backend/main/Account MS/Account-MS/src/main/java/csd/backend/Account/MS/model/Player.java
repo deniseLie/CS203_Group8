@@ -1,4 +1,4 @@
-package com.loltournament.loginservice.model;
+package csd.backend.Account.MS.model;
 
 import java.util.Collection;
 

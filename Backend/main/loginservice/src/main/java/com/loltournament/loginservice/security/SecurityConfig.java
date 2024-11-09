@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.loltournament.loginservice.filter.JwtRequestFilter;
-import com.loltournament.loginservice.service.CustomOidcUserService;
+// import com.loltournament.loginservice.service.CustomOidcUserService;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -33,7 +33,7 @@ public class SecurityConfig {
     private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
-    private CustomOidcUserService customOidcUserService;
+    // private CustomOidcUserService customOidcUserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,9 +46,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // Require authentication for all other requests
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
-                        // .defaultSuccessUrl("http://localhost:3000", true)
-                        .successHandler(redirectToFrontendWithToken()))
+                .defaultSuccessUrl("/login-success")
+                .failureUrl("/login?error=true"))
+                // .oauth2Login(oauth2 -> oauth2
+                //         .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcUserService))
+                //         // .defaultSuccessUrl("http://localhost:3000", true)
+                //         .successHandler(redirectToFrontendWithToken()))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Make Spring Security stateless
                 );
@@ -86,24 +89,24 @@ public class SecurityConfig {
         };
     }
 
-    private AuthenticationSuccessHandler redirectToFrontendWithToken() {
-        return (request, response, authentication) -> {
-            var oidcUser = (OidcUser) authentication.getPrincipal();
-            String jwtToken = (String) oidcUser.getAttributes().get("jwtToken");
+    // private AuthenticationSuccessHandler redirectToFrontendWithToken() {
+    //     return (request, response, authentication) -> {
+    //         var oidcUser = (OidcUser) authentication.getPrincipal();
+    //         String jwtToken = (String) oidcUser.getAttributes().get("jwtToken");
 
-            // Construct the response body
-            String responseBody = "{ \"jwtToken\": \"" + jwtToken + "\" }";
+    //         // Construct the response body
+    //         String responseBody = "{ \"jwtToken\": \"" + jwtToken + "\" }";
 
-            // Set the Authorization header
-            response.setHeader("Authorization", "Bearer " + jwtToken);
+    //         // Set the Authorization header
+    //         response.setHeader("Authorization", "Bearer " + jwtToken);
 
-            // Set response attributes
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            response.setStatus(HttpServletResponse.SC_OK);
+    //         // Set response attributes
+    //         response.setContentType("application/json");
+    //         response.setCharacterEncoding("UTF-8");
+    //         response.setStatus(HttpServletResponse.SC_OK);
 
-            // Write the response body
-            response.getWriter().write(responseBody);
-        };
-    }
+    //         // Write the response body
+    //         response.getWriter().write(responseBody);
+    //     };
+    // }
 }

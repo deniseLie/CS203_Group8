@@ -3,7 +3,6 @@ package com.loltournament.loginservice.controller;
 import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.security.SecurityConfig;
 import com.loltournament.loginservice.util.JwtUtil;
-import com.loltournament.loginservice.service.CustomOidcUserService;
 import com.loltournament.loginservice.service.PlayerService;
 // import com.loltournament.loginservice.exception.UserNotFoundException;
 // import com.loltournament.loginservice.exception.InvalidCredentialsException;

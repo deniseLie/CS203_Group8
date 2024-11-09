@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Avatar, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo.png'; // Import the logo image
+import { useAuth } from '../../context/AuthContext';
+import logo from '../../assets/logo.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -17,8 +19,8 @@ const Login = () => {
       setError('Incorrect Username or Password.');
     } else {
       setError('');
-      // Redirect to the dashboard
-      navigate('/dashboard');
+      login();  // Set authentication to true
+      navigate('/dashboard');  // Redirect to dashboard
     }
   };
 

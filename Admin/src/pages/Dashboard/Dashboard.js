@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, Stack, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
 import DashboardCard from '../../components/DashboardCard';
@@ -8,6 +9,14 @@ import { Dashboard, SportsEsports, People } from '@mui/icons-material';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const DashboardPage = () => {
+
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  // Handle the button click to navigate to the /tournaments/configure page
+  const handleCreateNewProject = () => {
+    navigate('/tournaments/configure');
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       {/* Sidebar */}
@@ -21,8 +30,13 @@ const DashboardPage = () => {
         {/* Dashboard Content */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
           <Typography variant="h4">Dashboard</Typography>
-          <Button variant="contained" color="primary" sx={{ backgroundColor: '#1976d2' }}>
-            Create New Project
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ backgroundColor: '#1976d2' }}
+            onClick={handleCreateNewProject} // Add click handler
+          >
+            Configure Tournaments
           </Button>
         </Box>
         

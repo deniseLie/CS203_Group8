@@ -1,35 +1,93 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/Dashboard/Dashboard';
-// import Users from './pages/Users';
-// import Reports from './pages/Reports';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';  // Import the AuthProvider
+import PrivateRoute from './components/PrivateRoute';  // Import the PrivateRoute
+
 import Login from './pages/Login/Login';
-import OngoingTournamentsPage from './pages/Tournaments/OngoingTournamentsPage';
+import Dashboard from './pages/Dashboard/Dashboard';
+import OngoingTournamentsPage from './pages/Tournaments/OngoingTournamentsPage'
 import CompletedTournamentsPage from './pages/Tournaments/CompletedTournamentsPage';
-import PlayerDatasetPage from './pages/Players/Dataset';
-import AddPlayerPage from './pages/Players/AddPlayerPage';
-import LeaderboardsPage from './pages/Players/Leaderboards';
 import ConfigureTournamentPage from './pages/Tournaments/ConfigureTournamentPage';
 import AddTournamentPage from './pages/Tournaments/AddTournamentPage';
+import PlayerDatasetPage from './pages/Players/Dataset';
+import LeaderboardsPage from './pages/Players/Leaderboards';
+import CreatePlayerPage from './pages/Players/CreatePlayerPage';
+import NotFoundPage from './pages/NotFound/NotFoundPage';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/tournaments/ongoing" element={<OngoingTournamentsPage />} />
-        <Route path="/tournaments/completed" element={<CompletedTournamentsPage />} />
-        <Route path="/tournaments/configure" element={<ConfigureTournamentPage />} />
-        <Route path="/tournaments/add" element={<AddTournamentPage />} />
-        <Route path="/players/dataset" element={<PlayerDatasetPage />} />
-        <Route path="/players/leaderboards" element={<LeaderboardsPage />} />
-        <Route path="/players/add" element={<LeaderboardsPage />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
-        {/* <Route path="/users" element={<Users />} />
-        <Route path="/reports" element={<Reports />} /> */}
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route 
+            path="/dashboard" 
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/tournaments/ongoing" 
+            element={
+              <PrivateRoute>
+                <OngoingTournamentsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/tournaments/completed" 
+            element={
+              <PrivateRoute>
+                <CompletedTournamentsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/tournaments/configure" 
+            element={
+              <PrivateRoute>
+                <ConfigureTournamentPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/tournaments/add" 
+            element={
+              <PrivateRoute>
+                <AddTournamentPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/players/dataset" 
+            element={
+              <PrivateRoute>
+                <PlayerDatasetPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/players/leaderboards" 
+            element={
+              <PrivateRoute>
+                <LeaderboardsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/players/create" 
+            element={
+              <PrivateRoute>
+                <CreatePlayerPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

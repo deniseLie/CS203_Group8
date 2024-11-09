@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import rank from '../assets/diamond.png'
 
 const LeaderboardTable = ({ data }) => (
     <Box sx={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', p: 2 }}>
@@ -25,7 +26,7 @@ const LeaderboardTable = ({ data }) => (
               <TableCell>{player.username}</TableCell>
               <TableCell>{player.elo}</TableCell>
               <TableCell>
-                <img src={player.rankIcon} alt="Rank" style={{ width: '24px', height: '24px' }} />
+                <img src={rank} alt="Rank" style={{ width: '24px', height: '24px' }} />
               </TableCell>
               <TableCell>{player.avgPlace}</TableCell>
               <TableCell>{player.firstPlacePercentage}</TableCell>

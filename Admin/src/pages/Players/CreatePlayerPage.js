@@ -3,7 +3,7 @@ import { Box, Typography, TextField, Button, Stack, FormControl, InputLabel, Sel
 import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
 
-const AddPlayerPage = () => {
+const CreatePlayerPage = () => {
   const [playerId, setPlayerId] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -118,4 +118,4 @@ const AddPlayerPage = () => {
   );
 };
 
-export default AddPlayerPage;
+export default CreatePlayerPage;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Stack, Avatar, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import MatchesPopup from './MatchesPopup';
+import playerProfile from '../assets/playerpfp.jpg'
 
 const TournamentTable = ({ data }) => {
   const [selectedTournament, setSelectedTournament] = useState(null);
@@ -50,7 +51,7 @@ const TournamentTable = ({ data }) => {
               <TableCell>
                 <Stack direction="row" spacing={1}>
                   {tournament.players.map((_, i) => (
-                    <Avatar key={i} src={`/profile${i + 1}.jpg`} sx={{ width: 24, height: 24 }} />
+                    <Avatar key={i} src={playerProfile} sx={{ width: 24, height: 24 }} />
                   ))}
                   <Typography>+{tournament.players.length}</Typography>
                 </Stack>

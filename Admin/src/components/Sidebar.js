@@ -25,6 +25,8 @@ const Sidebar = () => {
       setActivePage('Dataset');
     } else if (path.includes('players/leaderboards')) {
       setActivePage('Leaderboards');
+    } else if (path.includes('players/create')) {
+      setActivePage('Create');
     } else if (path.includes('settings')) {
       setActivePage('Settings');
     } else {
@@ -78,7 +80,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Players"
           icon={<People />}
-          subItems={['Dataset', 'Leaderboards', 'Add']}
+          subItems={['Dataset', 'Leaderboards', 'Create']}
           isOpen={openMenus['Players']}
           onToggle={() => handleToggle('Players')}
           onClick={(subPage) => {

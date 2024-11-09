@@ -1,18 +1,72 @@
-import React from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import backgroundImage from '../assets/srbackground.png';
+import {
+  Box,
+  Button,
+  Select,
+  MenuItem,
+  TextField,
+  Typography,
+  LinearProgress,
+} from '@mui/material';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SearchIcon from '@mui/icons-material/Search';
+import PlayerIcon from '../components/PlayerIcon';
+import profilePicture from '../assets/4895.jpg';
 
-// Sample data for the leaderboard
-const leaderboardData = [
-  { rank: 1, name: 'John Doe', elo: 1500 },
-  { rank: 2, name: 'Jane Smith', elo: 1400 },
-  { rank: 3, name: 'Alice Johnson', elo: 1300 },
-  { rank: 4, name: 'Michael Brown', elo: 1200 },
-  { rank: 5, name: 'Chris Evans', elo: 1100 },
-];
+// Import each role icon explicitly
+import assassinIcon from '../assets/championClass/roleicon-assassin.png';
+import fighterIcon from '../assets/championClass/roleicon-fighter.png';
+import mageIcon from '../assets/championClass/roleicon-mage.png';
+import marksmanIcon from '../assets/championClass/roleicon-marksman.png';
+import supportIcon from '../assets/championClass/roleicon-support.png';
+import tankIcon from '../assets/championClass/roleicon-tank.png';
 
-function Leaderboard() {
+// Import rank icons
+import bronzeIcon from '../assets/rankIcon/bronze.png';
+import silverIcon from '../assets/rankIcon/silver.png';
+import goldIcon from '../assets/rankIcon/gold.png';
+import platinumIcon from '../assets/rankIcon/platinum.png';
+import diamondIcon from '../assets/rankIcon/diamond.png';
+import emeraldIcon from '../assets/rankIcon/emerald.png';
+
+// Map roles to their respective icons
+const roleIcons = {
+  Assassin: assassinIcon,
+  Fighter: fighterIcon,
+  Mage: mageIcon,
+  Marksman: marksmanIcon,
+  Support: supportIcon,
+  Tank: tankIcon,
+};
+
+// Map rank tiers to their respective images
+const rankIcons = {
+  Bronze: bronzeIcon,
+  Silver: silverIcon,
+  Gold: goldIcon,
+  Emerald: emeraldIcon,
+  Platinum: platinumIcon,
+  Diamond: diamondIcon,
+};
+
+const Leaderboard = () => {
+  const players = Array.from({ length: 10 }, (_, i) => ({
+    rank: i + 1,
+    playerName: 'hide on bush',
+    rankTier: 'Diamond',
+    lp: 313,
+    winRate: 72,
+    wins: 47,
+    losses: 12,
+    mostPlayedRoles: ['Assassin', 'Fighter', 'Tank'],
+  }));
+
+  const [selectedRank, setSelectedRank] = useState('ALL RANKS');
+  const [selectedRole, setSelectedRole] = useState('ALL ROLES');
+  const [search, setSearch] = useState('');
+
   return (
     <Box
       sx={{
@@ -22,7 +76,9 @@ function Leaderboard() {
         backgroundRepeat: 'no-repeat',
         minHeight: '100vh',
         width: '100%',
-        position: 'relative',
+        color: '#f0e6d2',
+        overflowY: 'auto',
+        '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
       {/* Navbar */}
@@ -30,46 +86,177 @@ function Leaderboard() {
         <Navbar activePage="leaderboard" />
       </Box>
 
-      {/* Main Content Container */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          // justifyContent: 'center',
-          paddingTop: 5,
-          paddingBottom: 5
-        }}
-      >
-        {/* Leaderboard Header */}
-        <Typography variant="h4" component="h1" gutterBottom sx={{ color: 'white', mb: 3 }}>
-          Leaderboard (Dummy)
-        </Typography>
+      {/* Filters and Search */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, px: 3, mt: 2 }}>
+        
+        {/* Left Side: Filter Buttons */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {/* Rank Select */}
+          <Select
+            value={selectedRank}
+            onChange={(e) => setSelectedRank(e.target.value)}
+            displayEmpty
+            renderValue={(selected) => selected.toUpperCase() || "ALL RANKS"}
+            sx={{
+              backgroundColor: '#0F171D',
+              color: '#CDBE91',
+              border: '1px solid #8c7a5b',
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              minWidth: 100,
+              borderRadius: 0,
+              '& .MuiSelect-icon': {
+                color: '#f0e6d2',
+              },
+            }}
+          >
+            <MenuItem value="ALL RANKS">
+              <Typography className='headerPrimary' sx={{ fontWeight: 'bold', color:'#0F171D'}}>ALL RANKS</Typography>
+            </MenuItem>
+            {Object.entries(rankIcons).map(([rank, icon]) => (
+              <MenuItem key={rank} value={rank} className='headerPrimary'>
+                <Box component="img" src={icon} alt={rank} sx={{ width: 24, height: 24, mr: 1 }} />
+                {rank.toUpperCase()}
+              </MenuItem>
+            ))}
+          </Select>
 
-        {/* Leaderboard Table */}
-        <TableContainer component={Paper} sx={{ maxWidth: 800 }}>
-          <Table aria-label="leaderboard table">
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Rank</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Elo</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {leaderboardData.map((player) => (
-                <TableRow key={player.rank}>
-                  <TableCell>{player.rank}</TableCell>
-                  <TableCell>{player.name}</TableCell>
-                  <TableCell>{player.elo}</TableCell>
-                </TableRow>
+          {/* Role Select */}
+          <Select
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
+            displayEmpty
+            renderValue={(selected) => selected.toUpperCase() || "ALL ROLES"}
+            sx={{
+              backgroundColor: '#0F171D',
+              border: '1px solid #8c7a5b',
+              fontWeight: 'bold',
+              color: '#CDBE91',
+              fontSize: '1rem',
+              minWidth: 100,
+              borderRadius: 0,
+              '& .MuiSelect-icon': {
+                color: '#f0e6d2',
+              },
+            }}
+          >
+            <MenuItem value="ALL ROLES">
+              <Typography className='headerPrimary' sx={{ fontWeight: 'bold', color:'#0F171D'}}>ALL ROLES</Typography>
+            </MenuItem>
+            {Object.entries(roleIcons).map(([role, icon]) => (
+              <MenuItem key={role} value={role} className='headerPrimary'>
+                <Box component="img" src={icon} alt={role} sx={{ width: 24, height: 24, mr: 1 }} />
+                {role.toUpperCase()}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+            
+        {/* Right Side: Search Bar */}
+        <Box sx={{ display: 'flex', alignItems: 'center', backgroundColor: '#0F171D', borderRadius: 1, paddingX: 1, border: '1px solid #8c7a5b' }}>
+          <SearchIcon sx={{ color: '#CDBE91' }} />
+          <TextField
+  variant="standard"
+  placeholder="SEARCH PLAYER"
+  InputProps={{
+    disableUnderline: true,
+    className: 'headerPrimary', // Apply your custom class to the input element
+  }}
+  sx={{
+    ml: 1,
+    minWidth: 200,
+    '& .MuiInputBase-input': {
+      color: '#CDBE91', 
+      fontWeight: 'bold',
+      fontFamily: 'inherit', // Ensures the class font applies if using font-family in CSS
+    },
+  }}
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
+        </Box>
+      </Box>
+
+      {/* Leaderboard Table */}
+      <Box sx={{ mx: 3, borderRadius: 2, borderTop: '1px solid #33393f' }}>
+        <Box sx={{ display: 'flex', paddingY: 1.5, fontWeight: 'bold', color: '#f0e6d2', borderBottom: '1px solid #33393f', alignItems: 'center' }}>
+          <Typography className="headerPrimary" sx={{ flex: 1 }}>RANK</Typography>
+          <Typography className="headerPrimary" sx={{ flex: 2 }}>PLAYER</Typography>
+          <Typography className="headerPrimary" sx={{ flex: 1 }}>RANK</Typography>
+          <Typography className="headerPrimary" sx={{ flex: 1 }}>LP</Typography>
+          <Typography className="headerPrimary" sx={{ flex: 2 }}>WIN RATE</Typography>
+          <Typography className="headerPrimary" sx={{ flex: 2 }}>MOST PLAYED ROLES</Typography>
+        </Box>
+
+        {players.map((player) => (
+          <Box
+            key={player.rank}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              paddingY: 1.5,
+              color: '#f0e6d2',
+              borderBottom: '1px solid #33393f',
+            }}
+          >
+            <Typography sx={{ flex: 1, fontSize: '2em' }} className="headerPrimary">{player.rank}</Typography>
+            <Box sx={{ flex: 2, display: 'flex', alignItems: 'center' }}>
+              <PlayerIcon width={-1} height={-1} src={profilePicture} />
+              <Typography className='headerPrimary' sx={{ marginLeft: 2 }}>{player.playerName}</Typography>
+            </Box>
+
+            {/* Rank Tier with Image */}
+            <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+              <Box
+                component="img"
+                src={rankIcons[player.rankTier]} // Display the icon based on rank
+                alt={player.rankTier}
+                sx={{
+                  width: 24,
+                  height: 24,
+                  marginRight: 1,
+                }}
+              />
+              <Typography className='headerPrimary'>{player.rankTier}</Typography>
+            </Box>
+
+            <Typography className='headerPrimary' sx={{ flex: 1 }}>{player.lp}</Typography>
+            <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              <Typography className='headerPrimary' sx={{ mb: 0.5 }}>{player.winRate}% ({player.wins}W {player.losses}L)</Typography>
+              <LinearProgress
+                variant="determinate"
+                value={player.winRate}
+                sx={{
+                  width: '80%',
+                  height: 8,
+                  backgroundColor: '#2c3136',
+                  '& .MuiLinearProgress-bar': { backgroundColor: '#D8A13A' },
+                  borderRadius: 1,
+                }}
+              />
+            </Box>
+
+            {/* Role Classes Box */}
+            <Box sx={{ flex: 2, display: 'flex', gap: 1 }}>
+              {player.mostPlayedRoles.map((role, index) => (
+                <Box
+                  key={index}
+                  component="img"
+                  src={roleIcons[role]}
+                  alt={role}
+                  sx={{
+                    width: '3vw',
+                    height: '3vw',
+                    marginRight: 2,
+                  }}
+                />
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </Box>
+          </Box>
+        ))}
       </Box>
     </Box>
   );
-}
+};
 
 export default Leaderboard;

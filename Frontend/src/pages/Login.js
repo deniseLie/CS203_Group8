@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, Typography, IconButton, InputAdornment, Alert } from "@mui/material";
+import { Box, TextField, Typography, IconButton, InputAdornment, Alert, Button } from "@mui/material";
 import { ArrowForward, Visibility, VisibilityOff } from "@mui/icons-material";
 import loginSplash from "../assets/login_splash.jpg";
 import { Link } from 'react-router-dom';
@@ -7,6 +7,8 @@ import axios from 'axios'; // Import axios for API requests
 import logo from "../assets/riot_logo.png";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'; // Import Google OAuth
 import env from "react-dotenv";
+import GoogleIcon from '@mui/icons-material/Google'; // Optional: Google icon from Material UI icons
+
 function Login({ login }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,7 +17,9 @@ function Login({ login }) {
 
   const isFormFilled = username.length > 0 && password.length > 0;
   const handleClickShowPassword = () => setShowPassword(!showPassword);
-
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isFormFilled) {
@@ -139,14 +143,33 @@ function Login({ login }) {
             />
 
             {/* Google Login Button */}
-            <Link to="http://localhost:8080/oauth2/authorization/google">
-              <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
-                <GoogleLogin
-                  // onSuccess={handleGoogleLoginSuccess}
-                  // onError={handleGoogleLoginFailure}
-                />
-              </Box>
-            </Link>
+            {/* <Link to=""> */}
+      <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      mt={2}
+      component={Button}
+      onClick={handleGoogleLogin}
+      sx={{
+        border: '1px solid #4285F4', // Google blue border
+        backgroundColor: '#fff', // White background
+        padding: '8px 16px',
+        borderRadius: '4px',
+        color: '#4285F4', // Text color in Google blue
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+        textTransform: 'none',
+        '&:hover': {
+          backgroundColor: '#f5f5f5',
+        },
+      }}
+    >
+      
+      <Typography variant="button" color="inherit">
+        Sign in with Google
+      </Typography>
+    </Box>
+            {/* </Link> */}
 
             <Box display="flex" justifyContent="center" alignItems="center">
               <IconButton

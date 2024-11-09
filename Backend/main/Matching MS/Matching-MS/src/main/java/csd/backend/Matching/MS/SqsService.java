@@ -9,7 +9,6 @@ import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 
 import java.util.*;
 
-
 @Service
 public class SqsService {
 
@@ -21,6 +20,10 @@ public class SqsService {
     private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
 
     public SqsService() {
+        if (accountQueueUrl == null || matchmakingQueueUrl == null || penaltyQueueUrl == null) {
+            throw new IllegalStateException("Required environment variables are missing.");
+        }
+        System.out.println("Loaded environment variables successfully.");
         this.sqsClient = SqsClient.builder().build();
     }
 
@@ -63,6 +66,7 @@ public class SqsService {
         } catch (Exception e) {
             System.err.println("Failed to send message to " + queueName + " queue: " + e.getMessage());
             e.printStackTrace();
+            throw new RuntimeException("Failed to send message to " + queueName, e);
         }
     }
 

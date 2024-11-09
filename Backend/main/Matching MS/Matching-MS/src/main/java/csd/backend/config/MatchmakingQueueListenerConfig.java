@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.config;
 
 import csd.backend.Matching.MS.MatchmakingQueueListener;
 import org.springframework.boot.CommandLineRunner;

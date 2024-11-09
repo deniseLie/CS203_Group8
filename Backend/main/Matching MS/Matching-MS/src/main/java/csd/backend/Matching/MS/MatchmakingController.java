@@ -18,8 +18,12 @@ public class MatchmakingController {
 
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingController.class);
 
+    private final MatchmakingService matchmakingService;
+
     @Autowired
-    private MatchmakingService matchmakingService;
+    public MatchmakingController(MatchmakingService matchmakingService) {
+        this.matchmakingService = matchmakingService;
+    }
 
     @PostMapping("/join")
     public String joinMatchmaking(@RequestParam String playerId, @RequestParam String rank) {

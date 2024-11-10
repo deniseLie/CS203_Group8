@@ -6,6 +6,7 @@ const ongoingTournaments = [...Array(10)].map((_, index) => ({
   id: `#909${index + 3}`,
   round: "2/3",
   matchesCompleted: "5/7",
+  status: 'Ongoing',
   startDateTime: "04 Sep 2024 16:40",
   endDateTime: index % 2 === 0 ? "04 Sep 2024 16:58" : "-",
   players: ["Player A", "Player B", "Player C"], // You might want to put actual player names here
@@ -29,7 +30,7 @@ const ongoingTournaments = [...Array(10)].map((_, index) => ({
 
 const OngoingTournamentsPage = () => (
   <TournamentPage
-    title="Ongoing Tournaments"
+    title="Tournaments"
     status="Ongoing"
     data={ongoingTournaments}
   />

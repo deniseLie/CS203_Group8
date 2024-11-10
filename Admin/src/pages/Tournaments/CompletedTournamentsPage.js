@@ -5,6 +5,7 @@ import TournamentPage from './TournamentPage';
 const completedTournaments = [...Array(10)].map((_, index) => ({
   id: `#909${index + 3}`,
   round: "2/3",
+  status: 'Completed',
   matchesCompleted: "5/7",
   startDateTime: "04 Sep 2024 16:40",
   endDateTime: index % 2 === 0 ? "04 Sep 2024 16:58" : "-",

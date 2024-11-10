@@ -19,12 +19,8 @@ public class SqsService {
     private final String matchmakingQueueUrl = dotenv.get("MATCHMAKING_QUEUE_URL");
     private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
 
-    public SqsService() {
-        if (accountQueueUrl == null || matchmakingQueueUrl == null || penaltyQueueUrl == null) {
-            throw new IllegalStateException("Required environment variables are missing.");
-        }
-        System.out.println("Loaded environment variables successfully.");
-        this.sqsClient = SqsClient.builder().build();
+    public SqsService(SqsClient sqsClient) {
+        this.sqsClient = sqsClient;
     }
 
     public SqsClient getSqsClient () {

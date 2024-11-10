@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
-import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MatchmakingService {
@@ -19,21 +16,23 @@ public class MatchmakingService {
     @Autowired
     private DynamoDbClient dynamoDbClient;
 
+    private final SqsService sqsService;
+
     @Autowired
-    private SqsClient sqsClient;
+    public MatchmakingService(SqsService sqsService) {
+        this.sqsService = sqsService;
+    }
 
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final String SQS_QUEUE_URL = "https://sqs.us-east-1.amazonaws.com/YOUR_ACCOUNT_ID/your-queue";
     private static final int MAX_PLAYERS = 8;
-
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
 
     // Add a player to the matchmaking pool
     public void addPlayerToPool(String playerName, String email, String queueStatus, int rankId) {
 
         Map<String, AttributeValue> item = new HashMap<>();
-        item.put("playerName", AttributeValue.builder().s(playerName).build()); 
+        item.put("playerName", AttributeValue.builder().s(playerName).build());
         item.put("email", AttributeValue.builder().s(email).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("rankId", AttributeValue.builder().n(String.valueOf(rankId)).build());
@@ -44,7 +43,7 @@ public class MatchmakingService {
                 .build();
 
         try {
-            logger.info("Attempting to add player {} with item: {}", playerName, item); 
+            logger.info("Attempting to add player {} with item: {}", playerName, item);
             dynamoDbClient.putItem(putItemRequest);
             logger.info("Successfully added player {} to the pool", playerName);
         } catch (Exception e) {
@@ -53,14 +52,85 @@ public class MatchmakingService {
         }
     }
 
-    // Check if there are enough players in the pool to start a match
-    public List<Map<String, AttributeValue>> checkPlayersInQueue(int rankId) {
+     // Retrieve player details from the database
+     private Map<String, AttributeValue> getPlayerDetails(String playerId) {
+        // Get player details
+        GetItemRequest getItemRequest = GetItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build()))
+                .build();
+
+        GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
+        return getItemResponse.item();
+    }
+
+    // Check Player Status: If banned, return remaining ban time
+    public Map<String, Object> checkPlayerStatus(String playerId) {
+        Map<String, AttributeValue> player = getPlayerDetails(playerId);
+        Map<String, Object> status = new HashMap<>();
+
+        if (player != null) {
+            status.put("playerId", player.get("playerId").s());
+            status.put("queueStatus", player.get("queueStatus").s());
+            long banUntil = Long.parseLong(player.get("banUntil").n());
+
+            // Check if the player is still banned
+            if (banUntil > System.currentTimeMillis()) {
+                // Calculate remaining ban time
+                long remainingTime = banUntil - System.currentTimeMillis();
+                status.put("remainingTime", remainingTime);
+
+            // Not banned
+            } else {
+                status.put("remainingTime", 0); 
+            }
+        } else {
+            logger.warn("Player {} not found", playerId);
+            status.put("error", "Player not found");
+        }
+        return status;
+    }
+
+    // Check Match : Enough Players with same rankId
+    public boolean checkForMatch(int rankId) {
+
+        // Get players queueing + same rankId
+        List<Map<String, AttributeValue>> players = checkPlayersInQueue(rankId);
+
+        // check do we have enough players
+        if (players.size() >= MAX_PLAYERS) {
+
+            // Take the first MAX_PLAYERS players and create a match
+            List<Map<String, AttributeValue>> playersToMatch = players.subList(0, MAX_PLAYERS);
+            createMatch(playersToMatch);
+            return true;
+        }
+        return false;
+    }
+
+    // Get Queueing players with the same rankId
+    private List<Map<String, AttributeValue>> checkPlayersInQueue(int rankId) {
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(PLAYERS_TABLE)
                 .filterExpression("queueStatus = :queueStatus and rankId = :rankId")
                 .expressionAttributeValues(Map.of(
-                    ":queueStatus", AttributeValue.builder().s("queue").build(),
-                    ":rankId", AttributeValue.builder().n(String.valueOf(rankId)).build()))
+                        ":queueStatus", AttributeValue.builder().s("queue").build(),
+                        ":rankId", AttributeValue.builder().n(String.valueOf(rankId)).build()))
+                .build();
+
+        ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
+        return scanResponse.items();
+    }
+
+    // Check if there are enough players in the pool to start a match
+    public List<Map<String, AttributeValue>> checkPlayersInSpeedUpQueue(int rankId) {
+        ScanRequest scanRequest = ScanRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .filterExpression("queueStatus = :queueStatus and rankId BETWEEN :minRankId AND :maxRankId")
+                .expressionAttributeValues(Map.of(
+                        ":queueStatus", AttributeValue.builder().s("queue").build(),
+                        ":minRankId", AttributeValue.builder().n(String.valueOf(rankId - 1)).build(),
+                        ":maxRankId", AttributeValue.builder().n(String.valueOf(rankId + 1)).build()))
                 .build();
 
         ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
@@ -72,7 +142,7 @@ public class MatchmakingService {
         for (Map<String, AttributeValue> player : players) {
             String playerName = player.get("playerName").s();
 
-           // Update the player's queueStatus to 'not queue' after they are matched
+            // Update the player's queueStatus to 'not queue' after they are matched
             Map<String, AttributeValueUpdate> updates = new HashMap<>();
             updates.put("queueStatus", AttributeValueUpdate.builder()
                     .value(AttributeValue.builder().s("not queue").build())
@@ -89,23 +159,75 @@ public class MatchmakingService {
         }
     }
 
-    // Create a new match with 8 players
+    // Update player's queue status in database
+    public void updatePlayerStatus(String playerName, String queueStatus) {
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+
+        updates.put("queueStatus", AttributeValueUpdate.builder()
+            .value(AttributeValue.builder().s(queueStatus).build())
+            .action(AttributeAction.PUT)
+            .build());
+
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+            .tableName(PLAYERS_TABLE)
+            .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+            .attributeUpdates(updates)
+            .build();
+        
+        dynamoDbClient.updateItem(updateRequest);
+        logger.info("Updated player status to '{}' for player: {}", queueStatus, playerName);
+    }
+
+    public void updatePlayerBanStatus(String playerId, String queueStatus, long banEndTime) {
+        
+        // Update player's status to 'banned' and set the 'banUntil' timestamp
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+        updates.put("queueStatus", AttributeValueUpdate.builder()
+                .value(AttributeValue.builder().s(queueStatus).build())
+                .action(AttributeAction.PUT)
+                .build());
+        updates.put("banUntil", AttributeValueUpdate.builder()
+                .value(AttributeValue.builder().n(String.valueOf(banEndTime)).build())
+                .action(AttributeAction.PUT)
+                .build());
+    
+        // Prepare the update request to DynamoDB
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build())) // Player key
+                .attributeUpdates(updates)
+                .build();
+    
+        // Execute the update request
+        try {
+            dynamoDbClient.updateItem(updateRequest);
+            logger.info("Player {} has been banned until {}.", playerId, banEndTime);
+        } catch (Exception e) {
+            logger.error("Failed to update ban status for player {}: {}", playerId, e.getMessage());
+        }
+    }
+    
+
+    // Create a new match with players from the database
     public void createMatch(List<Map<String, AttributeValue>> players) {
         Map<String, AttributeValue> matchItem = new HashMap<>();
-        matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // matchId as timestamp
-
-        // Add player emails to the match
-        List<AttributeValue> playerList = players.stream()
-                .map(player -> AttributeValue.builder().s(player.get("playerName").s()).build())
-                .toList();
-
+        matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // Use timestamp as matchId
+    
+        // Add player names to the match and update their queue status
+        List<AttributeValue> playerList = new ArrayList<>();
+        for (Map<String, AttributeValue> player : players) {
+            String playerName = player.get("playerName").s();
+            playerList.add(AttributeValue.builder().s(playerName).build());
+            updatePlayerStatus(playerName, "unqueue");  
+        }
+    
         matchItem.put("players", AttributeValue.builder().l(playerList).build());
-
+    
         PutItemRequest matchRequest = PutItemRequest.builder()
                 .tableName(MATCHES_TABLE)
                 .item(matchItem)
                 .build();
-
+    
         try {
             dynamoDbClient.putItem(matchRequest);
             logger.info("Match created successfully with players: {}", players);
@@ -115,52 +237,16 @@ public class MatchmakingService {
         }
     }
 
-    // Method to handle SQS message processing
-    public void processSqsMessages() {
-        ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-                .queueUrl(SQS_QUEUE_URL)
-                .maxNumberOfMessages(10)
-                .waitTimeSeconds(20)
-                .build();
+    public void triggerMatchmaking(String playerId) {
+        // Create message attributes if needed
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("AttributeKey", MessageAttributeValue.builder().stringValue("AttributeValue").dataType("String").build());
 
-        List<Message> messages = sqsClient.receiveMessage(receiveMessageRequest).messages();
+        // Define message body
+        String messageBody = "{\"action\": \"match_players\", \"player_id\": \"" + playerId + "\"}";
 
-        for (Message message : messages) {
-            String body = message.body();
-
-            Map<String, Object> playerData = parseMessage(body);
-            String email = (String) playerData.get("email");
-            String playerName = (String) playerData.get("playerName");
-            String queueStatus = (String) playerData.get("queueStatus");
-            int rank = 1;
-
-            // Add player to the matchmaking pool
-            addPlayerToPool(playerName, email, queueStatus, rank);
-
-            /// Check if there are enough players in the queue to create a match
-            List<Map<String, AttributeValue>> players = checkPlayersInQueue(rank);
-            if (players.size() >= MAX_PLAYERS) {
-                createMatch(players);
-                removePlayersFromQueue(players); 
-                System.out.println("Match created with players: " + players);
-            }
-
-            // Delete the message from the queue after processing
-            DeleteMessageRequest deleteMessageRequest = DeleteMessageRequest.builder()
-                    .queueUrl(SQS_QUEUE_URL)
-                    .receiptHandle(message.receiptHandle())
-                    .build();
-            sqsClient.deleteMessage(deleteMessageRequest);
-        }
-    }
-
-    private Map<String, Object> parseMessage(String body) {
-        // Parse the SQS message body and return player data as a map
-        // You can replace this with JSON deserialization in a real-world case
-        Map<String, Object> playerData = new HashMap<>();
-        playerData.put("email", "player1@example.com"); // Replace with actual parsing
-        playerData.put("playerName", "Player1"); // Replace with actual parsing
-        playerData.put("queueStatus", "queue"); // Replace with actual parsing
-        return playerData;
+        // Send message to the matchmaking queue
+        sqsService.sendMessageToQueue("matchmaking", messageBody, messageAttributes);
+        System.out.println("Automatically triggered matchmaking for player: " + playerId);
     }
 }

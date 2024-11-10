@@ -33,6 +33,13 @@ public class MatchmakingController {
         int rankId = Integer.parseInt(rank);  // Parse rankId to integer if needed
 
         try {
+             // Check if the player is banned
+             Map<String, Object> playerStatus = matchmakingService.checkPlayerStatus(playerId);
+             if (playerStatus.containsKey("remainingTime") && (long) playerStatus.get("remainingTime") > 0) {
+                 long remainingTime = (long) playerStatus.get("remainingTime");
+                 return "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.";
+             }
+             
             // Queue Player 
             matchmakingService.updatePlayerStatus(playerId, "queue");
             logger.info("Player status updated to 'queue'. Player: {}", playerId);

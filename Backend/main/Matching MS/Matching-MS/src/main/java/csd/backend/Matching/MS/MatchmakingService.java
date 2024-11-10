@@ -52,6 +52,45 @@ public class MatchmakingService {
         }
     }
 
+     // Retrieve player details from the database
+     private Map<String, AttributeValue> getPlayerDetails(String playerId) {
+        // Get player details
+        GetItemRequest getItemRequest = GetItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build()))
+                .build();
+
+        GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
+        return getItemResponse.item();
+    }
+
+    // Check Player Status: If banned, return remaining ban time
+    public Map<String, Object> checkPlayerStatus(String playerId) {
+        Map<String, AttributeValue> player = getPlayerDetails(playerId);
+        Map<String, Object> status = new HashMap<>();
+
+        if (player != null) {
+            status.put("playerId", player.get("playerId").s());
+            status.put("queueStatus", player.get("queueStatus").s());
+            long banUntil = Long.parseLong(player.get("banUntil").n());
+
+            // Check if the player is still banned
+            if (banUntil > System.currentTimeMillis()) {
+                // Calculate remaining ban time
+                long remainingTime = banUntil - System.currentTimeMillis();
+                status.put("remainingTime", remainingTime);
+
+            // Not banned
+            } else {
+                status.put("remainingTime", 0); 
+            }
+        } else {
+            logger.warn("Player {} not found", playerId);
+            status.put("error", "Player not found");
+        }
+        return status;
+    }
+
     // Check Match : Enough Players with same rankId
     public boolean checkForMatch(int rankId) {
 
@@ -138,6 +177,36 @@ public class MatchmakingService {
         dynamoDbClient.updateItem(updateRequest);
         logger.info("Updated player status to '{}' for player: {}", queueStatus, playerName);
     }
+
+    public void updatePlayerBanStatus(String playerId, String queueStatus, long banEndTime) {
+        
+        // Update player's status to 'banned' and set the 'banUntil' timestamp
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+        updates.put("queueStatus", AttributeValueUpdate.builder()
+                .value(AttributeValue.builder().s(queueStatus).build())
+                .action(AttributeAction.PUT)
+                .build());
+        updates.put("banUntil", AttributeValueUpdate.builder()
+                .value(AttributeValue.builder().n(String.valueOf(banEndTime)).build())
+                .action(AttributeAction.PUT)
+                .build());
+    
+        // Prepare the update request to DynamoDB
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build())) // Player key
+                .attributeUpdates(updates)
+                .build();
+    
+        // Execute the update request
+        try {
+            dynamoDbClient.updateItem(updateRequest);
+            logger.info("Player {} has been banned until {}.", playerId, banEndTime);
+        } catch (Exception e) {
+            logger.error("Failed to update ban status for player {}: {}", playerId, e.getMessage());
+        }
+    }
+    
 
     // Create a new match with players from the database
     public void createMatch(List<Map<String, AttributeValue>> players) {

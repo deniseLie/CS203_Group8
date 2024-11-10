@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -36,8 +37,11 @@ public class MatchmakingQueueListener {
             for (Message message : response.messages()) {
                 System.out.println("Processing Queue message: " + message.body());
 
-                // Your message handling logic here
-                processMessage(message.body());
+                // Extract the message attributes from the received message
+                Map<String, MessageAttributeValue> messageAttributes = message.messageAttributes();
+
+                // Pass both the message body and message attributes to the processing method
+                processMessage(message.body(), messageAttributes);
 
                 // Delete message after processing
                 deleteMessageFromQueue(queueUrl, message);
@@ -46,10 +50,45 @@ public class MatchmakingQueueListener {
     }
 
     // Placeholder for message processing logic
-    private void processMessage(String messageBody) {
+    private void processMessage(String messageBody, Map<String, MessageAttributeValue> messageAttributes) {
+
         System.out.println("Message processed: " + messageBody);
 
-        // Process the message and extract player details
+        // Check if the message has the 'actionType' attribute
+        String actionType = getActionTypeFromMessageAttributes(messageAttributes);
+        
+        // Skip processing if actionType is not found
+        if (actionType == null) {
+            System.err.println("No actionType found in the message attributes. Skipping message.");
+            return;  
+        }
+        
+        // Based on the actionType
+        switch (actionType) {
+            case "addPlayer":
+                processAddPlayer(messageBody);
+                break;
+            case "ban": 
+                processBanPlayer(messageBody);
+                break;
+            default: 
+                System.err.println("Unknown action type: " + actionType);
+                break;
+
+        }
+    }
+
+    // Helper method to get the 'actionType' from the message attributes
+    private String getActionTypeFromMessageAttributes(Map<String, MessageAttributeValue> messageAttributes) {
+        if (messageAttributes != null && messageAttributes.containsKey("actionType")) {
+            return messageAttributes.get("actionType").stringValue();
+        }
+        return null; 
+    }
+
+    // Process Add Player to DB
+    private void processAddPlayer (String messageBody) {
+        // Extract player details
         Map<String, String> playerData = parsePlayerDataFromMessage(messageBody);
 
         // ADD PLAYER
@@ -63,7 +102,34 @@ public class MatchmakingQueueListener {
             matchmakingService.addPlayerToPool(playerId, email, queueStatus, rankId);
             System.out.println("Player added to pool: " + playerId);
         }
+    }
 
+    // Ban Player
+    private void processBanPlayer(String messageBody) {
+
+        // Only process the message if it's a ban-related action
+        String[] parts = messageBody.split(", until: ");
+        if (parts.length == 2) {
+            String playerId = parts[0];         // Player ID
+            String banUntilString = parts[1].trim();  // Ban end time (until when)
+
+            // Log for debugging
+            System.out.println("Player ID: " + playerId + ", Ban Until: " + banUntilString);
+            try {
+
+                // Parse the banUntilString to Date object
+                Date banUntil = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy").parse(banUntilString);
+                long banEndTime = banUntil.getTime();
+                
+                // Use the matchmakingService to update the player's ban status in the database
+                matchmakingService.updatePlayerBanStatus(playerId, "banned", banEndTime);
+
+            } catch (Exception e) {
+                System.err.println("Failed to process ban end time: " + e.getMessage());
+            }
+        } else {
+            System.err.println("Message format invalid: " + messageBody);
+        }
     }
 
     // Parse player data from JSON message body

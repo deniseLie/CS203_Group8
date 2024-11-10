@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/matchmaking")
+@RequestMapping("/penalty")
 public class PenaltyController {
 
     private static final Logger logger = LoggerFactory.getLogger(PenaltyController.class);

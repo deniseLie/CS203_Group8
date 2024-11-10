@@ -100,6 +100,20 @@ public class PenaltyService {
         // Update in the database
         dynamoDbClient.updateItem(updateRequest);
         logger.info("Player {} banned for {} seconds (dynamic duration)", playerId, dynamicDuration);
+
+        // Prepare the message body to send to the matchmaking queue - SQS
+        String messageBody = playerId + ", until: " + new Date(banEndTime);
+
+        // Prepare message attributes (optional)
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("actionType", MessageAttributeValue.builder()
+                .stringValue("ban")
+                .dataType("String")
+                .build());
+
+        // Send the message to the matchmaking queue
+        sqsService.sendMessageToQueue("matchmaking", messageBody, messageAttributes);
+        logger.info("Message sent to matchmaking queue: {}", messageBody);
     }
 
     // Check player status and return remaining ban time if banned

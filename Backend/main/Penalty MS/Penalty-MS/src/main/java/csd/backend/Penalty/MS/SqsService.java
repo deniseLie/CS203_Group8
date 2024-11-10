@@ -12,12 +12,16 @@ import software.amazon.awssdk.services.sqs.model.SendMessageResponse;
 @Service
 public class SqsService {
 
-    private static final SqsClient sqsClient = SqsClient.builder().build();
+    private final SqsClient sqsClient;
 
     private final Dotenv dotenv = Dotenv.load();
     private final String accountQueueUrl = dotenv.get("ACCOUNT_QUEUE_URL");
     private final String matchmakingQueueUrl = dotenv.get("MATCHMAKING_QUEUE_URL");
     private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
+
+    public SqsService(SqsClient sqsClient) {
+        this.sqsClient = sqsClient;
+    }
 
     // Method to get the SqsClient instance
     public SqsClient getSqsClient() {

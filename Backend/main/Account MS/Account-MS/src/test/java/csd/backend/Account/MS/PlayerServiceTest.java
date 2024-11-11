@@ -2,12 +2,10 @@
 package csd.backend.Account.MS;
 
 import csd.backend.Account.MS.Exception.*;
-import csd.backend.Account.MS.Model.*;
-import csd.backend.Account.MS.Model.Player.Player;
-import csd.backend.Account.MS.Model.Player.PlayerChampionStats;
-import csd.backend.Account.MS.Model.Player.PlayerOverallStats;
-import csd.backend.Account.MS.Service.*;
-import csd.backend.Account.MS.Repository.*;
+import csd.backend.Account.MS.Model.Player.*;
+import csd.backend.Account.MS.Service.Player.*;
+import csd.backend.Account.MS.Repository.Player.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,7 +28,7 @@ public class PlayerServiceTest {
     private PlayerChampionStatsRepository playerChampionStatsRepository;
 
     @Mock
-    private StatsService statsService;
+    private PlayerStatsService playerStatsService;
 
     @InjectMocks
     private PlayerService playerService;
@@ -87,8 +85,8 @@ public class PlayerServiceTest {
         playerService.handleMatchCompletion(playerId, championId, kdRate, finalPlacement, rankPoints, isWin);
 
         // Verify that the stats updates are called with correct arguments
-        verify(statsService, times(1)).updateOverallStats(playerId, rankPoints, kdRate, finalPlacement, isWin);
-        verify(statsService, times(1)).updateChampionStats(playerId, championId, kdRate, finalPlacement, isWin);
+        verify(playerStatsService, times(1)).updateOverallStats(playerId, rankPoints, kdRate, finalPlacement, isWin);
+        verify(playerStatsService, times(1)).updateChampionStats(playerId, championId, kdRate, finalPlacement, isWin);
     }
 
     @Test

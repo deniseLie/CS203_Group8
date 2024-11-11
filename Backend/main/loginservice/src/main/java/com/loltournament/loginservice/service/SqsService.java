@@ -22,10 +22,11 @@ public class SqsService {
         this.sqsClient = SqsClient.builder().build();
     }
 
-    public void sendMessageToQueue(String queueUrl, String messageBody) {
+    public void sendMessageToQueue(String queueUrl, String messageBody, String messageGroupId) {
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
             .queueUrl(queueUrl)
             .messageBody(messageBody)
+            .messageGroupId(messageGroupId)
             .build();
         sqsClient.sendMessage(sendMsgRequest);
         System.out.println("Message sent to queue: " + queueUrl);

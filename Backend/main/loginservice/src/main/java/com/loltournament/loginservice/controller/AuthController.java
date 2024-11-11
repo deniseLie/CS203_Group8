@@ -72,10 +72,11 @@ public class AuthController {
             responseBody.put("message", "User registered successfully!");
 
             String messageBody = "{\"action\": \"add_player\", \"player_id\": \"" + playerId + "\"}";
-            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody);
-            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody);
-            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody);
-            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody);
+            String messageGroupId = "player-" + playerId;
+            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId);
+            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId);
+            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId);
+            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId);
 
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
 

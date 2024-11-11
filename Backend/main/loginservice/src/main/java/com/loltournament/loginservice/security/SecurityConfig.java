@@ -78,7 +78,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow CORS for all paths
-                        .allowedOrigins("http://localhost:3000") // Allow specific origins
+                        .allowedOrigins("http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com") // Allow specific origins
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific HTTP methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies/credentials to be sent

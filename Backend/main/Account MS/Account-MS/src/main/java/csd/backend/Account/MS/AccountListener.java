@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import csd.backend.Account.MS.Model.AppUser;
-import csd.backend.Account.MS.Model.AppUserService;
+import csd.backend.Account.MS.Model.Player;
+import csd.backend.Account.MS.Service.PlayerService;
+import csd.backend.Account.MS.Service.SqsService;
 
 import java.util.*;
 
@@ -15,12 +16,12 @@ import java.util.*;
 public class AccountListener {
 
     private final SqsService sqsService;
-    private final AppUserService appUserService;
+    private final PlayerService playerService;
 
     @Autowired
-    public AccountListener(SqsService sqsService, AppUserService appUserService) {
+    public AccountListener(SqsService sqsService, PlayerService playerService) {
         this.sqsService = sqsService;
-        this.appUserService = appUserService;
+        this.playerService = playerService;
     }
 
     // Listen for messages in the Account Queue
@@ -61,7 +62,7 @@ public class AccountListener {
             String playerId = playerData.get("playerId");
             String email = playerData.get("email");
 
-            // appUserService.registerUser(new AppUser(playerId, email));
+            // playerService.registerUser(new Player(playerId, email));
             System.out.println("Player added to pool: " + playerId);
         }
     }

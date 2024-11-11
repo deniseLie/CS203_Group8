@@ -1,0 +1,10 @@
+csd\backend\Account\MS\Model\AppUser.class
+csd\backend\Account\MS\Model\AppUserService.class
+csd\backend\Account\MS\Model\AppUser$AuthProvider.class
+csd\backend\Account\MS\Model\AppUserRepository.class
+csd\backend\Account\MS\Security\SecurityConfig.class
+csd\backend\config\AwsConfig.class
+csd\backend\Account\MS\SqsService.class
+csd\backend\Account\MS\AccountMsApplication.class
+csd\backend\Account\MS\Controller\ContentController.class
+csd\backend\Account\MS\AccountListener.class

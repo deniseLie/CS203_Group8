@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import software.amazon.awssdk.services.sqs.model.*;
 
 @Service
 public class AppUserService implements UserDetailsService {

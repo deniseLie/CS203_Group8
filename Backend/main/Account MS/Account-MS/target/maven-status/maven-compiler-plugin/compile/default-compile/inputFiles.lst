@@ -1,6 +1,9 @@
-/Users/lennelcjj/SMU/Y2S1/CS203/Project New/CS203_Group8/Backend/main/Account MS/Account-MS/src/main/java/csd/backend/Account/MS/AccountMsApplication.java
-/Users/lennelcjj/SMU/Y2S1/CS203/Project New/CS203_Group8/Backend/main/Account MS/Account-MS/src/main/java/csd/backend/Account/MS/Controller/ContentController.java
-/Users/lennelcjj/SMU/Y2S1/CS203/Project New/CS203_Group8/Backend/main/Account MS/Account-MS/src/main/java/csd/backend/Account/MS/Model/AppUser.java
-/Users/lennelcjj/SMU/Y2S1/CS203/Project New/CS203_Group8/Backend/main/Account MS/Account-MS/src/main/java/csd/backend/Account/MS/Model/AppUserRepository.java
-/Users/lennelcjj/SMU/Y2S1/CS203/Project New/CS203_Group8/Backend/main/Account MS/Account-MS/src/main/java/csd/backend/Account/MS/Model/AppUserService.java
-/Users/lennelcjj/SMU/Y2S1/CS203/Project New/CS203_Group8/Backend/main/Account MS/Account-MS/src/main/java/csd/backend/Account/MS/Security/SecurityConfig.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\AccountListener.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\AccountMsApplication.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Controller\ContentController.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Model\AppUser.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Model\AppUserRepository.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Model\AppUserService.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Security\SecurityConfig.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\SqsService.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\config\AwsConfig.java

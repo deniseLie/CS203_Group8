@@ -5,21 +5,32 @@ import loginSplash from "../assets/login_splash.jpg";
 import { Link } from 'react-router-dom';
 import axios from 'axios'; // Import axios for API requests
 import logo from "../assets/riot_logo.png";
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google'; // Import Google OAuth
+import { GoogleOAuthProvider } from '@react-oauth/google'; // Import Google OAuth
 import env from "react-dotenv";
-import GoogleIcon from '@mui/icons-material/Google'; // Optional: Google icon from Material UI icons
 
 function Login({ login }) {
+  // Constants: Login form username, password
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  // Constant: Toggle show password
   const [showPassword, setShowPassword] = useState(false);
+
+  // Constant: Error Message for failed login
   const [errorMessage, setErrorMessage] = useState("");
 
+  // const: check if username/password is filled in to enable login button
   const isFormFilled = username.length > 0 && password.length > 0;
+
+  // Function: Toggle show password
   const handleClickShowPassword = () => setShowPassword(!showPassword);
+
+  // Function: Redirect to backend link for Google OAuth  
   const handleGoogleLogin = () => {
     window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   };
+
+  // Function: Handle login
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isFormFilled) {
@@ -29,6 +40,7 @@ function Login({ login }) {
           password: password
         });
 
+        // Set JWT
         const token = response.data.jwt;
         localStorage.setItem('jwtToken', token);
         login();
@@ -38,18 +50,7 @@ function Login({ login }) {
     }
   };
 
-  const handleGoogleLoginSuccess = (response) => {
-    console.log("Google Login Success: ", response);
-    // Process the Google token from response and authenticate on your backend
-  };
-
-  const handleGoogleLoginFailure = (error) => {
-    console.error("Google Login Failed: ", error);
-    setErrorMessage("Google login failed. Please try again.");
-  };
-
   return (
-    <GoogleOAuthProvider clientId={env.GOOGLE_CLIENT_ID}> {/* Wrap your component in GoogleOAuthProvider */}
       <Box
         display="flex"
         flexDirection="column"
@@ -143,7 +144,6 @@ function Login({ login }) {
             />
 
             {/* Google Login Button */}
-            {/* <Link to=""> */}
       <Box
       display="flex"
       justifyContent="center"
@@ -211,7 +211,6 @@ function Login({ login }) {
           </Box>
         </Box>
       </Box>
-    </GoogleOAuthProvider>
   );
 }
 

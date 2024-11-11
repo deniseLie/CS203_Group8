@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// For google oauth
 const LoginSuccess = () => {
   const navigate = useNavigate();
 

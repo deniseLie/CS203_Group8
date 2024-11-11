@@ -35,6 +35,7 @@ import viImage from '../assets/champions/vi.png';
 import namiImage from '../assets/champions/nami.png';
 import settImage from '../assets/champions/sett.png';
 
+//========= ASSIGNMENT: all the role and champion icons =========
 const roleIcons = [
   { src: assassinIcon, alt: 'Assassin' },
   { src: fighterIcon, alt: 'Fighter' },
@@ -68,6 +69,8 @@ const champions = [
   { src: ahriImage, alt: 'Ahri', name: 'Ahri', role: ['mage', 'assassin'] },
   { src: kaynImage, alt: 'Kayn', name: 'Kayn', role: ['assassin', 'fighter'] }
 ];
+
+// ========= END OF ASSIGNMENT =========
 
 const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
   // State to track the selected role, sorting option, and search query

@@ -9,7 +9,7 @@ import diamondRankImage from '../assets/ranks/diamond.png';
 import diamondBanner from '../assets/rank-banners/diamond.png';
 
 function History() {
-  // Updated dummy data structure
+  // TODO: Replace DUMMY DATA -- current playername, leaderboardData, profile
   const currentPlayer = "hide on bush";
   const leaderboardData = [
     {

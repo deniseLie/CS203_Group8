@@ -105,7 +105,16 @@ function History() {
 
         {/* Profile Summary */}
         <Box sx={{ flex: 1, marginTop: -5 }}>
-          <ProfileBanner profile={profile} />
+        <ProfileBanner
+          profile={{
+            banner: diamondBanner,
+            rankSymbol: diamondRankImage,
+            rank: 'Diamond I',
+            lp: 70,
+          }}
+          displayType="rank"
+        />
+
         </Box>
       </Box>
     </Box>

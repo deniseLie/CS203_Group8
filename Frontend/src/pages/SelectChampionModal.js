@@ -2,72 +2,41 @@ import React, { useState } from 'react';
 import { Box, Typography, Modal, IconButton, Select, MenuItem, InputBase, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search'
-
-// Manually importing all the role icons
-import assassinIcon from '../assets/championClass/roleicon-assassin.png';
-import fighterIcon from '../assets/championClass/roleicon-fighter.png';
-import mageIcon from '../assets/championClass/roleicon-mage.png';
-import marksmanIcon from '../assets/championClass/roleicon-marksman.png';
-import supportIcon from '../assets/championClass/roleicon-support.png';
-import tankIcon from '../assets/championClass/roleicon-tank.png';
-
-// Manually importing all the champion images
-import annieImage from '../assets/champions/annie.png';
-import galioImage from '../assets/champions/galio.png';
-import leBlancImage from '../assets/champions/leblanc.png';
-import masterYiImage from '../assets/champions/masteryi.png';
-import sorakaImage from '../assets/champions/soraka.png';
-import teemoImage from '../assets/champions/teemo.png';
-import tristanaImage from '../assets/champions/tristana.png';
-import missFortuneImage from '../assets/champions/missfortune.png';
-import singedImage from '../assets/champions/singed.png';
-import sonaImage from '../assets/champions/sona.png';
-import ahriImage from '../assets/champions/ahri.png';
-import kaynImage from '../assets/champions/kayn.png';
-import kaiSaImage from '../assets/champions/kaisa.png';
-import zacImage from '../assets/champions/zac.png';
-import yasuoImage from '../assets/champions/yasuo.png';
-import belVethImage from '../assets/champions/belveth.png';
-import jinxImage from '../assets/champions/jinx.png';
-import sennaImage from '../assets/champions/senna.png';
-import zedImage from '../assets/champions/zed.png';
-import viImage from '../assets/champions/vi.png';
-import namiImage from '../assets/champions/nami.png';
-import settImage from '../assets/champions/sett.png';
+import { championsAssets, roleIconsAssets } from '../components/importAssets';
 
 //========= ASSIGNMENT: all the role and champion icons =========
 const roleIcons = [
-  { src: assassinIcon, alt: 'Assassin' },
-  { src: fighterIcon, alt: 'Fighter' },
-  { src: mageIcon, alt: 'Mage' },
-  { src: marksmanIcon, alt: 'Marksman' },
-  { src: supportIcon, alt: 'Support' },
-  { src: tankIcon, alt: 'Tank' },
+  { src: roleIconsAssets.assassin, alt: 'Assassin' },
+  { src: roleIconsAssets.fighter, alt: 'Fighter' },
+  { src: roleIconsAssets.mage, alt: 'Mage' },
+  { src: roleIconsAssets.marksman, alt: 'Marksman' },
+  { src: roleIconsAssets.support, alt: 'Support' },
+  { src: roleIconsAssets.tank, alt: 'Tank' },
 ];
 
 const champions = [
-  { src: kaiSaImage, alt: 'Kai\'Sa', name: 'Kai\'Sa', role: ['marksman', 'assassin'] },
-  { src: zacImage, alt: 'Zac', name: 'Zac', role: ['tank', 'fighter'] },
-  { src: yasuoImage, alt: 'Yasuo', name: 'Yasuo', role: ['fighter', 'assassin'] },
-  { src: belVethImage, alt: 'Bel\'Veth', name: 'Bel\'Veth', role: ['fighter', 'assassin'] },
-  { src: jinxImage, alt: 'Jinx', name: 'Jinx', role: ['marksman'] },
-  { src: sennaImage, alt: 'Senna', name: 'Senna', role: ['marksman', 'support'] },
-  { src: zedImage, alt: 'Zed', name: 'Zed', role: ['assassin'] },
-  { src: viImage, alt: 'Vi', name: 'Vi', role: ['fighter'] },
-  { src: namiImage, alt: 'Nami', name: 'Nami', role: ['support', 'mage'] },
-  { src: settImage, alt: 'Sett', name: 'Sett', role: ['fighter', 'tank'] },
-  { src: annieImage, alt: 'Annie', name: 'Annie', role: ['mage'] },
-  { src: galioImage, alt: 'Galio', name: 'Galio', role: ['tank', 'mage'] },
-  { src: leBlancImage, alt: 'LeBlanc', name: 'LeBlanc', role: ['assassin', 'mage'] },
-  { src: masterYiImage, alt: 'Master Yi', name: 'Master Yi', role: ['assassin', 'fighter'] },
-  { src: sorakaImage, alt: 'Soraka', name: 'Soraka', role: ['support'] },
-  { src: teemoImage, alt: 'Teemo', name: 'Teemo', role: ['marksman', 'assassin'] },
-  { src: tristanaImage, alt: 'Tristana', name: 'Tristana', role: ['marksman', 'assassin'] },
-  { src: missFortuneImage, alt: 'Miss Fortune', name: 'Miss Fortune', role: ['marksman'] },
-  { src: singedImage, alt: 'Singed', name: 'Singed', role: ['fighter', 'tank'] },
-  { src: sonaImage, alt: 'Sona', name: 'Sona', role: ['support', 'mage'] },
-  { src: ahriImage, alt: 'Ahri', name: 'Ahri', role: ['mage', 'assassin'] },
-  { src: kaynImage, alt: 'Kayn', name: 'Kayn', role: ['assassin', 'fighter'] }
+  { src: championsAssets.kaiSa, alt: 'Kai\'Sa', name: 'Kai\'Sa', role: ['marksman', 'assassin'] },
+  { src: championsAssets.zac, alt: 'Zac', name: 'Zac', role: ['tank', 'fighter'] },
+  { src: championsAssets.yasuo, alt: 'Yasuo', name: 'Yasuo', role: ['fighter', 'assassin'] },
+  { src: championsAssets.belVeth, alt: 'Bel\'Veth', name: 'Bel\'Veth', role: ['fighter', 'assassin'] },
+  { src: championsAssets.jinx, alt: 'Jinx', name: 'Jinx', role: ['marksman'] },
+  { src: championsAssets.senna, alt: 'Senna', name: 'Senna', role: ['marksman', 'support'] },
+  { src: championsAssets.zed, alt: 'Zed', name: 'Zed', role: ['assassin'] },
+  { src: championsAssets.vi, alt: 'Vi', name: 'Vi', role: ['fighter'] },
+  { src: championsAssets.nami, alt: 'Nami', name: 'Nami', role: ['support', 'mage'] },
+  { src: championsAssets.sett, alt: 'Sett', name: 'Sett', role: ['fighter', 'tank'] },
+  { src: championsAssets.annie, alt: 'Annie', name: 'Annie', role: ['mage'] },
+  { src: championsAssets.galio, alt: 'Galio', name: 'Galio', role: ['tank', 'mage'] },
+  { src: championsAssets.leBlanc, alt: 'LeBlanc', name: 'LeBlanc', role: ['assassin', 'mage'] },
+  { src: championsAssets.masterYi, alt: 'Master Yi', name: 'Master Yi', role: ['assassin', 'fighter'] },
+  { src: championsAssets.soraka, alt: 'Soraka', name: 'Soraka', role: ['support'] },
+  { src: championsAssets.teemo, alt: 'Teemo', name: 'Teemo', role: ['marksman', 'assassin'] },
+  { src: championsAssets.tristana, alt: 'Tristana', name: 'Tristana', role: ['marksman', 'assassin'] },
+  { src: championsAssets.missFortune, alt: 'Miss Fortune', name: 'Miss Fortune', role: ['marksman'] },
+  { src: championsAssets.singed, alt: 'Singed', name: 'Singed', role: ['fighter', 'tank'] },
+  { src: championsAssets.sona, alt: 'Sona', name: 'Sona', role: ['support', 'mage'] },
+  { src: championsAssets.ahri, alt: 'Ahri', name: 'Ahri', role: ['mage', 'assassin'] },
+  { src: championsAssets.kayn, alt: 'Kayn', name: 'Kayn', role: ['assassin', 'fighter'] }
 ];
 
 // ========= END OF ASSIGNMENT =========

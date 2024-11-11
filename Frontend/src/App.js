@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import PostGame from './pages/PostGame';
 import TournamentBracket from './pages/TournamentBracket';
 import LoginSuccess from './pages/LoginSuccess';
+import Profile from './pages/Profile';
 
 const theme = createTheme({
   typography: {
@@ -44,18 +45,16 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Routes>
-          <Route path="/register" element={<Register />} />
+          {/* <Route path="/register" element={<Register />} /> */}
+          <Route path="/register" element={<Profile />} />
           <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
           <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
-          
-        <Route path="/login-success" element={<LoginSuccess />} />
-          <Route path="/postgame" element={isAuthenticated ? <PostGame   logout={logout} /> : <Navigate to="/login" />} />
+          <Route path="/profile" element={isAuthenticated ? <Profile logout={logout} /> : <Navigate to="/login" />} />
+          <Route path="/login-success" element={<LoginSuccess />} />
+          <Route path="/postgame" element={isAuthenticated ? <PostGame logout={logout} /> : <Navigate to="/login" />} />
           <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} />
           <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket logout={logout} /> : <Navigate to="/login" />} />
-          <Route
-            path="/leaderboard"
-            element={isAuthenticated ? <Leaderboard /> : <Navigate to="/login" />}
-          />
+          <Route path="/leaderboard" element={isAuthenticated ? <Leaderboard logout = {logout} /> : <Navigate to="/login" />}/>
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

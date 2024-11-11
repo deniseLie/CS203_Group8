@@ -4,8 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
-import csd.backend.Account.MS.Model.*;
+import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Service.*;
+import csd.backend.Account.MS.Service.Player.*;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
@@ -52,7 +53,7 @@ class AccountListenerTest {
         accountListener.processAccountMessage(messageBody, attributes);
 
         // Verify that the playerService handleMatchCompletion method is called
-        verify(playerService, times(1)).handleMatchCompletion(anyLong(), anyInt(), anyDouble(), anyInt(), anyInt(), anyBoolean());
+        verify(playerService, times(1)).handleMatchCompletion(anyLong(), anyLong(), anyDouble(), anyInt(), anyInt(), anyBoolean());
     }
 
     @Test

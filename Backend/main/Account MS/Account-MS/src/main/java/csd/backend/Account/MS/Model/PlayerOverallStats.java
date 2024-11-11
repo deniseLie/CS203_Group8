@@ -1,5 +1,6 @@
 package csd.backend.Account.MS.Model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +14,7 @@ public class PlayerOverallStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Change userId to Long for consistency with Player's Id type
+    @Column(name = "userId")
     private Long userId;  // Relates to Player
 
     private int rankId;

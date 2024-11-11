@@ -8,6 +8,7 @@ import arenaIcon from '../assets/arena-icon.png';
 import rankCircle from '../assets/ranked-frame.png';
 
 // Sample data with an AFK flag for demonstration
+// TO DO: Replace leaderboard data and current player dummy data  
 const leaderboardData = [
   { standing: '1ST', champion: 'Ahri', playerName: 'ARAMLOVER', kd: '8/0', kda: '8.0 KDA' },
   { standing: '2ND', champion: 'Sett', playerName: 'Rodan', kd: '8/0', kda: '8.0 KDA' },
@@ -36,6 +37,7 @@ const PostGame = () => {
     }
   }, [currentPlayerData]);
 
+  // Function: Close AFK Modal
   const handleAgree = () => {
     setAFKModalOpen(false); // Close the modal on clicking "I AGREE"
   };
@@ -236,8 +238,8 @@ const PostGame = () => {
         </Button>
       </Box>
 
-            {/* AFK Warning Modal */}
-            <Dialog
+            {/* AFK Warning Modal (inform user of applied penalty if they afk) */}
+      <Dialog
         open={isAFKModalOpen}
         onClose={handleAgree}
         maxWidth="sm"

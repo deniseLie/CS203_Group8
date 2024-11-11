@@ -26,24 +26,33 @@ const FindTournament = ({ logout }) => {
   const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false);
   const [showLowPriority, setShowLowPriority] = useState(false); // Track if low priority queue should be shown
   
+  // DUMMY: if user is lowpriority
+  const IS_LOW_PRIORITY = false;
   // constant : how many seconds to show speed up q
   const SPEED_UP_SECONDS = 5;
+
+  // Function : when user starts the queue
   const handleFindMatchClick = () => {
     if (selectedChampion) {
       setInQueueState(true); 
       setTimer(0); 
-      setShowLowPriority(true); // Show low priority box when entering queue
+      if (IS_LOW_PRIORITY){
+        setShowLowPriority(true); // Show low priority box when entering queue
+      }
     }
   };
 
+  // Functions: Open and close champion modal
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // Function: Set selected champion from champion modal
   const handleChampionSelect = (champion) => {
     setSelectedChampion(champion); 
     handleClose(); 
   };
 
+  // Function: Cancel queue -> Reset timer, hide all modals, timer
   const handleCancelQueue = () => {
     setInQueueState(false);
     setTimer(0);
@@ -52,6 +61,7 @@ const FindTournament = ({ logout }) => {
     setShowLowPriority(false); // Hide low priority queue box when exiting queue
   };
 
+  // Function: Render timer text every second, and if timer > speed up seconds show speedup modal
   useEffect(() => {
     let interval;
     if (inQueueState) {
@@ -71,12 +81,14 @@ const FindTournament = ({ logout }) => {
     return () => clearInterval(interval);
   }, [inQueueState]);
 
+  // Function: Format Time to minutes:seconds
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
+  // Function: When speed up, don't show speedup modal
   const handleSpeedUpQueue = () => {
     setInSpeedUpQueue(true); 
     setShowSpeedUpModal(false); 

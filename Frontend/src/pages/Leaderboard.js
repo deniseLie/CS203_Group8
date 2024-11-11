@@ -3,14 +3,12 @@ import Navbar from '../components/Navbar';
 import backgroundImage from '../assets/srbackground.png';
 import {
   Box,
-  Button,
   Select,
   MenuItem,
   TextField,
   Typography,
   LinearProgress,
 } from '@mui/material';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import PlayerIcon from '../components/PlayerIcon';
 import profilePicture from '../assets/4895.jpg';
@@ -52,6 +50,7 @@ const rankIcons = {
 };
 
 const Leaderboard = () => {
+  // TO DO: replace dummy players data
   const players = Array.from({ length: 10 }, (_, i) => ({
     rank: i + 1,
     playerName: 'hide on bush',
@@ -63,6 +62,7 @@ const Leaderboard = () => {
     mostPlayedRoles: ['Assassin', 'Fighter', 'Tank'],
   }));
 
+  // Constants: Filter buttons and search
   const [selectedRank, setSelectedRank] = useState('ALL RANKS');
   const [selectedRole, setSelectedRole] = useState('ALL ROLES');
   const [search, setSearch] = useState('');

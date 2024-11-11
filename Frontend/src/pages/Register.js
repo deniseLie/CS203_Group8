@@ -15,48 +15,59 @@ import axios from "axios";
 import env from "react-dotenv";
 
 function Register() {
+
+  // Constants: Register fields - Email, Username, Password, Playername, confirm password (check if same)
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [playername, setPlayername] = useState("");
-  const [playernameError, setPlayernameError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [playername, setPlayername] = useState("");
+
+  // Constants: Error for fields
+  const [playernameError, setPlayernameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
+
+  // Constants: Show/Hide passwords
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Constant: Error message for login form
   const [errorMessage, setErrorMessage] = useState(""); // State to store the error message
 
   const navigate = useNavigate(); // Use navigate for redirecting
 
+  // Constant: Check if form is filled to enable register button
   const isFormFilled =
     username.length > 0 &&
     password.length > 0 &&
     password === confirmPassword &&
     email.length > 0 && !emailError;
 
-    const handleSubmit = async (event) => {
-      event.preventDefault();
-      setErrorMessage(""); // Clear any previous error message
-      if (isFormFilled) {
-        try {
-          const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/register`, {
-            username: username,
-            email: email,
-            playername: playername,
-            password: password,
-          });
-    
-          if (response.status === 200) {
-            navigate("/login"); // Redirect to login page if registration is successful
-          }
-        } catch (error) {
-          console.error("Registration error:", error);
-          // Set the error message to be displayed
-          setErrorMessage("Registration failed. Please try again.");
+  // Function : Handle Register
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setErrorMessage(""); // Clear any previous error message
+    if (isFormFilled) {
+      try {
+        const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/register`, {
+          username: username,
+          email: email,
+          playername: playername,
+          password: password,
+        });
+  
+        if (response.status === 200) {
+          navigate("/login"); // Redirect to login page if registration is successful
         }
+      } catch (error) {
+        console.error("Registration error:", error);
+        // Set the error message to be displayed
+        setErrorMessage("Registration failed. Please try again.");
       }
-    };
+    }
+  };
 
+  // Function: Set email constant and check email if valid
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
@@ -66,12 +77,14 @@ function Register() {
     setEmailError(!emailRegex.test(value)); // Set error if email format is invalid
   };
 
+  // Function: Set playername and check if playername is not more than 20 characters
   const handlePlayernameChange = (e) => {
     const value = e.target.value;
     setPlayername(value);
     setPlayernameError(playername.length > 20);
   };
 
+  // Functions: Toggle show password constant
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
 

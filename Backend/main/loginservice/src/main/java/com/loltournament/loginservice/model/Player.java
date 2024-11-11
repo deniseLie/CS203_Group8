@@ -7,8 +7,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,23 +21,24 @@ public class Player implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = true)
     private String password;
 
-    @Column(name = "playername")
+    @Column(name = "playername", nullable = false, unique = true)
     private String playername;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = true)
     private String username;
 
     @Column(name = "authProvider", nullable = false)
     private String authProvider;
+    // Getters and setters
 
     public Long getId() {
         return userId;
@@ -47,9 +46,11 @@ public class Player implements UserDetails {
     public void setId(Long userId) {
         this.userId = userId;
     }
+
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }

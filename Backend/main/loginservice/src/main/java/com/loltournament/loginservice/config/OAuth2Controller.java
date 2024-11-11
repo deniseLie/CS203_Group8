@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.repository.PlayerRepository;
+import com.loltournament.loginservice.service.SqsService;;
 
 @RestController
 public class OAuth2Controller {
@@ -26,6 +27,9 @@ public class OAuth2Controller {
     
     @Autowired
     private PlayerRepository playerRepository;
+
+    @Autowired
+    private SqsService sqsService;
 
 
     @GetMapping("/login/oauth2/code/{provider}")
@@ -45,6 +49,15 @@ public class OAuth2Controller {
             player.setUsername(userName);
             player.setPlayername(userName);
             player.setAuthProvider("GOOGLE");
+
+            Long playerId = player.getId();
+
+            String messageBody = "{\"action\": \"add_player\", \"player_id\": \"" + playerId + "\"}";
+            String messageGroupId = "player-" + playerId;
+            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId);
+            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId);
+            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId);
+            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId);
         }
 
         // Handle storing the user information and token, then redirect to a successful

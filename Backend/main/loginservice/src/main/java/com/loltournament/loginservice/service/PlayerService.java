@@ -25,9 +25,10 @@ public class PlayerService implements UserDetailsService {
     }
 
     @Transactional
-    public void saveUser(Player player) {
+    public Long saveUser(Player player) {
         player.setAuthProvider("LOCAL");
-        userRepository.save(player);
+        Player savedPlayer = userRepository.save(player);
+        return savedPlayer.getUserId();
     }
 
     @Transactional

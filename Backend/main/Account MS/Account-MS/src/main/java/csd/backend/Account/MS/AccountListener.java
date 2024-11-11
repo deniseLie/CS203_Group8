@@ -61,7 +61,7 @@ public class AccountListener {
     }
 
     // Process the message based on its actionType
-    private void processAccountMessage(String messageBody, Map<String, MessageAttributeValue> messageAttributes) {
+    public void processAccountMessage(String messageBody, Map<String, MessageAttributeValue> messageAttributes) {
         String actionType = getActionTypeFromMessageAttributes(messageAttributes);
 
         // If actionType is not present, log and skip processing
@@ -75,7 +75,7 @@ public class AccountListener {
             case "addPlayer":
                 processAddPlayer(messageBody);
                 break;
-            case "addTournament":
+            case "addMatch":
                 processAddTournament(messageBody);
                 break;
             default:

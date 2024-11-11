@@ -67,6 +67,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>3.3.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -74,6 +75,74 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- AWS SDK v2 for SQS -->
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>sqs</artifactId>
+			<version>2.17.89</version>
+		</dependency>
+
+		<!-- AWS Lambda Core -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-lambda-java-core</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+		<!-- AWS Lambda Events for SQSEvent -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-lambda-java-events</artifactId>
+			<version>3.11.0</version>
+		</dependency>
+
+		<!-- Handling JSON in Java -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.14.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.14.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.14.2</version>
+		</dependency>
+
+		<!-- Spring-Dotenv -->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>java-dotenv</artifactId>
+			<version>5.2.2</version>
+		</dependency>
+
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>4.9.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Junit -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.8.2</version> <!-- Compatible version of JUnit 5 -->
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.8.2</version> <!-- Compatible version of JUnit 5 -->
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -89,6 +158,17 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>  <!-- Ensure this is at least version 3.0.0-M5 -->
+				<configuration>
+				<dependenciesToScan>
+					<dependency>org.junit.jupiter</dependency>
+				</dependenciesToScan>
+			</configuration>
 			</plugin>
 		</plugins>
 	</build>

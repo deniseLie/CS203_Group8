@@ -12,10 +12,14 @@ import editButton from "../assets/button-edit.png";
 import crownIcon from "../assets/win.png";
 import swordIcon from "../assets/sword.png";
 import ProfileBanner from '../components/ProfileBanner';
+import { useAuth } from '../auth/AuthProvider';
 
+const Profile = ({ logout }) => {
+
+    const { user } = useAuth();
 const dummyData = {
   player: {
-    name: 'hide on bush',
+    name: user.sub,
     rank: 'Diamond I',
     rankIcon: diamondRankIcon,
     playerIcon: playerIcon,
@@ -48,7 +52,6 @@ const dummyData = {
   ]
 };
 
-const Profile = ({ logout }) => {
     return (
         <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             {/* Navbar */}

@@ -16,6 +16,7 @@ import SpeedUpModal from '../components/SpeedupModal';
 import speedupQueueIcon from '../assets/speedQueue.png';
 import redWarning from '../assets/red-warning.png'; // Import the red warning icon
 import LowPriorityQueue from '../components/LowPriorityQueue';
+import { useAuth } from '../auth/AuthProvider';
 
 const FindTournament = ({ logout }) => {
   const [open, setOpen] = useState(false); 
@@ -26,6 +27,8 @@ const FindTournament = ({ logout }) => {
   const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false);
   const [showLowPriority, setShowLowPriority] = useState(false); // Track if low priority queue should be shown
   
+  
+  const { user } = useAuth();
   // DUMMY: if user is lowpriority
   const IS_LOW_PRIORITY = false;
   // constant : how many seconds to show speed up q
@@ -163,14 +166,14 @@ const FindTournament = ({ logout }) => {
           }}
         >
           <PlayerIcon
-            alt="Hide on bush"
+            alt={user? user.sub : ""}
             src={profileAvatar}
             width={6}
             height={6}
             clickable={false}
           />
           <Typography className="headerPrimary" fontSize={'1.25em'}>
-            hide on bush
+            {user? user.sub : ""}
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Box component="img" src={diamondRank} alt="Rank" sx={{ width: '3vh', height: '3vh', marginRight: 1 }} />

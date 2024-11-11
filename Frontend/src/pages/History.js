@@ -7,17 +7,19 @@ import backgroundImage from '../assets/srbackground.png';
 import avatarImage from '../assets/summonerIcon/4895.jpg';
 import diamondRankImage from '../assets/ranks/diamond.png';
 import diamondBanner from '../assets/rank-banners/diamond.png';
+import { useAuth } from '../auth/AuthProvider';
 
 function History() {
   // TODO: Replace DUMMY DATA -- current playername, leaderboardData, profile
-  const currentPlayer = "hide on bush";
+  
+  const { user } = useAuth();
   const leaderboardData = [
     {
       tournamentId: 1,
       matchDetails: [
         {
           players: [
-            { standing: '1ST', champion: 'Bel\'Veth', playerName: 'hide on bush', kd: '8/0', kda: '8.0 KDA', lpChange: 170, time: '31:25', date: '09/15/2024' },
+            { standing: '1ST', champion: 'Bel\'Veth', playerName: user.sub, kd: '8/0', kda: '8.0 KDA', lpChange: 170, time: '31:25', date: '09/15/2024' },
             { standing: '2ND', champion: 'Ahri', playerName: 'ARAMLOVER', kd: '8/0', kda: '8.0 KDA', lpChange: 170, time: '31:25', date: '09/15/2024' },
             { standing: '3RD', champion: 'Sett', playerName: 'Rodan', kd: '8/0', kda: '8.0 KDA', lpChange: 170, time: '31:25', date: '09/15/2024' },
             { standing: '4TH', champion: 'Miss Fortune', playerName: 'lilWanton', kd: '8/0', kda: '8.0 KDA', lpChange: 170, time: '31:25', date: '09/15/2024' },
@@ -36,7 +38,7 @@ function History() {
           players: [
             { standing: '1ST', champion: 'Jinx', playerName: 'PlayerOne', kd: '10/2', kda: '5.0 KDA', lpChange: 200, time: '29:45', date: '09/16/2024' },
             { standing: '2ND', champion: 'Zed', playerName: 'hide on bush', kd: '9/3', kda: '3.0 KDA', lpChange: 150, time: '29:45', date: '09/16/2024' },
-            { standing: '3RD', champion: 'Vi', playerName: 'PlayerThree', kd: '6/5', kda: '1.2 KDA', lpChange: 100, time: '29:45', date: '09/16/2024' },
+            { standing: '3RD', champion: 'Vi', playerName: user.sub, kd: '6/5', kda: '1.2 KDA', lpChange: 100, time: '29:45', date: '09/16/2024' },
             { standing: '4TH', champion: 'Ahri', playerName: 'PlayerFour', kd: '4/5', kda: '0.8 KDA', lpChange: 50, time: '29:45', date: '09/16/2024' },
             { standing: '5TH', champion: 'Zac', playerName: 'PlayerFive', kd: '2/6', kda: '0.3 KDA', lpChange: 0, time: '29:45', date: '09/16/2024' },
             { standing: '6TH', champion: 'Sett', playerName: 'PlayerSix', kd: '0/7', kda: '0.0 KDA', lpChange: -50, time: '29:45', date: '09/16/2024' },
@@ -95,7 +97,7 @@ function History() {
                 <Box key={matchIndex} sx={{ mb: 1 }}>
                   <GameCard 
                     players={match.players} // Pass all players to the GameCard
-                    currentPlayer={currentPlayer}
+                    currentPlayer={user ? user.sub : ""}
                   />
                 </Box>
               ))}

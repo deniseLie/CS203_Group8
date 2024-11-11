@@ -72,7 +72,7 @@ public class PlayerServiceTest {
     public void testHandleMatchCompletion() {
         // Assume match details
         long playerId = 1L;
-        int championId = 1;
+        long championId = 1L;
         double kdRate = 2.5;
         int finalPlacement = 1;
         int rankPoints = 100;
@@ -92,7 +92,7 @@ public class PlayerServiceTest {
     @Test
     public void testHandleMatchCompletion_PlayerNotFoundException() {
         long playerId = 1L;
-        int championId = 1;
+        long championId = 1;
         double kdRate = 2.5;
         int finalPlacement = 1;
         int rankPoints = 100;
@@ -119,19 +119,19 @@ public class PlayerServiceTest {
 
         // Create mock champion stats data
         PlayerChampionStats champion1 = new PlayerChampionStats();
-        champion1.setChampionId(1);
+        champion1.setChampionId(1L);
         champion1.setTotalMatchNumber(10);
         
         PlayerChampionStats champion2 = new PlayerChampionStats();
-        champion2.setChampionId(2);
+        champion2.setChampionId(2L);
         champion2.setTotalMatchNumber(15);
         
         PlayerChampionStats champion3 = new PlayerChampionStats();
-        champion3.setChampionId(3);
+        champion3.setChampionId(3L);
         champion3.setTotalMatchNumber(20);
 
         PlayerChampionStats champion4 = new PlayerChampionStats();
-        champion4.setChampionId(4);
+        champion4.setChampionId(4L);
         champion4.setTotalMatchNumber(5);
 
         // Mock findByPlayerId to return a list of PlayerChampionStats

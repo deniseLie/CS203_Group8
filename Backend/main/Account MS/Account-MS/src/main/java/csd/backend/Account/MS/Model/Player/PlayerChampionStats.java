@@ -9,18 +9,18 @@ public class PlayerChampionStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "userId")
-    private Long userId;  
+    @Column(name = "playerId")
+    private Long playerId;  
 
-    private int championId;
+    private Long championId;
     private double averagePlace;
     private double kdRate;
     private int totalWins;
     private int totalMatchNumber;
 
-    // Mapping userId to Player entity using @ManyToOne
+    // Mapping playerId to Player entity using @ManyToOne
     @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "playerId", referencedColumnName = "id", insertable = false, updatable = false)
     private Player player;
 
     // Getters and setters
@@ -33,19 +33,19 @@ public class PlayerChampionStats {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getPlayerId() {
+        return playerId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
     }
 
-    public int getChampionId() {
+    public Long getChampionId() {
         return championId;
     }
 
-    public void setChampionId(int championId) {
+    public void setChampionId(Long championId) {
         this.championId = championId;
     }
 

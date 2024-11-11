@@ -55,13 +55,13 @@ public class PlayerStatsService {
     }
 
     // Update champion stats (after a match)
-    public void updateChampionStats(Long playerId, int championId, double kdRate, double finalPlacement, boolean isWin) {
+    public void updateChampionStats(Long playerId, Long championId, double kdRate, double finalPlacement, boolean isWin) {
         PlayerChampionStats championStats = playerChampionStatsRepository.findByPlayerIdAndChampionId(playerId, championId);
         
         // Create new stats if they don't exist
         if (championStats == null) {
             championStats = new PlayerChampionStats();
-            championStats.setUserId(playerId);
+            championStats.setPlayerId(playerId);
             championStats.setAveragePlace(finalPlacement);
             championStats.setChampionId(championId);
             championStats.setKdRate(kdRate);

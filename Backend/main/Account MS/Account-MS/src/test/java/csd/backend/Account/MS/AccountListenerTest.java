@@ -53,7 +53,7 @@ class AccountListenerTest {
         accountListener.processAccountMessage(messageBody, attributes);
 
         // Verify that the playerService handleMatchCompletion method is called
-        verify(playerService, times(1)).handleMatchCompletion(anyLong(), anyInt(), anyDouble(), anyInt(), anyInt(), anyBoolean());
+        verify(playerService, times(1)).handleMatchCompletion(anyLong(), anyLong(), anyDouble(), anyInt(), anyInt(), anyBoolean());
     }
 
     @Test

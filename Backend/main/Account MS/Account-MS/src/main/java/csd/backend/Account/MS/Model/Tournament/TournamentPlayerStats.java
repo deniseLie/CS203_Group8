@@ -1,5 +1,7 @@
 package csd.backend.Account.MS.Model.Tournament;
 
+import java.time.LocalDateTime;
+
 import csd.backend.Account.MS.Model.Player.Player;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,17 +21,18 @@ public class TournamentPlayerStats {
     private Tournament tournament;
 
     @ManyToOne
-    @JoinColumn(name = "playerId", referencedColumnName = "playerId")
+    @JoinColumn(name = "playerId", referencedColumnName = "id")
     private Player player;
 
     private int rankIdAfterTournament;
     private int pointObtain;
-    private int championPlayedId;
+    private Long championPlayedId;
     private int finalPlacement;
-    private int timeEndPerPlayer;
+    private LocalDateTime timeEndPerPlayer;
     private int killCount;
     private int deathCount;
     private int largestWinStreak;
+    private boolean isAFK;
 
     // Getters and setters
     public Long getTournamentPlayerId() {
@@ -62,10 +65,10 @@ public class TournamentPlayerStats {
     public void setPointObtain(int pointObtain) {
         this.pointObtain = pointObtain;
     }
-    public int getChampionPlayedId() {
+    public Long getChampionPlayedId() {
         return championPlayedId;
     }
-    public void setChampionPlayedId(int championPlayedId) {
+    public void setChampionPlayedId(Long championPlayedId) {
         this.championPlayedId = championPlayedId;
     }
     public int getFinalPlacement() {
@@ -74,10 +77,10 @@ public class TournamentPlayerStats {
     public void setFinalPlacement(int finalPlacement) {
         this.finalPlacement = finalPlacement;
     }
-    public int getTimeEndPerPlayer() {
+    public LocalDateTime getTimeEndPerPlayer() {
         return timeEndPerPlayer;
     }
-    public void setTimeEndPerPlayer(int timeEndPerPlayer) {
+    public void setTimeEndPerPlayer(LocalDateTime timeEndPerPlayer) {
         this.timeEndPerPlayer = timeEndPerPlayer;
     }
     public int getKillCount() {
@@ -97,5 +100,11 @@ public class TournamentPlayerStats {
     }
     public void setLargestWinStreak(int largestWinStreak) {
         this.largestWinStreak = largestWinStreak;
+    }
+    public boolean getIsAFK() {
+        return isAFK;
+    }
+    public void setIsAFK(boolean isAFK) {
+        this.isAFK = isAFK;
     }
 }

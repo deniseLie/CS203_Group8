@@ -137,7 +137,7 @@ public class AccountListener {
             // Convert the values to appropriate types before passing to handleMatchCompletion
             try {
                 Long playerId = Long.parseLong(tournamentData.get("playerId"));
-                int championId = Integer.parseInt(tournamentData.get("championId"));
+                Long championId = Long.parseLong(tournamentData.get("championId"));
                 double kdRate = Double.parseDouble(tournamentData.get("kdRate"));
                 int finalPlacement = Integer.parseInt(tournamentData.get("finalPlacement"));
                 int rankPoints = Integer.parseInt(tournamentData.get("rankPoints"));

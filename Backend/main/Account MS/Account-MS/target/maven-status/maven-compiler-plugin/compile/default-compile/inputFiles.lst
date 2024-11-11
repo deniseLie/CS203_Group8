@@ -19,8 +19,9 @@ C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Repository\Player\PlayerRepository.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Repository\Tournament\TournamentPlayerStatsRepository.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Repository\Tournament\TournamentRepository.java
-C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Service\ChampionService.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Service\Champion\ChampionService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Service\Player\PlayerService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Service\Player\PlayerStatsService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Service\SqsService.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Service\Tournament\TournamentService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\config\AwsConfig.java

@@ -14,13 +14,12 @@ public class PlayerOverallStats {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "userId")
-    private Long userId;  // Relates to Player
+    @Column(name = "playerId")
+    private Long playerId;  // Relates to Player
 
     private int rankId;
     private int rankPoints;
     private double overallAveragePlace;
-    // private double overallFirstPlacePercentage;
     private double overallKdRate;
     private int totalWins;
     private int totalFirstPlaceMatches;
@@ -28,7 +27,7 @@ public class PlayerOverallStats {
 
     // One-to-one relationship with Player
     @OneToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "playerId", referencedColumnName = "id", insertable = false, updatable = false)
     private Player player;
 
     public Long getId() {
@@ -39,12 +38,12 @@ public class PlayerOverallStats {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getPlayerId() {
+        return playerId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
     }
 
     public int getRankId() {

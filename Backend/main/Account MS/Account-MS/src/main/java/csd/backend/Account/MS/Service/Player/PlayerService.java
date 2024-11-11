@@ -38,7 +38,7 @@ public class PlayerService {
 
     // Handle match completion and recalculate stats
     @Transactional
-    public void handleMatchCompletion(Long playerId, int championId, double kdRate, int finalPlacement, int rankPoints, boolean isWin) {
+    public void handleMatchCompletion(Long playerId, Long championId, double kdRate, int finalPlacement, int rankPoints, boolean isWin) {
         // Check if player already exists
         if (!playerRepository.existsById(playerId)) {
             throw new PlayerNotFoundException(playerId);

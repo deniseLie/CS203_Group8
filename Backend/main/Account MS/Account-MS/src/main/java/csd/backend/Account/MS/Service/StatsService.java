@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import csd.backend.Account.MS.Model.*;
+import csd.backend.Account.MS.Model.Player.PlayerChampionStats;
+import csd.backend.Account.MS.Model.Player.PlayerOverallStats;
 import csd.backend.Account.MS.Repository.*;
 
 @Service

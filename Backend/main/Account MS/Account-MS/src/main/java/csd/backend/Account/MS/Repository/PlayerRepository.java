@@ -1,7 +1,9 @@
 package csd.backend.Account.MS.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import csd.backend.Account.MS.Model.Player;
+
+import csd.backend.Account.MS.Model.Player.Player;
+
 import java.util.Optional;
 
 

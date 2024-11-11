@@ -7,6 +7,7 @@ import org.mockito.*;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Service.*;
 import csd.backend.Account.MS.Service.Player.*;
+import csd.backend.Account.MS.Service.Tournament.TournamentService;
 import software.amazon.awssdk.services.sqs.model.Message;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
@@ -21,6 +22,9 @@ class AccountListenerTest {
 
     @Mock
     private PlayerService playerService;
+
+    @Mock
+    private TournamentService tournamentService;  // Mock the TournamentService
 
     @InjectMocks
     private AccountListener accountListener;
@@ -52,8 +56,8 @@ class AccountListenerTest {
         // Simulate receiving a message from the queue
         accountListener.processAccountMessage(messageBody, attributes);
 
-        // Verify that the playerService handleMatchCompletion method is called
-        verify(playerService, times(1)).handleMatchCompletion(anyLong(), anyLong(), anyDouble(), anyInt(), anyInt(), anyBoolean());
+        // Verify that the tournamentService createAndSaveTournament method is called
+        verify(tournamentService, times(1)).createAndSaveTournament(anyMap());
     }
 
     @Test
@@ -66,6 +70,7 @@ class AccountListenerTest {
 
         // Since actionType is missing, no methods should be called
         verify(playerService, times(0)).registerUser(any(Player.class));
+        verify(tournamentService, times(0)).createAndSaveTournament(anyMap());
     }
 
     @Test

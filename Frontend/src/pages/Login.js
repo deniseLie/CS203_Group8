@@ -27,7 +27,7 @@ function Login({ login }) {
 
   // Function: Redirect to backend link for Google OAuth  
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = `${env.LOGIN_SERVER_URL}/oauth2/authorization/google`;
   };
 
   // Function: Handle login
@@ -35,6 +35,7 @@ function Login({ login }) {
     event.preventDefault();
     if (isFormFilled) {
       try {
+        console.log(`${env.LOGIN_SERVER_URL}/auth/login`);
         const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/login`, {
           username: username,
           password: password

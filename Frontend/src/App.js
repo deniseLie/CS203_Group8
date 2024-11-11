@@ -45,8 +45,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Router>
         <Routes>
-          {/* <Route path="/register" element={<Register />} /> */}
-          <Route path="/register" element={<Profile />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
           <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
           <Route path="/profile" element={isAuthenticated ? <Profile logout={logout} /> : <Navigate to="/login" />} />

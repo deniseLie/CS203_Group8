@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PlayerIcon from '../components/PlayerIcon';
-import profilePicture from '../assets/4895.jpg';
+import profilePicture from '../assets/summonerIcon/4895.jpg';
 
 // Import each role icon explicitly
 import assassinIcon from '../assets/championClass/roleicon-assassin.png';

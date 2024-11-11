@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import GameCard from '../components/GameCard';
 import ProfileBanner from '../components/ProfileBanner';
 import backgroundImage from '../assets/srbackground.png';
-import avatarImage from '../assets/4895.jpg';
+import avatarImage from '../assets/summonerIcon/4895.jpg';
 import diamondRankImage from '../assets/ranks/diamond.png';
 import diamondBanner from '../assets/rank-banners/diamond.png';
 

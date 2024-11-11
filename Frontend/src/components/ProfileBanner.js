@@ -1,8 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import PlayerIcon from '../components/PlayerIcon'; // Ensure this path is correct based on your project structure
+import editIcon from '../assets/button-edit.png'; // Adjust the path to your edit icon
+import EditProfileModal from './EditProfileModal'; // Import the modal component
 
 function ProfileBanner({ profile, displayType }) {
+  const [hover, setHover] = useState(false);
+  const [openModal, setOpenModal] = useState(false); // State to manage the modal visibility
+
+  // State for form fields
+  const [username, setUsername] = useState(profile.playerName);
+  const [email, setEmail] = useState(profile.email);
+  const [password, setPassword] = useState('');
+  const [avatar, setAvatar] = useState(profile.playerIcon);
+
+  // Open and close modal functions
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
+  // Handle Save Changes
+  const handleSaveChanges = () => {
+    // Save the changes logic (for now just logging the values)
+    console.log("Changes Saved:", { username, email, password, avatar });
+    handleCloseModal(); // Close the modal after saving
+  };
+
   return (
     <Box
       sx={{
@@ -49,17 +71,45 @@ function ProfileBanner({ profile, displayType }) {
         </>
       ) : (
         <Box marginTop={'20vh'}>
-          {/* Player Icon - Only show in 'player' displayType */}
-          <PlayerIcon
-            src={profile.playerIcon}
-            alt={profile.playerName}
-            width={6}
-            height={6}
-            clickable={false}
+          {/* Player Icon with hover effect */}
+          <Box
+            onMouseEnter={() => setHover(true)} // Set hover state to true on hover
+            onMouseLeave={() => setHover(false)} // Set hover state to false when not hovered
             sx={{
-              marginBottom: 1, // Reduce margin to bring it closer to the name
+              position: 'relative',
+              display: 'inline-block',
             }}
-          />
+          >
+            <PlayerIcon
+              src={profile.playerIcon}
+              alt={profile.playerName}
+              width={6}
+              height={6}
+              clickable={false}
+              sx={{
+                marginBottom: 1, // Reduce margin to bring it closer to the name
+              }}
+            />
+
+            {/* Edit Button */}
+            {hover && (
+              <Box
+                component="img"
+                src={editIcon}
+                alt="Edit Icon"
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  width: '2.5vw',
+                  height: '2.5vw',
+                  cursor: 'pointer',
+                  zIndex: 1000,
+                }}
+                onClick={handleOpenModal} // Open modal on click
+              />
+            )}
+          </Box>
 
           {/* Player Name */}
           <Typography align="center" className="headerPrimary" sx={{ mt: 1 }}>
@@ -84,6 +134,22 @@ function ProfileBanner({ profile, displayType }) {
           </Box>
         </Box>
       )}
+
+      {/* Modal for Editing Profile */}
+      <EditProfileModal
+        open={openModal}
+        handleClose={handleCloseModal}
+        username={username}
+        setUsername={setUsername}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        avatar={avatar}
+        setAvatar={setAvatar}
+        avatars={profile.avatars} // Assuming profile.avatars contains a list of avatar images
+        handleSaveChanges={handleSaveChanges}
+      />
     </Box>
   );
 }

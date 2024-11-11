@@ -4,7 +4,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import backgroundImage from '../assets/background-with-banner.png';
 import arenaIcon from '../assets/arena-icon.png';
 import PlayerIcon from '../components/PlayerIcon';
-import profileAvatar from '../assets/4895.jpg';
+import profileAvatar from '../assets/summonerIcon/4895.jpg';
 import findMatchDisabled from '../assets/button-accept-disabled.png';
 import findMatch from '../assets/button-accept-default.png';
 import inQueue from '../assets/button-accept-in-queue.png';

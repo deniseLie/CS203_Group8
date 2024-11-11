@@ -31,7 +31,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Constant: Error message for login form
+  // Constant: Error message for login formt
   const [errorMessage, setErrorMessage] = useState(""); // State to store the error message
 
   const navigate = useNavigate(); // Use navigate for redirecting
@@ -49,6 +49,7 @@ function Register() {
     setErrorMessage(""); // Clear any previous error message
     if (isFormFilled) {
       try {
+        console.log(`${env.LOGIN_SERVER_URL}/auth/register`);
         const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/register`, {
           username: username,
           email: email,

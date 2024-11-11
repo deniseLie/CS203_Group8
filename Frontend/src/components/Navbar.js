@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Popover } from '@mui/material';
+import { Box, Typography, Popover, Button } from '@mui/material';
 import logo from '../assets/logo.png'; // Your logo image here
 import playButton from '../assets/play-button-disabled.png'; // Your play button image here
-import profileAvatar from '../assets/4895.jpg'; // Profile avatar image
+import profileAvatar from '../assets/summonerIcon/4895.jpg'; // Profile avatar image
 import PlayerIcon from './PlayerIcon';
 
 function Navbar({ logout, activePage }) {
@@ -83,8 +83,13 @@ function Navbar({ logout, activePage }) {
       <Box
         display="flex"
         alignItems="center"
-        sx={{ cursor: 'pointer' }} // Make the profile section clickable
+        
         onClick={handleClick} // Trigger the popover when this section is clicked
+        sx={{ cursor: 'pointer',
+        textDecoration: 'none', // Remove any text decoration
+        outline: 'none', // Remove any outline that might appear on click
+        backgroundColor: 'transparent',}} // Make sure no background color is added on click }} // Make the profile section clickable
+        
       >
         <PlayerIcon
           alt="Hide on bush"
@@ -134,6 +139,14 @@ function Navbar({ logout, activePage }) {
             backgroundColor: '#010b13',
           }}
         >
+          <Typography
+          className='headerPrimary'
+          component={Link}
+          to={"/profile"}
+          sx={{textDecoration:'none', color:''}}
+          >
+           Profile
+          </Typography>
           <Typography
             className="headerPrimary"
             sx={{

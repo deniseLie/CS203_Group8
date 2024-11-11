@@ -9,6 +9,7 @@ import FindTournament from './pages/FindTournament';
 import Register from './pages/Register';
 import PostGame from './pages/PostGame';
 import TournamentBracket from './pages/TournamentBracket';
+import LoginSuccess from './pages/LoginSuccess';
 
 const theme = createTheme({
   typography: {
@@ -46,6 +47,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
           <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
+          
+        <Route path="/login-success" element={<LoginSuccess />} />
           <Route path="/postgame" element={isAuthenticated ? <PostGame   logout={logout} /> : <Navigate to="/login" />} />
           {/* <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} /> */}
           <Route path="/history" element={<History />} />

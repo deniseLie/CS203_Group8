@@ -4,6 +4,7 @@ import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.security.SecurityConfig;
 import com.loltournament.loginservice.util.JwtUtil;
 import com.loltournament.loginservice.service.PlayerService;
+import com.loltournament.loginservice.service.SqsService;
 // import com.loltournament.loginservice.exception.UserNotFoundException;
 // import com.loltournament.loginservice.exception.InvalidCredentialsException;
 
@@ -49,6 +50,9 @@ public class AuthController {
     @Autowired
     private PlayerService userService;
 
+    @Autowired
+    private SqsService sqsService;
+
     /**
      * Endpoint to register a new user with LOCAL authentication provider.
      * The user submits their username, password, email, and playername.
@@ -61,11 +65,17 @@ public class AuthController {
         try {
             // Encode the password before saving the user
             player.setPassword(new SecurityConfig().passwordEncoder().encode(player.getPassword()));
-            userService.saveUser(player); // Save the user to the database
+            Long playerId = userService.saveUser(player); // Save the user to the database
 
             // Prepare a success response
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("message", "User registered successfully!");
+
+            String messageBody = "{\"action\": \"add_player\", \"player_id\": \"" + playerId + "\"}";
+            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody);
+            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody);
+            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody);
+            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody);
 
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
 

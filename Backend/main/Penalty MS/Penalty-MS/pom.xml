@@ -8,9 +8,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>csd.backend</groupId>
-	<artifactId>Matching-MS</artifactId>
+	<artifactId>Penalty-MS</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Matching-MS</name>
+	<name>Penalty-MS</name>
 	<description>CSD project </description>
 	<url/>
 	<licenses>

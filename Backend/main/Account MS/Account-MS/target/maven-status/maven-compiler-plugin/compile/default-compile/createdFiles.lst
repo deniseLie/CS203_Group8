@@ -1,3 +1,4 @@
+csd\backend\Account\MS\Security\SecurityConfig$1.class
 csd\backend\Account\MS\DTO\PlayerProfileUpdateRequest.class
 csd\backend\Account\MS\Exception\GlobalExceptionHandler.class
 csd\backend\Account\MS\Repository\Champion\ChampionRepository.class
@@ -7,13 +8,16 @@ csd\backend\Account\MS\Exception\RankPointNotFoundException.class
 csd\backend\Account\MS\Repository\Tournament\TournamentRepository.class
 csd\backend\Account\MS\Exception\PlayerChampionStatsNotFoundException.class
 csd\backend\Account\MS\Service\SqsService.class
+csd\backend\Account\MS\Security\SecurityConfig.class
 csd\backend\config\AwsConfig.class
 csd\backend\Account\MS\Exception\RankNotFoundException.class
 csd\backend\Account\MS\Model\Tournament\TournamentPlayerStats.class
 csd\backend\Account\MS\Exception\PlayerNotFoundException.class
 csd\backend\Account\MS\Model\Champion\Champion.class
+csd\backend\Account\MS\Security\JwtUtil.class
 csd\backend\Account\MS\Exception\ChampionNotFoundException.class
 csd\backend\Account\MS\AccountListener.class
+csd\backend\Account\MS\Controller\HealthCheckController.class
 csd\backend\Account\MS\Repository\Rank\RankRepository.class
 csd\backend\Account\MS\Service\Rank\RankService.class
 csd\backend\Account\MS\Repository\Tournament\TournamentPlayerStatsRepository.class
@@ -23,6 +27,7 @@ csd\backend\Account\MS\Model\Player\PlayerOverallStats.class
 csd\backend\Account\MS\Service\Champion\ChampionService.class
 csd\backend\Account\MS\Service\Player\PlayerService.class
 csd\backend\Account\MS\Repository\Player\PlayerOverallStatsRepository.class
+csd\backend\Account\MS\Security\JwtRequestFilter.class
 csd\backend\Account\MS\AccountMsApplication.class
 csd\backend\Account\MS\Model\Tournament\Tournament.class
 csd\backend\Account\MS\Exception\PlayerStatsNotFoundException.class

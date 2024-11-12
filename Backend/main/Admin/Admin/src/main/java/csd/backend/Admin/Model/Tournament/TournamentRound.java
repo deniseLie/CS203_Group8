@@ -77,4 +77,11 @@ public class TournamentRound {
     public void setWinnerPlayer(Player winnerPlayer) {
         this.winnerPlayer = winnerPlayer;
     }
+    public void markAsCompleted(){
+        Tournament currentTournament = getTournament();
+        int numberRounds = (int) (Math.log(currentTournament.getTournamentSize()) / Math.log(2));
+        if (roundNumber == numberRounds){
+            currentTournament.setStatus(true);
+        }
+    }
 }

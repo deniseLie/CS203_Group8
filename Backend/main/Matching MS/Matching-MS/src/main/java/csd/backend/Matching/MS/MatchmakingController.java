@@ -27,7 +27,6 @@ public class MatchmakingController {
         this.playerService = playerService;
     }
 
-    @CrossOrigin
     @PostMapping("/join")
     public String joinMatchmaking(@RequestParam String playerId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
@@ -69,7 +68,6 @@ public class MatchmakingController {
         }
     }
 
-    @CrossOrigin
     @PostMapping("/join/speedupQueue")
     public String joinSpeedUpMatchmaking(@RequestParam String playerId, @RequestParam String email,
             @RequestParam int rankId) {

@@ -10,14 +10,14 @@ import csd.backend.Admin.Model.*;
 import csd.backend.Admin.Repository.*;
 
 @Service
-public class AdminService {
+public class UserService {
 
     private final UserRepository userRepository; //PLAYER ADMIN ACTION
     private final MatchRepository matchRepository; // Match ADMIN FUNCT
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminService(UserRepository userRepository, MatchRepository matchRepository) {
+    public UserService(UserRepository userRepository, MatchRepository matchRepository) {
         this.userRepository = userRepository;
         this.matchRepository = matchRepository;
         this.passwordEncoder = new BCryptPasswordEncoder(); // Initialize the password encoder
@@ -93,7 +93,7 @@ public class AdminService {
             if (username != null && !username.isEmpty()) {
                 user.setUsername(username);
             }
-            
+
             if (email != null && !email.isEmpty()) {
                 user.setEmail(email);
             }

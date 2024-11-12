@@ -15,12 +15,12 @@ import java.util.*;
 public class AdminQueueListener {
 
     private final SqsService sqsService;
-    private final AdminService adminService;
+    private final UserService userService;
 
     @Autowired
-    public AdminQueueListener(SqsService sqsService, AdminService adminService) {
+    public AdminQueueListener(SqsService sqsService, UserService userService) {
         this.sqsService = sqsService;
-        this.adminService = adminService;
+        this.userService = userService;
     }
 
     // Listen for messages in the Admin Queue
@@ -109,7 +109,7 @@ public class AdminQueueListener {
             user.setPassword(password);
             user.setRole(role);
     
-            String result = adminService.createUserWithId(user);
+            String result = userService.createUserWithId(user);
             System.out.println("add player" + result);
         } catch (Exception e) {
             System.out.println("Failed to parse player data from message: " + e.getMessage());
@@ -130,7 +130,7 @@ public class AdminQueueListener {
             String password = rootNode.path("password").asText(null);
 
             // Call the service to update player details
-            String result = adminService.updatePlayerProfile(playerId, username, email, password);
+            String result = userService.updatePlayerProfile(playerId, username, email, password);
         } catch (Exception e) {
             System.err.println("Failed to process update player message: " + e.getMessage());
         }

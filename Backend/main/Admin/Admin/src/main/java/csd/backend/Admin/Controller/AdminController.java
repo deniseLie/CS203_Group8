@@ -14,38 +14,38 @@ import csd.backend.Admin.Service.*;
 public class AdminController {
 
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
 
     //PLAYER ADMIN ACTIONS
     //to do: add jwt
     @PostMapping("/authenticate")
     public String authenticate(@RequestParam String username, @RequestParam String password) {
-        return adminService.authenticateUser(username, password);
+        return userService.authenticateUser(username, password);
     }
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
-        return adminService.getAllUsers();
+        return userService.getAllUsers();
     }
     @PostMapping("/createUser")
     public String createUser(@RequestParam String username, @RequestParam String password, @RequestParam String role) {
-        return adminService.createUser(username, password, role);
+        return userService.createUser(username, password, role);
     }
     @DeleteMapping("/deleteUser")
     public String deleteUser(@RequestParam Long userId) {
-        return adminService.deleteUser(userId);
+        return userService.deleteUser(userId);
     }
 
     //MATCH ADMIN ACTIONS
     //remove in next commit
     // @GetMapping("/getAllMatches")
     // public List<Match> getAllMatches() {
-    //     return adminService.getAllMatches();
+    //     return userService.getAllMatches();
     // }
     //may need to keep
     // @PostMapping("/create")
     // public Match createMatch(@RequestParam int matchId) {
     //     Match match = new Match();
-    //     return adminService.createMatch(match);
+    //     return userService.createMatch(match);
     // }
 
     @Autowired

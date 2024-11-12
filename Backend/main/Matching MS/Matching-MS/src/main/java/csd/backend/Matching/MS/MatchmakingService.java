@@ -94,7 +94,7 @@ public class MatchmakingService {
     }
 
     // Check Match : Enough Players with same rankId
-    public boolean checkForMatch(int rankId) {
+    public boolean checkForMatch(Long rankId) {
 
         // Get players queueing + same rankId
         List<Map<String, AttributeValue>> players = checkPlayersInQueue(rankId);
@@ -111,7 +111,7 @@ public class MatchmakingService {
     }
 
     // Get Queueing players with the same rankId
-    private List<Map<String, AttributeValue>> checkPlayersInQueue(int rankId) {
+    private List<Map<String, AttributeValue>> checkPlayersInQueue(Long rankId) {
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(PLAYERS_TABLE)
                 .filterExpression("queueStatus = :queueStatus and rankId = :rankId")
@@ -214,7 +214,7 @@ public class MatchmakingService {
             playerIds.append(String.valueOf(playerId));  // Append the player ID
             
             // Update the player status to "unqueue"
-            updatePlayerStatus(playerName, "unqueue");  
+            playerService.updatePlayerStatus(playerName, "unqueue");  
         }
     
         matchItem.put("players", AttributeValue.builder().l(playerList).build());

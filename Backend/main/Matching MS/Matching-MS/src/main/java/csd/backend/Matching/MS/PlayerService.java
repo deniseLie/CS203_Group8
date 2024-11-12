@@ -24,6 +24,31 @@ public class PlayerService {
         this.dynamoDbClient = dynamoDbClient;
     }
 
+    // Get Player by playerId in the database
+    public Map<String, AttributeValue> getPlayerById(String playerId) {
+        GetItemRequest getItemRequest = GetItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
+                .build();
+
+        GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
+        return getItemResponse.item();
+    }
+
+    // Get the rankId of the player
+    public Long getPlayerRankId(String playerId) {
+        Map<String, AttributeValue> playerData = getPlayerById(playerId);
+
+        // Extract rankId from the player's data (assuming rankId is stored as an integer)
+        if (playerData != null && playerData.containsKey("rankId")) {
+            AttributeValue rankIdAttribute = playerData.get("rankId");
+            return Long.parseLong(rankIdAttribute.n());  // Convert from string to integer
+        } else {
+            // Handle the case when rankId is not found
+            throw new RuntimeException("Player rankId not found for playerId: " + playerId);
+        }
+    }
+
     // Update player's rankId in the database
     public void updatePlayerRank(Long playerId, Long rankId) {
         // Assuming rankId is part of the player's data in DynamoDB, update the rankId here

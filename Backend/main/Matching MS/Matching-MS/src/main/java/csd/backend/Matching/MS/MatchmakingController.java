@@ -39,7 +39,7 @@ public class MatchmakingController {
             }
             
             // Get rank id
-            int rankId = playerService.getPlayerRankId(playerId);
+            Long rankId = playerService.getPlayerRankId(playerId);
              
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");

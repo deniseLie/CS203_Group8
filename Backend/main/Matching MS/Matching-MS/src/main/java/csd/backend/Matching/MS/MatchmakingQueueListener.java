@@ -171,7 +171,7 @@ public class MatchmakingQueueListener {
             JsonNode rootNode = objectMapper.readTree(messageBody);
 
             Long playerId = rootNode.path("playerId").asLong();
-            int rankId = rootNode.path("rank").asInt();
+            Long rankId = rootNode.path("rank").asLong();
 
             playerService.updatePlayerRank(playerId, rankId);
             System.out.println("Player profile updated for playerId: " + playerId);

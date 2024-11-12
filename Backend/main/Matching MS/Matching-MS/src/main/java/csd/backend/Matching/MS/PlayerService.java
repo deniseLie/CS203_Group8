@@ -25,7 +25,7 @@ public class PlayerService {
     }
 
     // Update player's rankId in the database
-    public void updatePlayerRank(Long playerId, int rankId) {
+    public void updatePlayerRank(Long playerId, Long rankId) {
         // Assuming rankId is part of the player's data in DynamoDB, update the rankId here
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("rankId", AttributeValueUpdate.builder()

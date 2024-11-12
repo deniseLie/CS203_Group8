@@ -53,7 +53,7 @@ public class CustomOidcUserService extends OidcUserService {
         }
 
          // Generate a JWT for the authenticated user
-        String jwtToken = jwtUtil.generateToken(googleUserInfo.getEmail());
+        String jwtToken = jwtUtil.generateToken(googleUserInfo.getName(), userOptional.get().getUserId());
 
         // Create a new attributes map including the JWT token
         Map<String, Object> attributes = new HashMap<>(oidcUser.getAttributes());

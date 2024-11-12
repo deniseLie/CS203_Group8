@@ -31,7 +31,6 @@ public class TournamentPlayerStats {
     private LocalDateTime timeEndPerPlayer;
     private int killCount;
     private int deathCount;
-    private int largestWinStreak;
     private boolean isAFK;
 
     // Getters and setters
@@ -94,12 +93,6 @@ public class TournamentPlayerStats {
     }
     public void setDeathCount(int deathCount) {
         this.deathCount = deathCount;
-    }
-    public int getLargestWinStreak() {
-        return largestWinStreak;
-    }
-    public void setLargestWinStreak(int largestWinStreak) {
-        this.largestWinStreak = largestWinStreak;
     }
     public boolean getIsAFK() {
         return isAFK;

@@ -20,7 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.loltournament.loginservice.filter.JwtRequestFilter;
 import com.loltournament.loginservice.service.CustomOidcUserService;
 
-import jakarta.servlet.http.HttpServletResponse;
+// import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * I removed the googleAuth parts
@@ -78,7 +78,9 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow CORS for all paths
-                        .allowedOrigins("http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com") // Allow specific origins
+                        .allowedOrigins(
+                            "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com"
+                        ) // Allow specific origins
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific HTTP methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies/credentials to be sent

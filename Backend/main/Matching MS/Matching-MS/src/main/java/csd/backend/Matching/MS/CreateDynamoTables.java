@@ -1,6 +1,6 @@
 package csd.backend.Matching.MS;
 
-import java.util.HashMap;
+// import java.util.HashMap;
 
 /**
  * This class demonstrates the creation of DynamoDB tables for:

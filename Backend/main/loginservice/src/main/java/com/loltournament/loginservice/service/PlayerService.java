@@ -2,13 +2,14 @@ package com.loltournament.loginservice.service;
 
 import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.repository.PlayerRepository;
+import com.loltournament.loginservice.exception.UserNotFoundException;
 
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+// import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,14 @@ public class PlayerService implements UserDetailsService {
     private PlayerRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UserNotFoundException {
         return userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
+    public UserDetails loadUserById(Long userId) throws UserNotFoundException {
+        return userRepository.findByUserId(userId)
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Transactional

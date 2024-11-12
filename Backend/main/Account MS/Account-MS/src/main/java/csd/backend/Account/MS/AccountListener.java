@@ -1,27 +1,37 @@
 package csd.backend.Account.MS;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Model.Player.Player;
 import csd.backend.Account.MS.Service.SqsService;
 import csd.backend.Account.MS.Service.Player.PlayerService;
+import csd.backend.Account.MS.Service.Tournament.TournamentService;
 
 import java.util.*;
 
 @Service
 public class AccountListener {
 
+    // Inject the default profile picture from the configuration file
+    // Default to "1.jpg" if the property is not found
+    @Value("${default.profile.picture:1.jpg}") 
+    private String defaultProfilePicture;
+
     private final SqsService sqsService;
     private final PlayerService playerService;
+    private final TournamentService tournamentService;
 
     @Autowired
-    public AccountListener(SqsService sqsService, PlayerService playerService) {
+    public AccountListener(SqsService sqsService, PlayerService playerService, TournamentService tournamentService) {
         this.sqsService = sqsService;
         this.playerService = playerService;
+        this.tournamentService = tournamentService;
     }
 
     // Listen for messages in the Account Queue
@@ -117,9 +127,11 @@ public class AccountListener {
             String playerId = rootNode.path("playerId").asText();
             String username = rootNode.path("username").asText();
 
+            // Construct Player object
             Player newPlayer = new Player();
-            newPlayer.setId(Long.parseLong(playerId));  // Parse playerId and set it as the Player ID
-            newPlayer.setUsername(username); // Set username
+            newPlayer.setId(Long.parseLong(playerId));  
+            newPlayer.setUsername(username); 
+            newPlayer.setProfilePicture(defaultProfilePicture);
 
             return newPlayer;
         } catch (Exception e) {
@@ -143,6 +155,9 @@ public class AccountListener {
                 int rankPoints = Integer.parseInt(tournamentData.get("rankPoints"));
                 boolean isWin = Boolean.parseBoolean(tournamentData.get("isWin"));
 
+                // Call the TournamentService to handle tournament creation and saving
+                tournamentService.createAndSaveTournament(tournamentData);
+
                 // Call the PlayerService to handle the match completion
                 playerService.handleMatchCompletion(playerId, championId, kdRate, finalPlacement, rankPoints, isWin);
                 System.out.println("Tournament details processed for player: " + playerId);
@@ -153,7 +168,6 @@ public class AccountListener {
             System.err.println("Failed to process AddTournament message due to parsing issues.");
         }
     }
-
 
     // Parse match data from JSON message body and create Player object
     private Map<String, String> processMatchMessage(String messageBody) {

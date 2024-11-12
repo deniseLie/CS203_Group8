@@ -27,4 +27,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handlePlayerChampionStatsNotFoundException(PlayerChampionStatsNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(RankNotFoundException.class)
+    public ResponseEntity<String> handleRankNotFoundException(RankNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    // Handle RankNotFoundException
+    @ExceptionHandler(RankPointNotFoundException.class)
+    public ResponseEntity<String> hanldeRankPointNotFoundException(RankPointNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND); 
+    }
 }

@@ -3,6 +3,8 @@ package csd.backend.Penalty.MS;
 import java.util.Map;
 
 import io.github.cdimascio.dotenv.Dotenv;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
@@ -14,10 +16,19 @@ public class SqsService {
 
     private final SqsClient sqsClient;
 
-    private final Dotenv dotenv = Dotenv.load();
-    private final String accountQueueUrl = dotenv.get("ACCOUNT_QUEUE_URL");
-    private final String matchmakingQueueUrl = dotenv.get("MATCHMAKING_QUEUE_URL");
-    private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
+    @Value("${account.queue.url}")
+    private String accountQueueUrl;
+    
+    @Value("${matchmaking.queue.url}")
+    private String matchmakingQueueUrl;
+    
+    @Value("${penalty.queue.url}")
+    private String penaltyQueueUrl;
+
+    // private final Dotenv dotenv = Dotenv.load();
+    // private final String accountQueueUrl = dotenv.get("ACCOUNT_QUEUE_URL");
+    // private final String matchmakingQueueUrl = dotenv.get("MATCHMAKING_QUEUE_URL");
+    // private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
 
     public SqsService(SqsClient sqsClient) {
         this.sqsClient = sqsClient;

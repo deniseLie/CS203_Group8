@@ -2,6 +2,7 @@ package com.loltournament.loginservice.service;
 
 import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.repository.PlayerRepository;
+import com.loltournament.loginservice.security.SecurityConfig;
 import com.loltournament.loginservice.exception.UserNotFoundException;
 
 import jakarta.transaction.Transactional;
@@ -37,17 +38,22 @@ public class PlayerService implements UserDetailsService {
         return savedPlayer.getUserId();
     }
 
-    @Transactional
-    public void processOAuthLogin(OAuth2User oAuth2User) {
-        String email = oAuth2User.getAttribute("email");
-        Player player = userRepository.findByEmail(email).orElse(null);
-
-        if (player == null) {
-            player = new Player();
-            player.setEmail(email);
-            player.setUsername(oAuth2User.getAttribute("name"));
-            player.setAuthProvider("GOOGLE");
-            userRepository.save(player);
-        }
+    public Player updateUser(Long userId, String email, String password, String playerName, String username) throws UserNotFoundException {
+        return userRepository.findById(userId)
+            .map(existingPlayer -> {
+                // Update fields as needed
+                existingPlayer.setEmail(email);
+                existingPlayer.setUsername(username);
+                existingPlayer.setPlayername(playerName);
+                
+                // Update password if provided
+                if (password != null && !password.isEmpty()) {
+                    existingPlayer.setPassword(new SecurityConfig().passwordEncoder().encode(password)); // Ensure password encoding
+                }
+    
+                // Save and return the updated player
+                return userRepository.save(existingPlayer);
+            })
+            .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 }

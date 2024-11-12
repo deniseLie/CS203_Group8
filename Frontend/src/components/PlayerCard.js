@@ -1,16 +1,28 @@
 import { Box, Typography } from "@mui/material";
 import PlayerIcon from "./PlayerIcon";
+import { useState } from "react";
 
-const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status }) => {
+const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status, onClick }) => {
+    // Local state to handle hover
+    const [isHovering, setIsHovering] = useState(false);
 
     // Determine the border color based on win/lose/pending status
     let borderColor;
-    if (status === "win") borderColor = "#0AC1DC";
+    if (isHovering && status === "pending") borderColor = "#7B0C21"; // Preview "lose" color on hover if status is pending
+    else if (status === "win") borderColor = "#0AC1DC";
     else if (status === "lose") borderColor = "#7B0C21";
     else borderColor = "transparent"; // No border for pending
-  
+
     return (
-      <Box display="flex" alignItems="center" spacing={1}>
+      <Box 
+        display="flex" 
+        alignItems="center" 
+        spacing={1} 
+        onClick={onClick}
+        onMouseEnter={() => status === "pending" && setIsHovering(true)} // Set hover effect if status is pending
+        onMouseLeave={() => setIsHovering(false)} // Revert hover effect
+        sx={{ cursor: 'pointer' }}
+      >
         {/* Square Champion Image with Player Icon overlay */}
         <Box sx={{ position: 'relative', width: 75, height: 75, border: `2px solid ${borderColor}` }}>
           <Box
@@ -43,6 +55,6 @@ const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status }) =
         </Box>
       </Box>
     );
-  };
+};
 
-  export default PlayerCard;
+export default PlayerCard;

@@ -2,16 +2,16 @@ import React from 'react';
 import ahri from '../assets/champions/ahri.png';
 import sett from '../assets/champions/sett.png';
 import background from '../assets/cherrybackground_dark.png';
-import playerIcon from '../assets/summonerIcon/4895.jpg';
+import playerIcon from '../assets/summonerIcon/1.jpg';
 import { Box, Typography } from '@mui/material';
 import MatchUp from '../components/MatchUp';
 
 // TO DO: replace Dummy data for players with win/lose/pending status
 const playerData = [
-  { playerName: "hide on bush", rank: "Diamond I", playerIcon: playerIcon, champion: "Ahri", championImg: ahri, status: "win" },
-  { playerName: "Rodan", rank: "Diamond I", playerIcon: playerIcon, champion: "Sett", championImg: sett, status: "lose" },
   { playerName: "hide on bush", rank: "Diamond I", playerIcon: playerIcon, champion: "Ahri", championImg: ahri, status: "pending" },
-  { playerName: "Rodan", rank: "Diamond I", playerIcon: playerIcon, champion: "Sett", championImg: sett, status: "win" },
+  { playerName: "Rodan", rank: "Diamond I", playerIcon: playerIcon, champion: "Sett", championImg: sett, status: "pending" },
+  { playerName: "hide on bush", rank: "Diamond I", playerIcon: playerIcon, champion: "Ahri", championImg: ahri, status: "pending" },
+  { playerName: "Rodan", rank: "Diamond I", playerIcon: playerIcon, champion: "Sett", championImg: sett, status: "pending" },
   // Add more players as needed, ensuring the count is even
 ];
 
@@ -38,9 +38,6 @@ const TournamentBracket = () => {
       <Box sx={{ textAlign: 'center', color: 'white', mt: 5 }}>
         <Typography variant="h4" fontWeight="bold" color='#F0E6D2' className='headerPrimary'>
           MATCH 1
-        </Typography>
-        <Typography color='#949083' className='headerSecondary'>
-          COMPLETE
         </Typography>
       </Box>
 

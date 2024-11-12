@@ -9,7 +9,8 @@ function ProfileBanner({ profile, displayType }) {
   const [openModal, setOpenModal] = useState(false); // State to manage the modal visibility
 
   // State for form fields
-  const [username, setUsername] = useState(profile.playerName);
+  const [username, setUsername] = useState(profile.username);
+  const [playerName,setPlayerName] = useState(profile.playerName);
   const [email, setEmail] = useState(profile.email);
   const [password, setPassword] = useState('');
   const [avatar, setAvatar] = useState(profile.playerIcon);
@@ -66,7 +67,7 @@ function ProfileBanner({ profile, displayType }) {
 
           {/* Rank LP */}
           <Typography align="center" className="headerPrimary">
-            {profile.lp} LP
+            {profile.lp}
           </Typography>
         </>
       ) : (
@@ -141,6 +142,8 @@ function ProfileBanner({ profile, displayType }) {
         handleClose={handleCloseModal}
         username={username}
         setUsername={setUsername}
+        playerName = {playerName}
+        setPlayername = {setPlayerName}
         email={email}
         setEmail={setEmail}
         password={password}

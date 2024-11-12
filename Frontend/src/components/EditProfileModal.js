@@ -3,20 +3,16 @@ import { Dialog, DialogContent, TextField, Button, Box, Typography, IconButton, 
 import CloseIcon from '@mui/icons-material/Close';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import icon28 from '../assets/summonerIcon/28.jpg';
-import icon3599 from '../assets/summonerIcon/3599.jpg';
-import icon4614 from '../assets/summonerIcon/4614.jpg';
-import icon4895 from '../assets/summonerIcon/4895.jpg';
-import icon5257 from '../assets/summonerIcon/5257.jpg';
-import icon6104 from '../assets/summonerIcon/6104.jpg';
-import icon6365 from '../assets/summonerIcon/6365.jpg';
-import icon6631 from '../assets/summonerIcon/6631.jpg';
+import { summonerIcons } from '../util/importAssets'; // Import the centralized icons object
 
 const EditProfileModal = ({
   open,
   handleClose,
+  playerId,
   username,
   setUsername,
+  playerName,
+  setPlayerName,
   email,
   setEmail,
   password,
@@ -25,30 +21,80 @@ const EditProfileModal = ({
   setAvatar,
   handleSaveChanges
 }) => {
-  const avatars = [
-    icon28, icon3599, icon4614, icon4895, icon5257, icon6104, icon6365, icon6631
-  ];
-
-  // State for visibility toggling
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // State for password matching error
   const [passwordError, setPasswordError] = useState('');
-
-  // State for editing mode
+  const [emailError, setEmailError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [avatarNum, setAvatarNumber] = useState(1);
+  const [avatarChanged, setAvatarChanged] = useState(false); // Track if avatar was changed
 
-  // Handler for Save Changes button
-  const handleSave = () => {
-    setIsEditing(false);
-    if (password !== confirmPassword) {
-      setPasswordError("Passwords do not match");
-      return;
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Function to validate email format
+  const validateEmail = (email) => emailRegex.test(email);
+
+  // Check if "Save Changes" or "Update Profile Picture" button should be enabled
+  const canSaveChanges = isEditing && 
+    username && 
+    playerName && 
+    email && 
+    validateEmail(email) && 
+    password === confirmPassword;
+
+  const canUpdateProfilePicture = avatarChanged; // Enable button if only avatar is changed
+
+  // Handler for Save Changes or Update Profile Picture button
+  const handleSave = async () => {
+    if (isEditing || avatarChanged) {
+      if (isEditing) {
+        if (password !== confirmPassword) {
+          setPasswordError("Passwords do not match");
+          return;
+        }
+        setPasswordError('');
+
+        if (!validateEmail(email)) {
+          setEmailError("Invalid email format");
+          return;
+        }
+        setEmailError('');
+      }
+
+      // Prepare data to send to backend
+      const profileData = {
+        username,
+        playerName,
+        email,
+        password,
+        profilePicture: avatarNum + ".jpg", // Send the filename instead of the full path
+      };
+
+      console.log(profileData);
+
+      // Uncomment for actual request
+      // try {
+      //   const response = await fetch(`/account/${playerId}/profile`, {
+      //     method: 'PUT',
+      //     headers: { 'Content-Type': 'application/json' },
+      //     body: JSON.stringify(profileData),
+      //   });
+
+      //   if (response.ok) {
+      //     console.log("Profile updated successfully");
+      //     handleSaveChanges();
+      //   } else {
+      //     console.error("Failed to update profile");
+      //   }
+      // } catch (error) {
+      //   console.error("Error updating profile:", error);
+      // }
     }
-    setPasswordError('');
-    handleSaveChanges();
+
+    setIsEditing(false);
+    setAvatarChanged(false); // Reset avatar changed state after saving
   };
 
   return (
@@ -60,139 +106,57 @@ const EditProfileModal = ({
           </IconButton>
         </Box>
         <Box sx={{ display: 'flex' }}>
-          {/* Left Section */}
           <Box sx={{ width: '50%', paddingRight: 2, borderRight: 1.5, borderRightColor: '#464F4D' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                {/* Player Avatar */}
-                <Box
-                  sx={{
-                    width: '5w',
-                    height: '5vw',
-                    borderRadius: '50%',
-                    overflow: 'hidden',
-                    border: avatar ? '2px solid #C8AA6C' : 'none',
-                    cursor: 'pointer'
+              <Box
+                sx={{
+                  width: '5vw',
+                  height: '5vw',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  border: avatar ? '2px solid #C8AA6C' : 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <img
+                  src={avatar}
+                  alt="Avatar"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
                   }}
-                  onClick={() => setAvatar(avatar)}
-                >
-                  <img
-                    src={avatar}
-                    alt="Avatar"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                    }}
-                  />
-                </Box>
+                />
               </Box>
-
-                {/* Edit Profile Button */}
-                <Button
-                  onClick={() => setIsEditing(!isEditing)}
-                  sx={{
-                    color: '#B68C34',
-                    borderColor: '#B68C34',
-
-                  }}
-                >
-                {isEditing ? (<Typography className='headerPrimary'>
-                Cancel Edit Profile
-                </Typography>) : (                <Typography className='headerPrimary'>
-                Edit Profile
-
-                </Typography>)}
-                </Button>
-              {/* Username Field */}
-              <TextField
-                label="Player Name"
-                fullWidth
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                disabled={!isEditing}
-                sx={{ mb: 2, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' },      
-                "& .MuiInputBase-input.Mui-disabled": {
-      WebkitTextFillColor: "gray",
-    },
-    }}
+              <Button onClick={() => setIsEditing(!isEditing)} sx={{ color: '#B68C34', borderColor: '#B68C34' }}>
+                <Typography className='headerPrimary'>{isEditing ? "Cancel Edit Profile" : "Edit Profile"}</Typography>
+              </Button>
+              
+              <TextField label="Player Name" fullWidth value={playerName} onChange={(e) => setPlayerName(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} />
+              <TextField label="Username" fullWidth value={username} onChange={(e) => setUsername(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} />
+              <TextField 
+                label="Email" 
+                fullWidth 
+                value={email} 
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError(validateEmail(e.target.value) ? "" : "Invalid email format");
+                }} 
+                disabled={!isEditing} 
+                sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} 
+                error={isEditing && !!emailError}
+                helperText={isEditing ? emailError : ""}
               />
-              {/* Email Field */}
-              <TextField
-                label="Email"
-                fullWidth
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={!isEditing}
-                sx={{ mb: 2, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' },                "& .MuiInputBase-input.Mui-disabled": {
-      WebkitTextFillColor: "gray",
-    }, }}
-              />
-              {/* Password Field */}
-              <TextField
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                fullWidth
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={!isEditing}
-                sx={{ mb: 2, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' },                 "& .MuiInputBase-input.Mui-disabled": {
-      WebkitTextFillColor: "gray",
-    }, }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                        sx={{ color: '#949083' }}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-              {/* Confirm Password Field */}
-              <TextField
-                label="Confirm Password"
-                type={showConfirmPassword ? "text" : "password"}
-                fullWidth
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={!isEditing}
-                sx={{ mb: 2, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' } ,                 "& .MuiInputBase-input.Mui-disabled": {
-      WebkitTextFillColor: "gray",
-    },}}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        edge="end"
-                        sx={{ color: '#949083',
-                              "& .MuiInputBase-input.Mui-disabled": {
-      WebkitTextFillColor: "gray",
-    }, }}
-                      >
-                        {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-                error={!!passwordError}
-                helperText={passwordError}
+              <TextField label="Password" type={showPassword ? "text" : "password"} fullWidth value={password} onChange={(e) => setPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: '#949083' }}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
+              <TextField label="Confirm Password" type={showConfirmPassword ? "text" : "password"} fullWidth value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: '#949083' }}>{showConfirmPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} error={isEditing && !!passwordError} helperText={isEditing ? passwordError : ""}
               />
             </Box>
           </Box>
 
-          {/* Right Section (Avatar Picker) */}
           <Box sx={{ width: '50%', paddingLeft: 3 }}>
-            <Typography sx={{ mb: 1, color: '#f0e6d2' }} className="headerPrimary">
-              ACQUIRED 2024
-            </Typography>
+            <Typography sx={{ mb: 1, color: '#f0e6d2' }} className="headerPrimary">ACQUIRED 2024</Typography>
             <Box display="flex" flexWrap="wrap">
-              {avatars.map((avatarSrc, index) => (
+              {Object.values(summonerIcons).map((avatarSrc, index) => (
                 <Box
                   key={index}
                   sx={{
@@ -203,7 +167,11 @@ const EditProfileModal = ({
                     overflow: 'hidden',
                     border: avatar === avatarSrc ? '2px solid #B68C34' : 'none'
                   }}
-                  onClick={() => setAvatar(avatarSrc)}
+                  onClick={() => { 
+                    setAvatar(avatarSrc); 
+                    setAvatarNumber(index + 1); 
+                    setAvatarChanged(true); // Mark avatar as changed
+                  }}
                 >
                   <img
                     src={avatarSrc}
@@ -219,17 +187,15 @@ const EditProfileModal = ({
             </Box>
           </Box>
         </Box>
-
-        {/* Save Changes Button */}
         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
-          <Button
-            className="headerPrimary"
-            onClick={handleSave}
-            sx={{ borderColor: '#B68C34', border: 1, borderRadius: 0, color: '#B68C34' }}
-            disabled={ isEditing && password !== confirmPassword} // Disable if not editing or passwords don't match
+          <Button 
+            className="headerPrimary" 
+            onClick={handleSave} 
+            sx={{ borderColor: '#B68C34', border: 1, borderRadius: 0, color: '#B68C34' }} 
+            disabled={!canSaveChanges && !canUpdateProfilePicture}
           >
             <Typography className="headerPrimary" fontSize="1em">
-              Save Changes
+              {canUpdateProfilePicture && !canSaveChanges ? "Update Profile Picture" : "Save Changes"}
             </Typography>
           </Button>
         </Box>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Modal, IconButton, Select, MenuItem, InputBase, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 import SearchIcon from '@mui/icons-material/Search'
-import { championsAssets, roleIconsAssets } from '../components/importAssets';
+import { championsAssets, roleIconsAssets } from '../util/importAssets';
 
 //========= ASSIGNMENT: all the role and champion icons =========
 const roleIcons = [

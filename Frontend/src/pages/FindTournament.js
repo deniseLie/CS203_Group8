@@ -4,7 +4,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import backgroundImage from '../assets/background-with-banner.png';
 import arenaIcon from '../assets/arena-icon.png';
 import PlayerIcon from '../components/PlayerIcon';
-import profileAvatar from '../assets/summonerIcon/4895.jpg';
+import profileAvatar from '../assets/summonerIcon/1.jpg';
 import findMatchDisabled from '../assets/button-accept-disabled.png';
 import findMatch from '../assets/button-accept-default.png';
 import inQueue from '../assets/button-accept-in-queue.png';
@@ -17,6 +17,10 @@ import speedupQueueIcon from '../assets/speedQueue.png';
 import redWarning from '../assets/red-warning.png'; // Import the red warning icon
 import LowPriorityQueue from '../components/LowPriorityQueue';
 import { useAuth } from '../auth/AuthProvider';
+import axios from 'axios';
+import env from 'react-dotenv';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const FindTournament = ({ logout }) => {
   const [open, setOpen] = useState(false); 
@@ -26,7 +30,7 @@ const FindTournament = ({ logout }) => {
   const [showSpeedUpModal, setShowSpeedUpModal] = useState(false); 
   const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false);
   const [showLowPriority, setShowLowPriority] = useState(false); // Track if low priority queue should be shown
-  
+  const navigate = useNavigate();
   
   const { user } = useAuth();
   console.log(useAuth());
@@ -35,14 +39,48 @@ const FindTournament = ({ logout }) => {
   // constant : how many seconds to show speed up q
   const SPEED_UP_SECONDS = 5;
 
+  
+    // Function to start UI for queue
+    const startQueueUI = () => {
+      setInQueueState(true);
+      setTimer(0); // reset timer to start counting
+      if (IS_LOW_PRIORITY) setShowLowPriority(true);
+    };
+  
   // Function : when user starts the queue
-  const handleFindMatchClick = () => {
-    if (selectedChampion) {
-      setInQueueState(true); 
-      setTimer(0); 
-      if (IS_LOW_PRIORITY){
-        setShowLowPriority(true); // Show low priority box when entering queue
+  const handleFindMatchClick = async () => {
+    if (selectedChampion){
+      
+      startQueueUI(); // Start queue UI independently of server response
+     
+    try{
+      const token = Cookies.get('jwtToken');
+    console.log(`Bearer ${token}`)
+
+      const response = await axios.post(
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
+        {
+          playerId: user.sub
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+          ,
+          withCredentials: true
+        }
+      );
+  
+      // once match found, then redirect to tournament bracket page
+      const tournamentId = response.data.tournamentId; // Adjust according to your response structure
+      if (tournamentId) {
+        navigate(`/tournamentBracket/${tournamentId}`);
       }
+      
+    }
+    catch(e){
+      console.log(e);
+    } 
     }
   };
 
@@ -167,14 +205,14 @@ const FindTournament = ({ logout }) => {
           }}
         >
           <PlayerIcon
-            alt={user? user.sub : ""}
+            alt={user? user.playername : ""}
             src={profileAvatar}
             width={6}
             height={6}
             clickable={false}
           />
           <Typography className="headerPrimary" fontSize={'1.25em'}>
-            {user? user.sub : ""}
+            {user? user.playername : ""}
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Box component="img" src={diamondRank} alt="Rank" sx={{ width: '3vh', height: '3vh', marginRight: 1 }} />

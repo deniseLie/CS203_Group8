@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import {jwtDecode} from 'jwt-decode'; // Import jwt-decode for decoding the JWT
 import logo from '../assets/logo.png';
 import playButton from '../assets/play-button-disabled.png';
-import profileAvatar from '../assets/summonerIcon/4895.jpg';
+import profileAvatar from '../assets/summonerIcon/1.jpg';
 import PlayerIcon from './PlayerIcon';
 import { useAuth } from '../auth/AuthProvider';
 
@@ -94,7 +94,7 @@ function Navbar({  activePage }) {
         }}
       >
         <PlayerIcon
-          alt={user? user.sub : "Profile"}
+          alt={user? user.playername : "Profile"}
           src={profileAvatar}
           width={2}
           height={2}
@@ -111,7 +111,7 @@ function Navbar({  activePage }) {
               },
             }}
           >
-            {user ? user.sub : ""}
+            {user ? user.playername : ""}
           </Typography>
           <Typography className="bodyPrimary">{user ? user.rank : "Unranked"}</Typography>
         </Box>

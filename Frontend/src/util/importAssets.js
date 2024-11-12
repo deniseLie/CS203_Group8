@@ -1,3 +1,13 @@
+// Import all summoner icons
+import icon1 from '../assets/summonerIcon/1.jpg';
+import icon2 from '../assets/summonerIcon/2.jpg';
+import icon3 from '../assets/summonerIcon/3.jpg';
+import icon4 from '../assets/summonerIcon/4.jpg';
+import icon5 from '../assets/summonerIcon/5.jpg';
+import icon6 from '../assets/summonerIcon/6.jpg';
+import icon7 from '../assets/summonerIcon/7.jpg';
+import icon8 from '../assets/summonerIcon/8.jpg';
+
 // Role Icons
 import assassinIcon from '../assets/championClass/roleicon-assassin.png';
 import fighterIcon from '../assets/championClass/roleicon-fighter.png';
@@ -7,6 +17,7 @@ import supportIcon from '../assets/championClass/roleicon-support.png';
 import tankIcon from '../assets/championClass/roleicon-tank.png';
 
 // Champion Images
+import noChampionImage from '../assets/champions/0.png';
 import annieImage from '../assets/champions/annie.png';
 import galioImage from '../assets/champions/galio.png';
 import leBlancImage from '../assets/champions/leblanc.png';
@@ -29,15 +40,15 @@ import zedImage from '../assets/champions/zed.png';
 import viImage from '../assets/champions/vi.png';
 import namiImage from '../assets/champions/nami.png';
 import settImage from '../assets/champions/sett.png';
-    
-// Import all champion splash images
+
+// Champion Splash Images
 import ahriSplash from '../assets/championSplash/ahri.jpg';
 import annieSplash from '../assets/championSplash/annie.jpg';
-import belvethSplash from '../assets/championSplash/belveth.jpg';
+import belVethSplash from '../assets/championSplash/belveth.jpg';
 import galioSplash from '../assets/championSplash/galio.jpg';
 import jinxSplash from '../assets/championSplash/jinx.jpg';
-import kaisaSplash from '../assets/championSplash/kaisa.jpg';
-import leblancSplash from '../assets/championSplash/leblanc.jpg';
+import kaiSaSplash from '../assets/championSplash/kaisa.jpg';
+import leBlancSplash from '../assets/championSplash/leblanc.jpg';
 import masterYiSplash from '../assets/championSplash/masteryi.jpg';
 import missFortuneSplash from '../assets/championSplash/missfortune.jpg';
 import namiSplash from '../assets/championSplash/nami.jpg';
@@ -54,7 +65,19 @@ import yasuoSplash from '../assets/championSplash/yasuo.jpg';
 import zedSplash from '../assets/championSplash/zed.jpg';
 import viSplash from '../assets/championSplash/vi.jpg';
 
-// Export all assets as a single object
+// Summoner Icons Collection
+export const summonerIcons = {
+  icon1,
+  icon2,
+  icon3,
+  icon4,
+  icon5,
+  icon6,
+  icon7,
+  icon8,
+};
+
+// Role Icons Collection
 export const roleIconsAssets = {
   assassin: assassinIcon,
   fighter: fighterIcon,
@@ -64,7 +87,9 @@ export const roleIconsAssets = {
   tank: tankIcon,
 };
 
+// Champion Images Collection
 export const championsAssets = {
+  noChampion: noChampionImage,
   annie: annieImage,
   galio: galioImage,
   leBlanc: leBlancImage,
@@ -89,28 +114,28 @@ export const championsAssets = {
   sett: settImage,
 };
 
-// Export splash images as `championSplashAssets`
+// Champion Splash Images Collection
 export const championSplashAssets = {
-    ahri: ahriSplash,
-    annie: annieSplash,
-    belveth: belvethSplash,
-    galio: galioSplash,
-    jinx: jinxSplash,
-    kaisa: kaisaSplash,
-    leblanc: leblancSplash,
-    masterYi: masterYiSplash,
-    missFortune: missFortuneSplash,
-    nami: namiSplash,
-    senna: sennaSplash,
-    sett: settSplash,
-    singed: singedSplash,
-    sona: sonaSplash,
-    soraka: sorakaSplash,
-    teemo: teemoSplash,
-    tristana: tristanaSplash,
-    kayn: kaynSplash,
-    zac: zacSplash,
-    yasuo: yasuoSplash,
-    zed: zedSplash,
-    vi: viSplash,
-  };
+  ahri: ahriSplash,
+  annie: annieSplash,
+  belVeth: belVethSplash,
+  galio: galioSplash,
+  jinx: jinxSplash,
+  kaiSa: kaiSaSplash,
+  leBlanc: leBlancSplash,
+  masterYi: masterYiSplash,
+  missFortune: missFortuneSplash,
+  nami: namiSplash,
+  senna: sennaSplash,
+  sett: settSplash,
+  singed: singedSplash,
+  sona: sonaSplash,
+  soraka: sorakaSplash,
+  teemo: teemoSplash,
+  tristana: tristanaSplash,
+  kayn: kaynSplash,
+  zac: zacSplash,
+  yasuo: yasuoSplash,
+  zed: zedSplash,
+  vi: viSplash,
+};

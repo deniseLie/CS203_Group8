@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/matchmaking")
 public class HealthCheckController {
 
-    @CrossOrigin
     @GetMapping("/health")
     public String healthCheck() {
         return "OK";

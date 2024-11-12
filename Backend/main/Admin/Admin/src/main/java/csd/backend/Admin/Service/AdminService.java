@@ -82,6 +82,35 @@ public class AdminService {
         return "User created successfully";
     }
 
+    // Update user details based on userId
+    public String updatePlayerProfile(String playerId, String username, String email, String password) {
+        Optional<User> optionalUser = userRepository.findById(Long.parseLong(playerId));
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+
+            // Update fields only if new values are provided
+            if (username != null && !username.isEmpty()) {
+                user.setUsername(username);
+            }
+            
+            if (email != null && !email.isEmpty()) {
+                user.setEmail(email);
+            }
+
+            // Hash the new password before saving
+            if (password != null && !password.isEmpty()) {
+                user.setPassword(passwordEncoder.encode(password));
+            }
+
+            // Save the updated user back to the database
+            userRepository.save(user);
+            return "Player profile updated successfully.";
+        } else {
+            return "User not found.";
+        }
+    }
+
     // Delete user by userId
     public String deleteUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);

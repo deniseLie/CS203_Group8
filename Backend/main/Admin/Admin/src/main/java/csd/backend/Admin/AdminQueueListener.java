@@ -88,18 +88,6 @@ public class AdminQueueListener {
 
     // Process Add Player to DB
     private void processAddPlayer(String messageBody) {
-        // Extract player details and create a User object
-        User user = parseUserDataFromMessage(messageBody);
-
-        // ADD PLAYER
-        if (user != null) {
-            // Call createUserWithId to add the player to the database
-            String result = adminService.createUserWithId(user);
-        }
-    }
-
-    // Parse player data from JSON message body
-    private User parseUserDataFromMessage (String messageBody) {
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -121,10 +109,10 @@ public class AdminQueueListener {
             user.setPassword(password);
             user.setRole(role);
     
-            return user;
+            String result = adminService.createUserWithId(user);
+            System.out.println("add player" + result);
         } catch (Exception e) {
             System.out.println("Failed to parse player data from message: " + e.getMessage());
-            return null;
         }
     }
 
@@ -135,10 +123,14 @@ public class AdminQueueListener {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(messageBody);
 
-            // Long playerId = rootNode.path("playerId").asLong();
-            // Long rankId = rootNode.path("rank").asLong();
+            // Extract player data from message
+            String playerId = rootNode.path("playerId").asText();
+            String username = rootNode.path("username").asText(null);
+            String email = rootNode.path("email").asText(null);
+            String password = rootNode.path("password").asText(null);
 
-            // playerService.updatePlayerRank(playerId, rankId);
+            // Call the service to update player details
+            String result = adminService.updatePlayerProfile(playerId, username, email, password);
         } catch (Exception e) {
             System.err.println("Failed to process update player message: " + e.getMessage());
         }

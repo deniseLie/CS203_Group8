@@ -1,7 +1,7 @@
 // src/components/PlayerTable.js
 import React from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-
+import {Link} from 'react-router-dom';
 const PlayerTable = ({ data }) => {
   return (
     <Box sx={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', p: 2 }}>
@@ -14,6 +14,7 @@ const PlayerTable = ({ data }) => {
             <TableCell>Playername</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Auth Provider</TableCell>
+            <TableCell>Details</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -24,6 +25,7 @@ const PlayerTable = ({ data }) => {
               <TableCell>{player.playername}</TableCell>
               <TableCell>{player.email}</TableCell>
               <TableCell>{player.authProvider}</TableCell>
+              <TableCell><Link to={`/players/edit/${player.id}`}>View</Link></TableCell>
             </TableRow>
           ))}
         </TableBody>

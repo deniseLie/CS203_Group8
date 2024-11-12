@@ -1,24 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Popover } from '@mui/material';
-import logo from '../assets/logo.png'; // Your logo image here
-import playButton from '../assets/play-button-disabled.png'; // Your play button image here
-import profileAvatar from '../assets/4895.jpg'; // Profile avatar image
+import { Box, Typography, Popover, Button } from '@mui/material';
+import Cookies from 'js-cookie';
+import {jwtDecode} from 'jwt-decode'; // Import jwt-decode for decoding the JWT
+import logo from '../assets/logo.png';
+import playButton from '../assets/play-button-disabled.png';
+import profileAvatar from '../assets/summonerIcon/1.jpg';
 import PlayerIcon from './PlayerIcon';
+import { useAuth } from '../auth/AuthProvider';
 
-function Navbar({ logout, activePage }) {
+function Navbar({  activePage }) {
   const [anchorEl, setAnchorEl] = useState(null);
+
+
+  const { user, logout } = useAuth();
 
   // Handle click to open the popover
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget); // Set the anchor element (the clicked Box)
+    setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null); // Close the popover
+    setAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl); // Determine if the popover is open
+  const open = Boolean(anchorEl);
   const id = open ? 'profile-popover' : undefined;
 
   return (
@@ -36,63 +42,64 @@ function Navbar({ logout, activePage }) {
       {/* Left side: Logo and Play Button */}
       <Box display="flex" alignItems="center">
         <Box display="flex" alignItems="center">
-          {/* Logo */}
           <Link to="/">
             <Box component="img" src={logo} alt="Logo" sx={{ marginLeft: 3, width: 45, marginRight: -1.5 }} />
           </Link>
-
-          {/* Play Button */}
           <Link to="/">
             <Box component="img" src={playButton} alt="Play" sx={{ width: 150, marginRight: 3 }} />
           </Link>
         </Box>
 
-        {/* History link */}
         <Typography
           component={Link}
           to="/history"
           className="headerPrimary"
           sx={{
             marginRight: 3,
-            ...(activePage === 'history' && { color: '#d4b106' }), // Highlight if active
+            ...(activePage === 'history' && { color: '#d4b106' }),
             '&:hover': {
               color: '#d4b106',
             },
-            marginLeft: '20px', // Add some spacing if needed
+            marginLeft: '20px',
           }}
         >
           HISTORY
         </Typography>
 
-        {/* LEADERBOARD Link */}
         <Typography
           component={Link}
           to="/leaderboard"
-          className="headerPrimary" // Use the headerPrimary class for default styles
+          className="headerPrimary"
           sx={{
-            ...(activePage === 'leaderboard' && { color: '#d4b106' }), // Highlight if active
+            ...(activePage === 'leaderboard' && { color: '#d4b106' }),
             '&:hover': {
-              color: '#d4b106', // Hover color
+              color: '#d4b106',
             },
           }}
         >
           LEADERBOARD
         </Typography>
       </Box>
+
       {/* Right side: Profile Avatar, Name, and Rank */}
       <Box
         display="flex"
         alignItems="center"
-        sx={{ cursor: 'pointer' }} // Make the profile section clickable
-        onClick={handleClick} // Trigger the popover when this section is clicked
+        onClick={handleClick}
+        sx={{
+          cursor: 'pointer',
+          textDecoration: 'none',
+          outline: 'none',
+          backgroundColor: 'transparent',
+        }}
       >
         <PlayerIcon
-          alt="Hide on bush"
+          alt={user? user.playername : "Profile"}
           src={profileAvatar}
           width={2}
           height={2}
           link="/profile"
-          clickable={false} // Disable direct linking since the whole section is clickable
+          clickable={false}
         />
 
         <Box display="flex" flexDirection="column" sx={{ marginLeft: 3, marginRight: 2 }}>
@@ -104,9 +111,9 @@ function Navbar({ logout, activePage }) {
               },
             }}
           >
-            hide on bush
+            {user ? user.playername : ""}
           </Typography>
-          <Typography className="bodyPrimary">Diamond I</Typography>
+          <Typography className="bodyPrimary">{user ? user.rank : "Unranked"}</Typography>
         </Box>
       </Box>
 
@@ -128,12 +135,26 @@ function Navbar({ logout, activePage }) {
         <Box
           sx={{
             padding: 2,
+            minWidth:'10vw',
             display: 'flex',
+            alignItems:'center',
             flexDirection: 'column',
             gap: 1,
             backgroundColor: '#010b13',
           }}
         >
+          <Typography
+            className='headerPrimary'
+            component={Link}
+            to={"/profile"}
+            sx={{textDecoration:'none', 
+              '&:hover': {
+                color: '#d4b106',
+              },
+              cursor: 'pointer',}}
+          >
+           Profile
+          </Typography>
           <Typography
             className="headerPrimary"
             sx={{
@@ -143,8 +164,8 @@ function Navbar({ logout, activePage }) {
               cursor: 'pointer',
             }}
             onClick={() => {
-              handleClose(); // Close the popover first
-              logout(); // Call the logout function
+              handleClose();
+              logout();
             }}
           >
             Sign Out

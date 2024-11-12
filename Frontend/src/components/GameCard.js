@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Collapse, List, ListItem, ListItemText, Avatar, Divider } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayerIcon from './PlayerIcon';
-import profilePic from '../assets/4895.jpg'
+import profilePic from '../assets/summonerIcon/1.jpg'
 function GameCard({ players, currentPlayer }) {
   const [open, setOpen] = useState(false); // State to control dropdown visibility
 

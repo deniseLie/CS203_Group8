@@ -110,4 +110,5 @@ public class AccountController {
             return new ResponseEntity<>(List.of(errorResponse), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
 }

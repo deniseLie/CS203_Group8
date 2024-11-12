@@ -18,34 +18,37 @@ public class MatchmakingController {
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingController.class);
 
     private final MatchmakingService matchmakingService;
+    private final PlayerService playerService;
 
-    public MatchmakingController(MatchmakingService matchmakingService) {
+    public MatchmakingController(MatchmakingService matchmakingService, PlayerService playerService) {
         this.matchmakingService = matchmakingService;
+        this.playerService = playerService;
     }
 
     @PostMapping("/join")
-    public String joinMatchmaking(@RequestParam String playerId, @RequestParam String rank) {
-        logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerId, rank);
+    public String joinMatchmaking(@RequestParam String playerId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
         int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
-        int rankId = Integer.parseInt(rank);  // Parse rankId to integer if needed
 
         try {
-             // Check if the player is banned
-             Map<String, Object> playerStatus = matchmakingService.checkPlayerStatus(playerId);
-             if (playerStatus.containsKey("remainingTime") && (long) playerStatus.get("remainingTime") > 0) {
-                 long remainingTime = (long) playerStatus.get("remainingTime");
-                 return "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.";
-             }
+            // Check if the player is banned
+            Map<String, Object> playerStatus = matchmakingService.checkPlayerStatus(playerId);
+            if (playerStatus.containsKey("remainingTime") && (long) playerStatus.get("remainingTime") > 0) {
+                long remainingTime = (long) playerStatus.get("remainingTime");
+                return "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.";
+            }
+            
+            // Get rank id
+            int rankId = playerService.getPlayerRankId(playerId);
              
             // Queue Player 
-            matchmakingService.updatePlayerStatus(playerId, "queue");
-            logger.info("Player status updated to 'queue'. Player: {}", playerId);
+            playerService.updatePlayerStatus(playerId, "queue");
 
+            // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
 
+                // Check if enough players are available for the match
                 if (matchmakingService.checkForMatch(rankId)) {
-                    logger.info("Match successfully created for rank: {}", rankId);
                     return "Match created successfully.";
                 }
 

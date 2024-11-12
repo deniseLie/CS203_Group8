@@ -1,18 +1,20 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '../auth/AuthProvider';
 // For google oauth
 const LoginSuccess = () => {
   const navigate = useNavigate();
 
+  const { login } = useAuth(); // Get login function from AuthProvider
   useEffect(() => {
     // Get the token from the URL
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     if (token) {
-      // Store the token in localStorage for future use
-      localStorage.setItem('jwtToken', token);
+      // Call the login function from AuthProvider to set the user state
+      login(token);
 
       // Redirect to the main app or dashboard
       navigate('/');

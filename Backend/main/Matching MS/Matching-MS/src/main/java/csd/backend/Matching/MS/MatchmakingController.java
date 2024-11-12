@@ -31,6 +31,7 @@ public class MatchmakingController {
         this.playerService = playerService;
     }
 
+    @CrossOrigin(origins = "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com")
     @PostMapping("/join")
     public ResponseEntity<Map<String, Object>> joinMatchmaking(@RequestBody String playerId, @RequestBody String championId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
@@ -86,6 +87,7 @@ public class MatchmakingController {
     }
 
 
+    @CrossOrigin(origins = "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com")
     @PostMapping("/join/speedupQueue")
     public ResponseEntity<Map<String, Object>> joinSpeedUpMatchmaking(@RequestBody String playerId, @RequestBody String championId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
@@ -140,6 +142,7 @@ public class MatchmakingController {
     }
 
     // Stop queueing (unqueue player)
+    @CrossOrigin(origins = "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com")
     @PostMapping("/unqueue")
     public ResponseEntity<Map<String, Object>> unqueuePlayer(@RequestParam String playerId) {
         Map<String, Object> response = new HashMap<>();

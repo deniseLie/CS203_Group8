@@ -1,3 +1,4 @@
+csd\backend\Account\MS\Security\SecurityConfig$1.class
 csd\backend\Account\MS\DTO\PlayerProfileUpdateRequest.class
 csd\backend\Account\MS\Exception\GlobalExceptionHandler.class
 csd\backend\Account\MS\Repository\Champion\ChampionRepository.class
@@ -7,6 +8,8 @@ csd\backend\Account\MS\Exception\RankPointNotFoundException.class
 csd\backend\Account\MS\Repository\Tournament\TournamentRepository.class
 csd\backend\Account\MS\Exception\PlayerChampionStatsNotFoundException.class
 csd\backend\Account\MS\Service\SqsService.class
+csd\backend\Account\MS\Security\SecurityConfig.class
+csd\backend\config\AwsConfig.class
 csd\backend\Account\MS\Exception\RankNotFoundException.class
 csd\backend\Account\MS\Model\Tournament\TournamentPlayerStats.class
 csd\backend\Account\MS\Exception\PlayerNotFoundException.class

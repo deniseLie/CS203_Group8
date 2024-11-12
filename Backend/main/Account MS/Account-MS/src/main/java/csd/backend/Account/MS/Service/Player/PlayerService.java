@@ -2,6 +2,7 @@ package csd.backend.Account.MS.Service.Player;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,7 @@ public class PlayerService {
     private final PlayerStatsService playerStatsService;
     private final SqsService sqsService;
     private final ChampionService championService;  
+    private final PasswordEncoder passwordEncoder; 
 
     // Constructor-based dependency injection
     @Autowired
@@ -38,7 +40,8 @@ public class PlayerService {
         PlayerChampionStatsRepository playerChampionStatsRepository,
         PlayerStatsService playerStatsService,
         SqsService sqsService,
-        ChampionService championService
+        ChampionService championService,
+        PasswordEncoder passwordEncoder
     ) {
         this.playerRepository = playerRepository;
         this.playerOverallStatsRepository = playerOverallStatsRepository;
@@ -46,6 +49,7 @@ public class PlayerService {
         this.playerStatsService = playerStatsService;
         this.sqsService = sqsService;
         this.championService = championService;
+        this.passwordEncoder = passwordEncoder;
     } 
 
     // Method to retrieve player by ID
@@ -208,7 +212,7 @@ public class PlayerService {
 
             // Hash the password before sending it to the SQS queue
             if (password != null) {
-                password = hashPassword(password); // Hash the password
+                password = passwordEncoder.encode(password); // Hash the password
             }
 
             // Prepare the message body to be sent to the SQS queue

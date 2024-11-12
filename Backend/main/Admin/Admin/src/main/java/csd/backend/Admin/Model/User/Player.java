@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Player extends User {
 
     @Column(name = "playerId", nullable = true)
-    private String playerId;
+    private Long playerId;
 
     @Column(name = "playerName", nullable = false)
     private String playerName;
@@ -16,11 +16,11 @@ public class Player extends User {
     private String profilePicture;
 
     // Getters and Setters
-    public String getPlayerId() {
+    public Long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(String playerId) {
+    public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 

@@ -17,10 +17,17 @@ public class Tournament {
     private Long tournamentId;
 
     private int tournamentSize;
-    private boolean status;
+    private boolean status;     // 0 - ongoing, 1 - completed
     private LocalDateTime timestampStart;
-    private String timeStampEnd;
+    private LocalDateTime timeStampEnd;
 
+    // Mark tournament as done by setting the end timestamp
+    public void markAsDone() {
+        if (status == true) {
+            timeStampEnd = LocalDateTime.now();  // Set current time as end timestamp
+        }
+    }
+    
     // Getters and setters
     public Long getTournamentId() {
         return tournamentId;
@@ -41,22 +48,16 @@ public class Tournament {
         this.status = status;
     }
     
-    
-    public void markAsDone(){
-        if (status == true){
-            timeStampEnd = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-        }
-    }
     public LocalDateTime getTimestampStart() {
         return timestampStart;
     }
     public void setTimestampStart(LocalDateTime timestampStart) {
         this.timestampStart = timestampStart;
     }
-    public String getTimestampEnd() {
+    public LocalDateTime getTimestampEnd() {
         return timeStampEnd;
     }
-    public void setTimestampEnd(String timeStampEnd) {
+    public void setTimestampEnd(LocalDateTime timeStampEnd) {
         this.timeStampEnd = timeStampEnd;
     }
 }

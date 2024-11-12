@@ -13,6 +13,7 @@ import PlayerDatasetPage from './pages/Players/Dataset';
 import LeaderboardsPage from './pages/Players/Leaderboards';
 import CreatePlayerPage from './pages/Players/CreatePlayerPage';
 import NotFoundPage from './pages/NotFound/NotFoundPage';
+import EditPlayerPage from './pages/Players/EditPlayerPage';
 
 function App() {
   return (
@@ -81,6 +82,14 @@ function App() {
             element={
               <PrivateRoute>
                 <CreatePlayerPage />
+              </PrivateRoute>
+            }
+          />
+          <Route 
+            path="/players/edit" 
+            element={
+              <PrivateRoute>
+                <EditPlayerPage />
               </PrivateRoute>
             }
           />

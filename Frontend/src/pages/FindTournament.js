@@ -29,6 +29,7 @@ const FindTournament = ({ logout }) => {
   
   
   const { user } = useAuth();
+  console.log(useAuth());
   // DUMMY: if user is lowpriority
   const IS_LOW_PRIORITY = false;
   // constant : how many seconds to show speed up q

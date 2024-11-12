@@ -19,7 +19,7 @@ function Login({ login }) {
   const handleGoogleLogin = () => {
     window.location.href = `${env.LOGIN_SERVER_URL}/oauth2/authorization/google`;
   };
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (isFormFilled) {

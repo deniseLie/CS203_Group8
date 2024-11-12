@@ -27,12 +27,12 @@ public class AdminController {
         return adminService.getAllUsers();
     }
     @PostMapping("/createUser")
-    public String createUser(@RequestParam String username, @RequestParam String password) {
-        return adminService.createUser(username, password);
+    public String createUser(@RequestParam String username, @RequestParam String password, @RequestParam String role) {
+        return adminService.createUser(username, password, role);
     }
     @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestParam String username) {
-        return adminService.deleteUser(username);
+    public String deleteUser(@RequestParam Long userId) {
+        return adminService.deleteUser(userId);
     }
 
     //MATCH ADMIN ACTIONS

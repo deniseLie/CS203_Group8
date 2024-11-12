@@ -20,7 +20,6 @@ public class Match {
     private int matchId;
 
     @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //check to make sure from players db and not admin db
     private List<MatchPlayer> players;
 
     public int getMatchId() {

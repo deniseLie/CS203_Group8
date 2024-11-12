@@ -1,12 +1,13 @@
 import './App.css';
-import Login from './pages/Login';
-import History from './pages/History'; // Import the History page
-import Leaderboard from './pages/Leaderboard'; // Import the Leaderboard page
-import { createTheme, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import FindTournament from './pages/FindTournament';
+import { ThemeProvider, createTheme } from '@mui/material';
+import { AuthProvider, useAuth } from './auth/AuthProvider';
+import Login from './pages/Login';
 import Register from './pages/Register';
+import FindTournament from './pages/FindTournament';
+import Profile from './pages/Profile';
+import History from './pages/History';
+import Leaderboard from './pages/Leaderboard';
 import PostGame from './pages/PostGame';
 import TournamentBracket from './pages/TournamentBracket';
 import LoginSuccess from './pages/LoginSuccess';
@@ -17,48 +18,34 @@ const theme = createTheme({
   },
 });
 
-function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Check if the user is authenticated by checking localStorage for JWT
-  useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, []);
-
-  // Login function to set the authenticated state
-  const login = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem('isAuthenticated', 'true'); // Store the authentication state
-  };
-
-  // Logout function
-  const logout = () => {
-    localStorage.removeItem('jwtToken');
-    setIsAuthenticated(false);
-  };
+function AppRoutes() {
+  const { user, login, logout } = useAuth();
+  const isAuthenticated = !!user;
 
   return (
+    <Routes>
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
+      <Route path="/" element={isAuthenticated ? <FindTournament  /> : <Navigate to="/login" />} />
+      <Route path="/profile" element={isAuthenticated ? <Profile  /> : <Navigate to="/login" />} />
+      <Route path="/login-success" element={<LoginSuccess />} />
+      <Route path="/postgame" element={isAuthenticated ? <PostGame  /> : <Navigate to="/login" />} />
+      <Route path="/history" element={isAuthenticated ? <History  /> : <Navigate to="/login" />} />
+      <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket  /> : <Navigate to="/login" />} />
+      <Route path="/leaderboard" element={isAuthenticated ? <Leaderboard  /> : <Navigate to="/login" />} />
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
     <ThemeProvider theme={theme}>
-      <Router>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
-          <Route path="/" element={isAuthenticated ? <FindTournament logout={logout} /> : <Navigate to="/login" />} />
-          
-        <Route path="/login-success" element={<LoginSuccess />} />
-          <Route path="/postgame" element={isAuthenticated ? <PostGame   logout={logout} /> : <Navigate to="/login" />} />
-          <Route path="/history" element={isAuthenticated ? <History logout={logout} /> : <Navigate to="/login" />} />
-          <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket logout={logout} /> : <Navigate to="/login" />} />
-          <Route
-            path="/leaderboard"
-            element={isAuthenticated ? <Leaderboard /> : <Navigate to="/login" />}
-          />
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

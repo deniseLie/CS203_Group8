@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import speedupQueueIcon from '../assets/speedQueue.png'; // Import the icon
-import checkMark from '../assets/icon-checkmark.png'; // Import the checkmark icon
-import cancelIcon from '../assets/cancel.png'; // Import cancel icon
+import speedupQueueIcon from '../assets/icons/speedQueue.png'; // Import the icon
+import checkMark from '../assets/icons/icon-checkmark.png'; // Import the checkmark icon
+import cancelIcon from '../assets/icons/cancel.png'; // Import cancel icon
 
 const SpeedUpModal = ({ show, onClose }) => {
   const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false); // New state to track if in Speed Up Queue

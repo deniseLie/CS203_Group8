@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
-import backgroundImage from '../assets/srbackground.png';
+import backgroundImage from '../assets/backgrounds/srbackground.png';
 import {
   Box,
   Select,
@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PlayerIcon from '../components/PlayerIcon';
-import profilePicture from '../assets/4895.jpg';
+import profilePicture from '../assets/summonerIcon/1.jpg';
 
 // Import each role icon explicitly
 import assassinIcon from '../assets/championClass/roleicon-assassin.png';
@@ -28,6 +28,7 @@ import goldIcon from '../assets/rankIcon/gold.png';
 import platinumIcon from '../assets/rankIcon/platinum.png';
 import diamondIcon from '../assets/rankIcon/diamond.png';
 import emeraldIcon from '../assets/rankIcon/emerald.png';
+import { useAuth } from '../auth/AuthProvider';
 
 // Map roles to their respective icons
 const roleIcons = {
@@ -61,6 +62,9 @@ const Leaderboard = () => {
     losses: 12,
     mostPlayedRoles: ['Assassin', 'Fighter', 'Tank'],
   }));
+  
+  const { user } = useAuth();
+  
 
   // Constants: Filter buttons and search
   const [selectedRank, setSelectedRank] = useState('ALL RANKS');

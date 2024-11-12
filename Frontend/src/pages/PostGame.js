@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Button, Dialog, DialogContent, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
-import playAgain from '../assets/play-again-button.png';
-import playerIcon from '../assets/4895.jpg';
-import background from '../assets/srbackground.png';
-import arenaIcon from '../assets/arena-icon.png';
-import rankCircle from '../assets/ranked-frame.png';
+import playAgain from '../assets/buttons/play-again-button.png';
+import playerIcon from '../assets/summonerIcon/1.jpg';
+import background from '../assets/backgrounds/srbackground.png';
+import arenaIcon from '../assets/icons/arena-icon.png';
+import rankCircle from '../assets/icons/ranked-frame.png';
 
 // Sample data with an AFK flag for demonstration
 // TO DO: Replace leaderboard data and current player dummy data  

@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import { ArrowForward, ArrowBack, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
-import loginSplash from "../assets/login_splash.jpg";
-import logo from "../assets/riot_logo.png";
+import loginSplash from "../assets/backgrounds/login_splash.jpg";
+import logo from "../assets/icons/riot_logo.png";
 import axios from "axios";
 import env from "react-dotenv";
 
@@ -31,7 +31,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Constant: Error message for login form
+  // Constant: Error message for login formt
   const [errorMessage, setErrorMessage] = useState(""); // State to store the error message
 
   const navigate = useNavigate(); // Use navigate for redirecting
@@ -49,6 +49,7 @@ function Register() {
     setErrorMessage(""); // Clear any previous error message
     if (isFormFilled) {
       try {
+        console.log(`${env.LOGIN_SERVER_URL}/auth/register`);
         const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/register`, {
           username: username,
           email: email,

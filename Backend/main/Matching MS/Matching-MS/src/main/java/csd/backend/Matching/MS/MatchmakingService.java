@@ -17,9 +17,12 @@ public class MatchmakingService {
     private DynamoDbClient dynamoDbClient;
 
     private final SqsService sqsService;
+    private final PlayerService playerService;
 
-    public MatchmakingService(SqsService sqsService) {
+    @Autowired
+    public MatchmakingService(SqsService sqsService, PlayerService playerService) {
         this.sqsService = sqsService;
+        this.playerService = playerService;
     }
 
     private static final String PLAYERS_TABLE = "Players";
@@ -156,25 +159,6 @@ public class MatchmakingService {
 
             dynamoDbClient.updateItem(updateRequest);
         }
-    }
-
-    // Update player's queue status in database
-    public void updatePlayerStatus(String playerName, String queueStatus) {
-        Map<String, AttributeValueUpdate> updates = new HashMap<>();
-
-        updates.put("queueStatus", AttributeValueUpdate.builder()
-            .value(AttributeValue.builder().s(queueStatus).build())
-            .action(AttributeAction.PUT)
-            .build());
-
-        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
-            .tableName(PLAYERS_TABLE)
-            .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
-            .attributeUpdates(updates)
-            .build();
-        
-        dynamoDbClient.updateItem(updateRequest);
-        logger.info("Updated player status to '{}' for player: {}", queueStatus, playerName);
     }
 
     public void updatePlayerBanStatus(String playerId, String queueStatus, long banEndTime) {

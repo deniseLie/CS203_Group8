@@ -13,10 +13,13 @@ public class MatchmakingQueueListener {
 
     private final SqsService sqsService;
     private final MatchmakingService matchmakingService;
+    private final PlayerService playerService;
 
-    public MatchmakingQueueListener(SqsService sqsService, MatchmakingService matchmakingService) {
+    @Autowired
+    public MatchmakingQueueListener(SqsService sqsService, MatchmakingService matchmakingService, PlayerService playerService) {
         this.sqsService = sqsService;
         this.matchmakingService = matchmakingService;
+        this.playerService = playerService;
     }
 
     // Listen for messages in the Matching Queue
@@ -68,6 +71,9 @@ public class MatchmakingQueueListener {
                 break;
             case "ban": 
                 processBanPlayer(messageBody);
+                break;       
+            case "updatePlayerProfile":
+                processUpdatePlayer(messageBody);
                 break;
             default: 
                 System.err.println("Unknown action type: " + actionType);
@@ -153,6 +159,23 @@ public class MatchmakingQueueListener {
         } catch (Exception e) {
             System.out.println("Failed to parse player data from message: " + e.getMessage());
             return null;
+        }
+    }
+
+    // Process Update Player action 
+    private void processUpdatePlayer(String messageBody) {
+        try {
+            // Parse the update player profile request
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(messageBody);
+
+            Long playerId = rootNode.path("playerId").asLong();
+            Long rankId = rootNode.path("rank").asLong();
+
+            playerService.updatePlayerRank(playerId, rankId);
+            System.out.println("Player profile updated for playerId: " + playerId);
+        } catch (Exception e) {
+            System.err.println("Failed to process update player message: " + e.getMessage());
         }
     }
 

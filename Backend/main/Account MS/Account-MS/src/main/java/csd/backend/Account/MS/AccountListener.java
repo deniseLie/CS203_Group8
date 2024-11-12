@@ -6,6 +6,7 @@ import software.amazon.awssdk.services.sqs.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Model.Player.Player;
 import csd.backend.Account.MS.Service.SqsService;
 import csd.backend.Account.MS.Service.Player.PlayerService;

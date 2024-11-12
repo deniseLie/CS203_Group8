@@ -17,7 +17,7 @@ public class PlayerOverallStats {
     @Column(name = "playerId")
     private Long playerId;  // Relates to Player
 
-    private int rankId;
+    private Long rankId;
     private int rankPoints;
     private double overallAveragePlace;
     private double overallKdRate;
@@ -46,11 +46,11 @@ public class PlayerOverallStats {
         this.playerId = playerId;
     }
 
-    public int getRankId() {
+    public Long getRankId() {
         return rankId;
     }
 
-    public void setRankId(int rankId) {
+    public void setRankId(Long rankId) {
         this.rankId = rankId;
     }
 

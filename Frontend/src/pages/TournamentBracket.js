@@ -1,7 +1,7 @@
 import React from 'react';
 import ahri from '../assets/champions/ahri.png';
 import sett from '../assets/champions/sett.png';
-import background from '../assets/cherrybackground_dark.png';
+import background from '../assets/backgrounds/cherrybackground_dark.png';
 import playerIcon from '../assets/summonerIcon/1.jpg';
 import { Box, Typography } from '@mui/material';
 import MatchUp from '../components/MatchUp';

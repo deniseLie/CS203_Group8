@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Box, Typography, Popover, Button } from '@mui/material';
-import Cookies from 'js-cookie';
-import {jwtDecode} from 'jwt-decode'; // Import jwt-decode for decoding the JWT
-import logo from '../assets/logo.png';
-import playButton from '../assets/play-button-disabled.png';
+import { Box, Typography, Popover } from '@mui/material';
+import logo from '../assets/icons/logo.png';
+import playButton from '../assets/buttons/play-button-disabled.png';
 import profileAvatar from '../assets/summonerIcon/1.jpg';
 import PlayerIcon from './PlayerIcon';
 import { useAuth } from '../auth/AuthProvider';

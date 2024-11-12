@@ -1,7 +1,7 @@
 // LowPriorityQueue.js
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import redWarning from '../assets/red-warning.png'; // Adjust the path if needed
+import redWarning from '../assets/icons/red-warning.png'; // Adjust the path if needed
 
 const LowPriorityQueue = () => {
   return (

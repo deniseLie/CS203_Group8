@@ -212,14 +212,16 @@ public class PlayerService {
             }
 
             // Prepare the message body to be sent to the SQS queue
-            String messageBody = prepareMessageBody(playerId, playerName, email, password);
+            String loginMessageBody = prepareMessageBody(playerId, playerName, email, password);
+            String usernameMessageBody = prepareUsernameMessageBody(playerId, username);
 
             // Define the message attributes
             Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
             messageAttributes.put("actionType", MessageAttributeValue.builder().stringValue("updatePlayerProfile").build());
 
             // Send the message to the SQS queue
-            // sqsService.sendMessageToQueue("login", messageBody, messageAttributes);
+            // sqsService.sendMessageToQueue("login", loginMessageBody, messageAttributes);
+            sqsService.sendMessageToQueue("penalty", usernameMessageBody, messageAttributes);
         }
         return player;
     }
@@ -244,5 +246,14 @@ public class PlayerService {
 
         // Convert the map into a string (you can also use a JSON library like Jackson for this)
         return messageData.toString();
+    }
+
+    // Helper method to prepare the message body for SQS with updated username
+    private String prepareUsernameMessageBody(Long playerId, String username) {
+        Map<String, String> messageData = new HashMap<>();
+        messageData.put("playerId", playerId.toString());
+        messageData.put("username", username); 
+
+        return messageData.toString(); 
     }
 }

@@ -17,10 +17,12 @@ public class MatchmakingService {
     private DynamoDbClient dynamoDbClient;
 
     private final SqsService sqsService;
+    private final PlayerService playerService;
 
     @Autowired
-    public MatchmakingService(SqsService sqsService) {
+    public MatchmakingService(SqsService sqsService, PlayerService playerService) {
         this.sqsService = sqsService;
+        this.playerService = playerService;
     }
 
     private static final String PLAYERS_TABLE = "Players";
@@ -159,25 +161,6 @@ public class MatchmakingService {
         }
     }
 
-    // Update player's queue status in database
-    public void updatePlayerStatus(String playerName, String queueStatus) {
-        Map<String, AttributeValueUpdate> updates = new HashMap<>();
-
-        updates.put("queueStatus", AttributeValueUpdate.builder()
-            .value(AttributeValue.builder().s(queueStatus).build())
-            .action(AttributeAction.PUT)
-            .build());
-
-        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
-            .tableName(PLAYERS_TABLE)
-            .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
-            .attributeUpdates(updates)
-            .build();
-        
-        dynamoDbClient.updateItem(updateRequest);
-        logger.info("Updated player status to '{}' for player: {}", queueStatus, playerName);
-    }
-
     public void updatePlayerBanStatus(String playerId, String queueStatus, long banEndTime) {
         
         // Update player's status to 'banned' and set the 'banUntil' timestamp
@@ -218,7 +201,7 @@ public class MatchmakingService {
         for (Map<String, AttributeValue> player : players) {
             String playerName = player.get("playerName").s();
             playerList.add(AttributeValue.builder().s(playerName).build());
-            updatePlayerStatus(playerName, "unqueue");  
+            playerService.updatePlayerStatus(playerName, "unqueue");  
         }
     
         matchItem.put("players", AttributeValue.builder().l(playerList).build());

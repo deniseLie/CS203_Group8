@@ -4,9 +4,12 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.Message;
+import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 import software.amazon.awssdk.services.sqs.model.DeleteMessageRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -22,12 +25,21 @@ public class SqsService {
         this.sqsClient = SqsClient.builder().build();
     }
 
-    public void sendMessageToQueue(String queueUrl, String messageBody, String messageGroupId) {
+    public void sendMessageToQueue(String queueUrl, String messageBody, String messageGroupId, String actionType) {
+        // Create the message attributes
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("actionType", MessageAttributeValue.builder()
+            .dataType("String")  // The data type of the attribute
+            .stringValue(actionType)  // The value of the attribute
+            .build());
+    
         SendMessageRequest sendMsgRequest = SendMessageRequest.builder()
             .queueUrl(queueUrl)
             .messageBody(messageBody)
             .messageGroupId(messageGroupId)
+            .messageAttributes(messageAttributes) 
             .build();
+    
         sqsClient.sendMessage(sendMsgRequest);
         System.out.println("Message sent to queue: " + queueUrl);
     }

@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,7 +19,6 @@ public class MatchmakingController {
 
     private final MatchmakingService matchmakingService;
 
-    @Autowired
     public MatchmakingController(MatchmakingService matchmakingService) {
         this.matchmakingService = matchmakingService;
     }

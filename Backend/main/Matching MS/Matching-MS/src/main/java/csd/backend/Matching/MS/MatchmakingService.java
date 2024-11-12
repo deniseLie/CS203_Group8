@@ -18,7 +18,6 @@ public class MatchmakingService {
 
     private final SqsService sqsService;
 
-    @Autowired
     public MatchmakingService(SqsService sqsService) {
         this.sqsService = sqsService;
     }
@@ -215,9 +214,22 @@ public class MatchmakingService {
     
         // Add player names to the match and update their queue status
         List<AttributeValue> playerList = new ArrayList<>();
+        StringBuilder playerIds = new StringBuilder();  // StringBuilder to accumulate player IDs
+
         for (Map<String, AttributeValue> player : players) {
             String playerName = player.get("playerName").s();
+            String playerId = player.get("playerId").n();  // Assuming playerId exists in the map
+        
+            // Add player name to the match player list
             playerList.add(AttributeValue.builder().s(playerName).build());
+            
+            // Add player ID to the comma-separated string
+            if (playerIds.length() > 0) {
+                playerIds.append(",");  // Add a comma between IDs
+            }
+            playerIds.append(String.valueOf(playerId));  // Append the player ID
+            
+            // Update the player status to "unqueue"
             updatePlayerStatus(playerName, "unqueue");  
         }
     
@@ -230,6 +242,7 @@ public class MatchmakingService {
     
         try {
             dynamoDbClient.putItem(matchRequest);
+            triggerMatchmaking(playerIds.toString());
             logger.info("Match created successfully with players: {}", players);
         } catch (Exception e) {
             logger.error("Error creating match", e);
@@ -237,16 +250,16 @@ public class MatchmakingService {
         }
     }
 
-    public void triggerMatchmaking(String playerId) {
+    public void triggerMatchmaking(String playerIds) {
         // Create message attributes if needed
         Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
         messageAttributes.put("AttributeKey", MessageAttributeValue.builder().stringValue("AttributeValue").dataType("String").build());
 
         // Define message body
-        String messageBody = "{\"action\": \"match_players\", \"player_id\": \"" + playerId + "\"}";
+        String messageBody = "{\"playerIds\": \"" + playerIds + "\"}";
 
         // Send message to the matchmaking queue
-        sqsService.sendMessageToQueue("matchmaking", messageBody, messageAttributes);
-        System.out.println("Automatically triggered matchmaking for player: " + playerId);
+        sqsService.sendMessageToQueue("admin", messageBody, messageAttributes);
+        System.out.println("Automatically triggered matchmaking for players: " + playerIds);
     }
 }

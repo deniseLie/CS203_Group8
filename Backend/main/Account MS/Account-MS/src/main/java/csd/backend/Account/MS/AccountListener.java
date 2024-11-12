@@ -2,7 +2,6 @@ package csd.backend.Account.MS;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,7 +17,6 @@ public class AccountListener {
     private final SqsService sqsService;
     private final PlayerService playerService;
 
-    @Autowired
     public AccountListener(SqsService sqsService, PlayerService playerService) {
         this.sqsService = sqsService;
         this.playerService = playerService;

@@ -18,8 +18,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 // import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+// import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+// import org.springframework.security.oauth2.core.user.OAuth2User;
 // import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -71,12 +71,13 @@ public class AuthController {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("message", "User registered successfully!");
 
-            String messageBody = "{\"action\": \"add_player\", \"player_id\": \"" + playerId + "\"}";
+            String messageBody = "{\"playerId\": \"" + playerId + "\", \"email\": \"" + player.getEmail() + "\"}";
             String messageGroupId = "player-" + playerId;
-            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId);
-            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId);
-            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId);
-            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId);
+            String actionType = "addPlayer";
+            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId, actionType);
 
             return new ResponseEntity<>(responseBody, HttpStatus.OK);
 
@@ -113,7 +114,12 @@ public class AuthController {
                 throw new RuntimeException("Invalid username or password");
             }
             // Generate JWT token for the authenticated user
-            String jwt = jwtUtil.generateToken(userDetails.getUsername());
+            // Assuming that your UserDetails contains 'playername' and 'userId'
+            String playername = ((Player) userDetails).getPlayername();  // Assuming Player has 'getPlayername()' method
+            Long userId = ((Player) userDetails).getUserId();  // Assuming Player has 'getUserId()' method
+
+            // Generate JWT token for the authenticated user
+            String jwt = jwtUtil.generateToken(playername, userId);
 
             // Prepare a structured JSON response with the JWT token
             Map<String, Object> responseBody = new HashMap<>();
@@ -138,5 +144,4 @@ public class AuthController {
             throw new RuntimeException("An error occurred during login", ex);
         }
     }
-
 }

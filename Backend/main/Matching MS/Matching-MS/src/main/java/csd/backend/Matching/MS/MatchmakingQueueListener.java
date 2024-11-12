@@ -2,7 +2,6 @@ package csd.backend.Matching.MS;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -15,7 +14,6 @@ public class MatchmakingQueueListener {
     private final SqsService sqsService;
     private final MatchmakingService matchmakingService;
 
-    @Autowired
     public MatchmakingQueueListener(SqsService sqsService, MatchmakingService matchmakingService) {
         this.sqsService = sqsService;
         this.matchmakingService = matchmakingService;

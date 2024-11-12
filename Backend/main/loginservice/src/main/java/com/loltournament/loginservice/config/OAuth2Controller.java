@@ -20,7 +20,6 @@ import com.loltournament.loginservice.service.SqsService;;
 public class OAuth2Controller {
     private final OAuth2AuthorizedClientService clientService;
 
-    @Autowired
     public OAuth2Controller(OAuth2AuthorizedClientService clientService) {
         this.clientService = clientService;
     }
@@ -52,12 +51,13 @@ public class OAuth2Controller {
 
             Long playerId = player.getId();
 
-            String messageBody = "{\"action\": \"add_player\", \"player_id\": \"" + playerId + "\"}";
+            String messageBody = "{\"playerId\": \"" + playerId + "\", \"email\": \"" + userEmail + "\"}";
             String messageGroupId = "player-" + playerId;
-            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId);
-            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId);
-            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId);
-            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId);
+            String actionType = "addPlayer";
+            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId, actionType);
         }
 
         // Handle storing the user information and token, then redirect to a successful

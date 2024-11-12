@@ -7,10 +7,12 @@ csd\backend\Admin\Repository\UserRepository.class
 csd\backend\Admin\Service\EloRating.class
 csd\backend\config\AwsConfig.class
 csd\backend\Admin\Repository\TournamentRepository.class
+csd\backend\Admin\Model\DTO\PlayerDTO.class
 csd\backend\Admin\Model\Tournament\TournamentPlayer.class
 csd\backend\Admin\Model\User\User.class
 csd\backend\Admin\Repository\User\PlayerRepository.class
 csd\backend\config\AdminQueueListenerConfig.class
+csd\backend\Admin\Model\DTO\TournamentDTO.class
 csd\backend\Admin\AdminQueueListener.class
 csd\backend\Admin\Controller\TournamentController.class
 csd\backend\Admin\Model\Tournament\Tournament.class

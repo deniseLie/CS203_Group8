@@ -34,37 +34,5 @@ public class UserController {
     public String deleteUser(@RequestParam Long userId) {
         return userService.deleteUser(userId);
     }
-
-    //MATCH ADMIN ACTIONS
-    //remove in next commit
-    // @GetMapping("/getAllTournaments")
-    // public List<Tournament> getAllTournaments() {
-    //     return userService.getAllTournaments();
-    // }
-    //may need to keep
-    // @PostMapping("/create")
-    // public Tournament createTournament(@RequestParam int matchId) {
-    //     Tournament tournament = new Tournament();
-    //     return userService.createTournament(tournament);
-    // }
-
-    // @Autowired
-    // private TournamentResultService tournamentResultService;
-
-    // @GetMapping("/tournamentResult/{tournamentResultId}")
-    // public ResponseEntity<?> getTournamentResultById(@PathVariable int tournamentResultId) {
-    //     TournamentResult tournamentResult = tournamentResultService.getTournamentResultByTournamentId(tournamentResultId);
-    //     if (tournamentResult != null) {
-    //         return ResponseEntity.ok(tournamentResult);
-    //     } else {
-    //         return ResponseEntity.status(404).body("Tournament result not found");
-    //     }
-    // }
-
-    // @PostMapping("/tournamentResult")
-    // public ResponseEntity<TournamentResult> createTournamentResult(@RequestBody TournamentResultRequest request) {
-    //     TournamentResult newTournamentResult = tournamentResultService.createTournamentResult(request);
-    //     return ResponseEntity.status(HttpStatus.CREATED).body(newTournamentResult);
-    // }
 }
 

@@ -2,6 +2,8 @@ C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\AdminQueueListener.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Controller\TournamentController.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Controller\UserController.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Model\DTO\PlayerDTO.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Model\DTO\TournamentDTO.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Model\Tournament\Tournament.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Model\Tournament\TournamentPlayer.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Model\Tournament\TournamentRound.java
@@ -17,7 +19,6 @@ C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\EloRating.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\SqsService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\TournamentPlayerService.java
-C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\TournamentResultService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\TournamentRoundService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\TournamentService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\User\PlayerService.java

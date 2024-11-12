@@ -70,14 +70,13 @@ public class AccountController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // Get the top 3 played champions
-            List<PlayerChampionStats> topChampions = playerService.getTop3PlayedChampions(playerId);
-
+            // Get formatted top 3 played champions
+            List<Map<String, Object>> topChampions = playerService.getFormattedTopChampions(playerId);
+    
             // Get player stats
             Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
-
+    
             if (!topChampions.isEmpty() && !playerStats.isEmpty()) {
-                
                 // Combine the results into a response map
                 playerStats.put("topChampions", topChampions);
                 response.putAll(playerStats);

@@ -10,7 +10,8 @@ import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Exception.*;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Repository.Player.*;
-import csd.backend.Account.MS.Service.*; 
+import csd.backend.Account.MS.Service.*;
+import csd.backend.Account.MS.Service.Champion.ChampionService;
 import jakarta.transaction.Transactional;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
@@ -27,6 +28,7 @@ public class PlayerService {
     private final PlayerChampionStatsRepository playerChampionStatsRepository;
     private final PlayerStatsService playerStatsService;
     private final SqsService sqsService;
+    private final ChampionService championService;  
 
     // Constructor-based dependency injection
     @Autowired
@@ -35,13 +37,15 @@ public class PlayerService {
         PlayerOverallStatsRepository playerOverallStatsRepository,
         PlayerChampionStatsRepository playerChampionStatsRepository,
         PlayerStatsService playerStatsService,
-        SqsService sqsService
+        SqsService sqsService,
+        ChampionService championService
     ) {
         this.playerRepository = playerRepository;
         this.playerOverallStatsRepository = playerOverallStatsRepository;
         this.playerChampionStatsRepository = playerChampionStatsRepository;
         this.playerStatsService = playerStatsService;
         this.sqsService = sqsService;
+        this.championService = championService;
     } 
 
     // Method to retrieve player by ID
@@ -75,6 +79,32 @@ public class PlayerService {
         // Update Player stats in overall stats and champion stats
         playerStatsService.updateOverallStats(playerId, rankPoints, kdRate, finalPlacement, isWin);
         playerStatsService.updateChampionStats(playerId, championId, kdRate, finalPlacement, isWin);
+    }
+
+    // New method to format top champions
+    public List<Map<String, Object>> getFormattedTopChampions(Long playerId) {
+        // Retrieve the top 3 played champions
+        List<PlayerChampionStats> topChampions = getTop3PlayedChampions(playerId);
+
+        // Format the top champions data
+        return topChampions.stream()
+            .map(championStats -> {
+                Map<String, Object> championData = new HashMap<>();
+                championData.put("championId", championStats.getChampionId());
+
+                // Get champion name using the ChampionService
+                String championName = championService.getChampionById(championStats.getChampionId()).getChampionName();
+                championData.put("championName", championName);
+
+                // Add other attributes
+                championData.put("averagePlace", championStats.getAveragePlace());
+                championData.put("kdRate", championStats.getKdRate());
+                championData.put("totalWins", championStats.getTotalWins());
+                championData.put("totalMatchNumber", championStats.getTotalMatchNumber());
+
+                return championData;
+            })
+            .collect(Collectors.toList());
     }
 
     // Get the top 3 played champions for the player
@@ -201,8 +231,7 @@ public class PlayerService {
         
         // Hash the password using the salt
         return BCrypt.hashpw(password, salt);
-}
-
+    }
 
     // Helper method to prepare the message body for SQS
     private String prepareMessageBody(Long playerId, String playerName, String email, String password) {

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import csd.backend.Account.MS.Model.Player.Player;
 import csd.backend.Account.MS.Service.SqsService;
 import csd.backend.Account.MS.Service.Player.PlayerService;
+import csd.backend.Account.MS.Service.Tournament.TournamentService;
 
 import java.util.*;
 
@@ -17,11 +18,13 @@ public class AccountListener {
 
     private final SqsService sqsService;
     private final PlayerService playerService;
+    private final TournamentService tournamentService;
 
     @Autowired
-    public AccountListener(SqsService sqsService, PlayerService playerService) {
+    public AccountListener(SqsService sqsService, PlayerService playerService, TournamentService tournamentService) {
         this.sqsService = sqsService;
         this.playerService = playerService;
+        this.tournamentService = tournamentService;
     }
 
     // Listen for messages in the Account Queue
@@ -143,6 +146,9 @@ public class AccountListener {
                 int rankPoints = Integer.parseInt(tournamentData.get("rankPoints"));
                 boolean isWin = Boolean.parseBoolean(tournamentData.get("isWin"));
 
+                // Call the TournamentService to handle tournament creation and saving
+                tournamentService.createAndSaveTournament(tournamentData);
+
                 // Call the PlayerService to handle the match completion
                 playerService.handleMatchCompletion(playerId, championId, kdRate, finalPlacement, rankPoints, isWin);
                 System.out.println("Tournament details processed for player: " + playerId);
@@ -153,7 +159,6 @@ public class AccountListener {
             System.err.println("Failed to process AddTournament message due to parsing issues.");
         }
     }
-
 
     // Parse match data from JSON message body and create Player object
     private Map<String, String> processMatchMessage(String messageBody) {

@@ -5,16 +5,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Service;
 
+import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Model.Tournament.*;
 import csd.backend.Account.MS.Service.Tournament.*;
 import csd.backend.Account.MS.Service.Player.*;
 import csd.backend.Account.MS.Service.Champion.*;
 
+import java.io.*;
+import java.nio.file.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,19 +42,40 @@ public class AccountController {
         this.championService = championService;
     }
 
+    // Edit Player Profile (username, playerName, email, password)
+    @PutMapping("/{playerId}/profile")
+    public ResponseEntity<Map<String, Object>> updatePlayerProfile(
+        @PathVariable Long playerId,
+        @RequestBody PlayerProfileUpdateRequest updateRequest
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+
+            // Update player 
+            Player player = playerService.updatePlayerProfile(playerId, updateRequest);
+            
+            response.put("message", "Profile updated successfully.");
+            response.put("player", player);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            response.put("error", "Error saving profile picture: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // Endpoint get top 3 played champions and player stats
     @GetMapping("/{playerId}/profile")
     public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId) {
-        
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // Get the top 3 played champions
-            List<PlayerChampionStats> topChampions = playerService.getTop3PlayedChampions(playerId);
-
+            // Get formatted top 3 played champions
+            List<Map<String, Object>> topChampions = playerService.getFormattedTopChampions(playerId);
+    
             // Get player stats
             Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
-
+    
             if (!topChampions.isEmpty() && !playerStats.isEmpty()) {
                 // Combine the results into a response map
                 playerStats.put("topChampions", topChampions);
@@ -68,56 +97,9 @@ public class AccountController {
         List<Map<String, Object>> response = new ArrayList<>();
 
         try {
-            // Get all TournamentPlayerStats for the player
-            List<TournamentPlayerStats> playerTournamentStats = tournamentService.getTournamentPlayerStatsForPlayer(playerId);
-
-            // Collect all tournamentIds
-            List<Long> tournamentIds = playerTournamentStats.stream()
-                    .map(tournamentPlayerStats -> tournamentPlayerStats.getTournament().getTournamentId())
-                    .distinct()
-                    .collect(Collectors.toList());
-
-            // Loop through tournamentIds and gather data
-            for (Long tournamentId : tournamentIds) {
-                Map<String, Object> tournamentData = new HashMap<>();
-                List<TournamentPlayerStats> statsForTournament = tournamentService.getTournamentPlayerStats(tournamentId);
-
-                // Fetch tournament details from the Tournament entity
-                Tournament tournament = tournamentService.getTournamentById(tournamentId);
-                LocalDateTime tournamentStart = tournament.getTimestampStart();
-
-                tournamentData.put("tournamentId", tournamentId);
-                tournamentData.put("tournamentSize", tournament.getTournamentSize());
-                tournamentData.put("timestampStart", tournamentStart.toString());
-
-                List<Map<String, Object>> matchDetails = new ArrayList<>();
-
-                // For each player's stats in the tournament
-                for (TournamentPlayerStats stats : statsForTournament) {
-                    Map<String, Object> matchDetail = new HashMap<>();
-                    matchDetail.put("tournamentPlayerId", stats.getTournamentPlayerId());
-
-                    // Build player data in the desired format
-                    Map<String, Object> playerData = new HashMap<>();
-                    playerData.put("standing", stats.getFinalPlacement());
-                    playerData.put("champion", championService.getChampionById(stats.getChampionPlayedId()).getChampionName());
-                    playerData.put("playerName", stats.getPlayer().getUsername());
-                    playerData.put("kd", stats.getKillCount() + "/" + stats.getDeathCount());
-                    playerData.put("kda", (stats.getDeathCount() == 0) ? "Infinity" : String.format("%.2f KDA", (float) stats.getKillCount() / stats.getDeathCount()));
-                    playerData.put("lpChange", stats.getPointObtain());
-
-                    // Format timeEndPerPlayer to date and time
-                    LocalDateTime timeEnd = stats.getTimeEndPerPlayer();
-                    playerData.put("time", timeEnd != null ? timeEnd.toLocalTime().toString() : "N/A");
-                    playerData.put("date", timeEnd != null ? timeEnd.toLocalDate().toString() : "N/A");
-                    playerData.put("isAFK", stats.getIsAFK() ? true : false);
-                    matchDetails.add(playerData);
-                }
-
-                // Add matchDetails to tournamentData
-                tournamentData.put("players", matchDetails);
-                response.add(tournamentData);
-            }
+            // Get player match history via PlayerService
+            Map<String, Object> matchHistory = new HashMap<>();
+            matchHistory.put("matchHistory", tournamentService.getPlayerMatchHistory(playerId));
 
             // Return the response as formatted JSON
             return new ResponseEntity<>(response, HttpStatus.OK);

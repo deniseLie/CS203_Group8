@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.*;
 
 @RestController
@@ -30,7 +32,7 @@ public class MatchmakingController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Map<String, Object>> joinMatchmaking(@RequestParam String playerId) {
+    public ResponseEntity<Map<String, Object>> joinMatchmaking(@RequestBody String playerId, @RequestBody String championId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
         int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
 
@@ -50,6 +52,7 @@ public class MatchmakingController {
              
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");
+            playerService.updatePlayerChampion(playerId, championId);
 
             // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
@@ -84,7 +87,7 @@ public class MatchmakingController {
 
 
     @PostMapping("/join/speedupQueue")
-    public ResponseEntity<Map<String, Object>> joinSpeedUpMatchmaking(@RequestParam String playerId) {
+    public ResponseEntity<Map<String, Object>> joinSpeedUpMatchmaking(@RequestBody String playerId, @RequestBody String championId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
         int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
                 
@@ -103,6 +106,7 @@ public class MatchmakingController {
 
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");
+            playerService.updatePlayerChampion(playerId, championId);
 
             // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
@@ -143,6 +147,10 @@ public class MatchmakingController {
 
             // Update the player's status in the queue
             playerService.updatePlayerStatus(playerId, "not queue");
+
+            // Remove the player's championId
+            playerService.removePlayerChampion(playerId);
+
 
             response.put("message", "Player successfully removed from queue.");
             return new ResponseEntity<>(response, HttpStatus.OK);

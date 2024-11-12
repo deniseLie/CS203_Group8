@@ -27,7 +27,7 @@ public class MatchmakingService {
 
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final int MAX_PLAYERS = 8;
+    private static final int MAX_PLAYERS = 2;
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
 
     // Add a player to the matchmaking pool

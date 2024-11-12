@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.sqs.model.*;
 public class PlayerService {
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final int MAX_PLAYERS = 8;
+    // private static final int MAX_PLAYERS = 2;
 
     private final DynamoDbClient dynamoDbClient;
 

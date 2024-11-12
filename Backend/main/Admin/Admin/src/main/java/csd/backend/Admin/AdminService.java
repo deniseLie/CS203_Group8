@@ -52,13 +52,15 @@ public class AdminService {
     public List<Match> getAllMatches() {
         return matchRepository.findAll();
     }
-    public String deleteMatch(int matchId) {
-        if (matchRepository.existsById(matchId)) {
-            matchRepository.deleteById(matchId);
-            return "Match deleted successfully";
-        } else {
-            return "Match not found";
-        }
-    }
+    
+    // not necessary.. i think..
+    // public String deleteMatch(int matchId) {
+    //     if (matchRepository.existsById(matchId)) {
+    //         matchRepository.deleteById(matchId);
+    //         return "Match deleted successfully";
+    //     } else {
+    //         return "Match not found";
+    //     }
+    // }
     
 }

@@ -1,41 +1,44 @@
 package csd.backend.Admin.Model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Tournament")
 public class Tournament {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tournamentId;
+    private Long tournamentId;
 
-    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TournamentPlayer> players;
+    private int tournamentSize;
+    private LocalDateTime timestampStart;
+    private LocalDateTime timeStampEnd;
 
-    public int getTournamentId() {
+    // Getters and setters
+    public Long getTournamentId() {
         return tournamentId;
     }
-
-    public void setTournamentId(int tournamentId) {
+    public void setTournamentId(Long tournamentId) {
         this.tournamentId = tournamentId;
     }
-
-    public List<TournamentPlayer> getPlayers() {
-        return players;
+    public int getTournamentSize() {
+        return tournamentSize;
     }
-
-    public void setPlayers(List<TournamentPlayer> players) {
-        this.players = players;
+    public void setTournamentSize(int tournamentSize) {
+        this.tournamentSize = tournamentSize;
+    }
+    public LocalDateTime getTimestampStart() {
+        return timestampStart;
+    }
+    public void setTimestampStart(LocalDateTime timestampStart) {
+        this.timestampStart = timestampStart;
+    }
+    public LocalDateTime getTimestampEnd() {
+        return timeStampEnd;
+    }
+    public void setTimestampEnd(LocalDateTime timeStampEnd) {
+        this.timeStampEnd = timeStampEnd;
     }
 }
-

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import csd.backend.Admin.Model.*;
 import csd.backend.Admin.Service.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -16,11 +17,17 @@ public class AdminQueueListener {
 
     private final SqsService sqsService;
     private final UserService userService;
+    private final TournamentService tournamentService;
+    private final TournamentPlayerService tournamentPlayerService;
 
     @Autowired
-    public AdminQueueListener(SqsService sqsService, UserService userService) {
+    public AdminQueueListener(
+        SqsService sqsService, UserService userService, TournamentService tournamentService, TournamentPlayerService tournamentPlayerService
+    ) {
         this.sqsService = sqsService;
         this.userService = userService;
+        this.tournamentService = tournamentService;
+        this.tournamentPlayerService = tournamentPlayerService;
     }
 
     // Listen for messages in the Admin Queue
@@ -71,6 +78,9 @@ public class AdminQueueListener {
                 break;
             case "updatePlayerProfile":
                 processUpdatePlayer(messageBody);
+                break;
+            case "createTournament":
+                processAddTournament(messageBody);
                 break;
             default: 
                 System.err.println("Unknown action type: " + actionType);
@@ -136,6 +146,51 @@ public class AdminQueueListener {
         }
     }
 
+    // Process Add Tournament
+    private void processAddTournament(String messageBody) {
+        try {
+            // Parse the create tournament request
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(messageBody);
+
+            // Extract tournament data from message
+            String timestampStart = rootNode.path("timestampStart").asText();
+            int tournamentSize = Integer.parseInt(rootNode.path("tournamentSize").asText());
+
+            // Convert timestampStart to LocalDateTime
+            LocalDateTime tournamentStartTime = LocalDateTime.parse(timestampStart);
+
+            // Extract player IDs
+            JsonNode playerIdsNode = rootNode.path("playerIds");
+            List<Long> playerIds = new ArrayList<>();
+            for (JsonNode playerIdNode : playerIdsNode) {
+                playerIds.add(playerIdNode.asLong());
+            }
+
+            // Create a new Tournament object
+            Tournament tournament = new Tournament();
+            tournament.setTimestampStart(tournamentStartTime);
+            tournament.setTournamentSize(tournamentSize);
+
+            // Save the tournament via tournamentService
+            Tournament savedTournament = tournamentService.createTournament(tournament);
+
+            // For each playerId, create and associate the player with the tournament
+            for (Long playerId : playerIds) {
+                TournamentPlayer tournamentPlayer = new TournamentPlayer();
+                tournamentPlayer.setPlayerId(playerId);
+                tournamentPlayer.setTournament(savedTournament);
+
+                // Save the tournament-player relationship
+                String result = tournamentPlayerService.createTournamentPlayer(tournamentPlayer);
+            }
+
+            // Print the result
+            System.out.println("Tournament created: " + savedTournament.getTournamentId());
+        } catch (Exception e) {
+            System.err.println("Failed to process create tournament message: " + e.getMessage());
+        }
+    }
 
     // Helper method to delete the message from the queue after processing
     private void deleteMessageFromQueue(String queueUrl, Message message) {

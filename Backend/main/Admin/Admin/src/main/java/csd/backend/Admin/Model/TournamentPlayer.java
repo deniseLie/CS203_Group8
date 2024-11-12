@@ -10,7 +10,7 @@ public class TournamentPlayer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String playerId;
+    private Long playerId;
 
     @ManyToOne
     @JoinColumn(name = "tournamentId", nullable = false)
@@ -25,11 +25,11 @@ public class TournamentPlayer {
         this.id = id;
     }
 
-    public String getPlayerId() {
+    public Long getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(String playerId) {
+    public void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 

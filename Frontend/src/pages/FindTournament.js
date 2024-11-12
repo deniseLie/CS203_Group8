@@ -32,7 +32,6 @@ const FindTournament = ({ logout }) => {
   const navigate = useNavigate();
   
   const { user } = useAuth();
-  console.log(useAuth());
   // DUMMY: if user is lowpriority
   const IS_LOW_PRIORITY = false;
   // constant : how many seconds to show speed up q
@@ -55,18 +54,14 @@ const FindTournament = ({ logout }) => {
     try{
       const token = Cookies.get('jwtToken');
     console.log(`Bearer ${token}`)
-
+      console.log("testttt "
+        +user.sub);
       const response = await axios.post(
-        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
-        {
-          playerId: user.sub
-        },
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join?playerId=${user.sub}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
-          ,
-          withCredentials: true
+          },
         }
       );
   

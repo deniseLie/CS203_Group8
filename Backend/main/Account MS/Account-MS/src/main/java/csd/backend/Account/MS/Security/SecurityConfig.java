@@ -46,12 +46,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(account -> account
                         .requestMatchers("/account/**").permitAll()
                         .anyRequest().permitAll()
-                        .and()
-                        .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 );
 
-        // http.addFilterBefore(jwtRequestFilter,
-        // UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtRequestFilter,
+        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

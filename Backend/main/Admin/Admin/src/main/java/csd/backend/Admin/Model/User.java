@@ -1,4 +1,4 @@
-package csd.backend.Admin;
+package csd.backend.Admin.Model;
 
 
 import jakarta.persistence.Entity;

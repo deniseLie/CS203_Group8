@@ -1,9 +1,11 @@
-package csd.backend.Admin;
+package csd.backend.Admin.Service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import csd.backend.Admin.Model.*;
+import csd.backend.Admin.Repository.*;
 
 @Service
 public class AdminService {

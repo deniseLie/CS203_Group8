@@ -1,27 +1,8 @@
-package csd.backend.Admin;
+package csd.backend.Admin.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.ForeignKey;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+public class MatchResultRequest {
 
-@Entity
-@Table(name = "matchresult")
-public class MatchResult {
-
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // private int matchresultid;
-
-    @Id
-    @Column(name = "tournament_id")
     private int tournamentId;
-
     private int player1;
     private int player2;
     private int player3;
@@ -33,24 +14,12 @@ public class MatchResult {
     private int winner;
     private int loser;
 
-    // Getters and setters
-    // public int getMatchresultId() {
-    //     return matchresult_id;
-    // }
-
-    // public void setMatchresultId(int matchresult_id) {
-    //     this.matchresult_id = matchresult_id;
-    // }
-
     public int getTournamentId() {
         return tournamentId;
     }
-
     public void setTournamentId(int tournamentId) {
         this.tournamentId = tournamentId;
     }
-
-
     public int getPlayer1() {
         return player1;
     }
@@ -99,17 +68,17 @@ public class MatchResult {
     public void setPlayer8(int player8) {
         this.player8 = player8;
     }
-    public int getLoser() {
-        return loser;
-    }
-    public void setLoser(int loser) {
-        this.loser = loser;
-    }
     public int getWinner() {
         return winner;
     }
     public void setWinner(int winner) {
         this.winner = winner;
+    }
+    public int getLoser() {
+        return loser;
+    }
+    public void setLoser(int loser) {
+        this.loser = loser;
     }
 }
 

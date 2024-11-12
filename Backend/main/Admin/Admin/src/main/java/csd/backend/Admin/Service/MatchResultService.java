@@ -1,5 +1,7 @@
-package csd.backend.Admin;
+package csd.backend.Admin.Service;
 
+import csd.backend.Admin.Model.*;
+import csd.backend.Admin.Repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;

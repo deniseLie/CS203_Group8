@@ -1,6 +1,7 @@
 package csd.backend.Admin.Model.Tournament;
 
 import jakarta.persistence.*;
+import csd.backend.Admin.Model.User.*;
 
 @Entity
 public class TournamentRound {

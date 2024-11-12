@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import csd.backend.Admin.Model.*;
-import csd.backend.Admin.Model.Tournament.Tournament;
-import csd.backend.Admin.Model.Tournament.TournamentPlayer;
-import csd.backend.Admin.Model.User.User;
+import csd.backend.Admin.Model.Tournament.*;
+import csd.backend.Admin.Model.User.*;
 import csd.backend.Admin.Service.*;
 
 import java.time.LocalDateTime;
@@ -178,14 +176,9 @@ public class AdminQueueListener {
             // Save the tournament via tournamentService
             Tournament savedTournament = tournamentService.createTournament(tournament);
 
-            // For each playerId, create and associate the player with the tournament
+            // For each playerId,  Save the tournament-player relationship
             for (Long playerId : playerIds) {
-                TournamentPlayer tournamentPlayer = new TournamentPlayer();
-                tournamentPlayer.setPlayerId(playerId);
-                tournamentPlayer.setTournament(savedTournament);
-
-                // Save the tournament-player relationship
-                String result = tournamentPlayerService.createTournamentPlayer(tournamentPlayer);
+                String result = tournamentPlayerService.createTournamentPlayer(playerId, savedTournament.getTournamentId());
             }
 
             // Print the result

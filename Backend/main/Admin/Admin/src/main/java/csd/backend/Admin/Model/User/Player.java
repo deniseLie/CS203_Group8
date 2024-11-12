@@ -3,7 +3,7 @@ package csd.backend.Admin.Model.User;
 import jakarta.persistence.*;
 
 @Entity
-@DiscriminatorValue("player")  // This defines the discriminator value for this subclass
+@DiscriminatorValue("player")  
 public class Player extends User {
 
     @Column(name = "playerId", nullable = true)

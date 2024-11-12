@@ -6,15 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import csd.backend.Admin.Model.*;
-import csd.backend.Admin.Model.Tournament.TournamentResult;
-import csd.backend.Admin.Model.Tournament.TournamentResultRequest;
 import csd.backend.Admin.Model.User.User;
 import csd.backend.Admin.Service.*;
 
 @RestController
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/admin/user")
+public class UserController {
 
     @Autowired
     private UserService userService;
@@ -51,23 +48,23 @@ public class AdminController {
     //     return userService.createTournament(tournament);
     // }
 
-    @Autowired
-    private TournamentResultService tournamentResultService;
+    // @Autowired
+    // private TournamentResultService tournamentResultService;
 
-    @GetMapping("/tournamentResult/{tournamentResultId}")
-    public ResponseEntity<?> getTournamentResultById(@PathVariable int tournamentResultId) {
-        TournamentResult tournamentResult = tournamentResultService.getTournamentResultByTournamentId(tournamentResultId);
-        if (tournamentResult != null) {
-            return ResponseEntity.ok(tournamentResult);
-        } else {
-            return ResponseEntity.status(404).body("Tournament result not found");
-        }
-    }
+    // @GetMapping("/tournamentResult/{tournamentResultId}")
+    // public ResponseEntity<?> getTournamentResultById(@PathVariable int tournamentResultId) {
+    //     TournamentResult tournamentResult = tournamentResultService.getTournamentResultByTournamentId(tournamentResultId);
+    //     if (tournamentResult != null) {
+    //         return ResponseEntity.ok(tournamentResult);
+    //     } else {
+    //         return ResponseEntity.status(404).body("Tournament result not found");
+    //     }
+    // }
 
-    @PostMapping("/tournamentResult")
-    public ResponseEntity<TournamentResult> createTournamentResult(@RequestBody TournamentResultRequest request) {
-        TournamentResult newTournamentResult = tournamentResultService.createTournamentResult(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newTournamentResult);
-    }
+    // @PostMapping("/tournamentResult")
+    // public ResponseEntity<TournamentResult> createTournamentResult(@RequestBody TournamentResultRequest request) {
+    //     TournamentResult newTournamentResult = tournamentResultService.createTournamentResult(request);
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(newTournamentResult);
+    // }
 }
 

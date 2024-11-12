@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import csd.backend.Admin.Repository.*;
 import java.util.*;
-import csd.backend.Admin.Model.*;
 import csd.backend.Admin.Model.Tournament.Tournament;
 
 @Service
@@ -24,6 +23,11 @@ public class TournamentService {
     // Method get all tournament
     public List<Tournament> getAllTournaments() {
         return tournamentRepository.findAll();
+    }
+
+    // Find tournament by ID
+    public Tournament getTournamentById(Long tournamentId) {
+        return tournamentRepository.findById(tournamentId).orElse(null); // Return null if not found
     }
     
     // not necessary.. i think..

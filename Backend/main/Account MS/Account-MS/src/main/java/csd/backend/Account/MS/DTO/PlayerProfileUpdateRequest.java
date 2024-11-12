@@ -5,7 +5,7 @@ public class PlayerProfileUpdateRequest {
     private String playerName;
     private String email;
     private String password;
-    private byte[] profilePicture; 
+    private String profilePicture; 
     
     // Getters and setters
     public String getUsername() {
@@ -40,11 +40,11 @@ public class PlayerProfileUpdateRequest {
         this.password = password;
     }
 
-    public byte[] getProfilePicture() {
+    public String getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(byte[] profilePicture) {
+    public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
 }

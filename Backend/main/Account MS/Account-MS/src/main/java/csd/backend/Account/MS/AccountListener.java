@@ -1,6 +1,7 @@
 package csd.backend.Account.MS;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,6 +17,11 @@ import java.util.*;
 
 @Service
 public class AccountListener {
+
+    // Inject the default profile picture from the configuration file
+    // Default to "1.jpg" if the property is not found
+    @Value("${default.profile.picture:1.jpg}") 
+    private String defaultProfilePicture;
 
     private final SqsService sqsService;
     private final PlayerService playerService;
@@ -121,9 +127,11 @@ public class AccountListener {
             String playerId = rootNode.path("playerId").asText();
             String username = rootNode.path("username").asText();
 
+            // Construct Player object
             Player newPlayer = new Player();
-            newPlayer.setId(Long.parseLong(playerId));  // Parse playerId and set it as the Player ID
-            newPlayer.setUsername(username); // Set username
+            newPlayer.setId(Long.parseLong(playerId));  
+            newPlayer.setUsername(username); 
+            newPlayer.setProfilePicture(defaultProfilePicture);
 
             return newPlayer;
         } catch (Exception e) {

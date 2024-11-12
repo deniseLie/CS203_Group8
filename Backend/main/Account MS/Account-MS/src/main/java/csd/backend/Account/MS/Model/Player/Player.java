@@ -14,8 +14,7 @@ public class Player {
     private Long id;
     private String username;
     
-    @Lob
-    private byte[] profilePicture; // Store the image as a byte array (BLOB)
+    private String profilePicture; // Store Picture name
     
 
     public Long getId() {
@@ -31,11 +30,11 @@ public class Player {
         this.username = username;
     }
 
-    public byte[] getProfilePicture() {
+    public String getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(byte[] profilePicture) {
+    public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
     

@@ -159,23 +159,8 @@ public class PlayerService {
         return statsMap;
     }
 
-    // Save profile picture as a BLOB
-    public void saveProfilePicture(Long playerId, MultipartFile file) throws IOException {
-        Player player = playerRepository.findById(playerId)
-                .orElseThrow(() -> new PlayerNotFoundException(playerId));
-
-        // Convert the image file to a byte array
-        byte[] imageBytes = file.getBytes();
-
-        // Set the profile picture as a BLOB
-        player.setProfilePicture(imageBytes);
-
-        // Save the player object with the profile picture
-        playerRepository.save(player);
-    }
-
     // Get Profile Picture 
-    public byte[] getProfilePicture(Long playerId) {
+    public String getProfilePicture(Long playerId) {
         Player player = playerRepository.findById(playerId)
                 .orElseThrow(() -> new PlayerNotFoundException(playerId));
     
@@ -189,7 +174,7 @@ public class PlayerService {
         String playerName = updateRequest.getPlayerName();
         String email = updateRequest.getEmail();
         String password = updateRequest.getPassword();
-        byte[] profilePicture = updateRequest.getProfilePicture();
+        String profilePicture = updateRequest.getProfilePicture();
 
         // Retrieve player
         Player player = getPlayerById(playerId);
@@ -200,9 +185,9 @@ public class PlayerService {
         }
 
         // Handle profile picture upload if provided
-        if (profilePicture != null && profilePicture.length > 0) {
-            player.setProfilePicture(profilePicture); 
-        } 
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            player.setProfilePicture(profilePicture);
+        }
 
         // Save the updated player
         savePlayer(player);

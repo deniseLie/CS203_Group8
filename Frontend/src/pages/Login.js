@@ -27,7 +27,7 @@ function Login({ login }) {
 
   // Function: Redirect to backend link for Google OAuth  
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = 'http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com/oauth2/authorization/google';
   };
 
   // Function: Handle login

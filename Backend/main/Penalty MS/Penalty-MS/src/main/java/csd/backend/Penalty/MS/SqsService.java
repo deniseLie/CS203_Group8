@@ -30,8 +30,8 @@ public class SqsService {
     // private final String matchmakingQueueUrl = dotenv.get("MATCHMAKING_QUEUE_URL");
     // private final String penaltyQueueUrl = dotenv.get("PENALTY_QUEUE_URL");
 
-    public SqsService(SqsClient sqsClient) {
-        this.sqsClient = sqsClient;
+    public SqsService() {
+        this.sqsClient = SqsClient.builder().build();
     }
 
     // Method to get the SqsClient instance

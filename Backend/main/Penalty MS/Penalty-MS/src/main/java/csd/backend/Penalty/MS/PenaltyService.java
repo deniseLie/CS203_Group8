@@ -31,10 +31,9 @@ public class PenaltyService {
     private static final int BASE_BAN_DURATION_IN_SECONDS = 300; // 5 minutes
 
     // Add a player to the matchmaking pool
-    public void addPlayerToPool(String playerId, String email, String queueStatus) {
+    public void addPlayerToPool(long playerId, String queueStatus) {
         Map<String, AttributeValue> item = new HashMap<>();
-        item.put("playerId", AttributeValue.builder().s(playerId).build());
-        item.put("email", AttributeValue.builder().s(email).build());
+        item.put("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("banUntil", AttributeValue.builder().n("0").build());
         item.put("banCount", AttributeValue.builder().n("0").build());

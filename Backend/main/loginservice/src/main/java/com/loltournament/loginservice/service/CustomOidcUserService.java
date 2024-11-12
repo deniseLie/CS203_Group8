@@ -23,6 +23,9 @@ public class CustomOidcUserService extends OidcUserService {
     private PlayerRepository userRepository;
 
     @Autowired
+    private SqsService sqsService;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Override
@@ -49,7 +52,17 @@ public class CustomOidcUserService extends OidcUserService {
             user.setPlayername(googleUserInfo.getName());
             user.setAuthProvider("GOOGLE");
 
-            userRepository.save(user);
+            Player player = userRepository.save(user);
+            long playerId = player.getId();
+            String playerEmail = player.getEmail();
+
+            String messageBody = "{\"playerId\": \"" + playerId + "\", \"email\": \"" + playerEmail + "\"}";
+            String messageGroupId = "player-" + playerId;
+            String actionType = "addPlayer";
+            sqsService.sendMessageToQueue(sqsService.accountQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.matchmakingQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.penaltyQueueUrl, messageBody, messageGroupId, actionType);
+            sqsService.sendMessageToQueue(sqsService.adminQueueUrl, messageBody, messageGroupId, actionType);
         }
 
          // Generate a JWT for the authenticated user

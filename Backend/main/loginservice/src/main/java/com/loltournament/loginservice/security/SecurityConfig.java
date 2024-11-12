@@ -88,19 +88,19 @@ public class SecurityConfig {
         };
     }
 
-private AuthenticationSuccessHandler redirectToFrontendWithToken() {
-    return (request, response, authentication) -> {
-        // Retrieve the authenticated OIDC user
-        OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
-        
-        // Retrieve the JWT token from the user's attributes (set by CustomOidcUserService)
-        String jwtToken = (String) oidcUser.getAttributes().get("jwtToken");
+    private AuthenticationSuccessHandler redirectToFrontendWithToken() {
+        return (request, response, authentication) -> {
+            // Retrieve the authenticated OIDC user
+            OidcUser oidcUser = (OidcUser) authentication.getPrincipal();
+            
+            // Retrieve the JWT token from the user's attributes (set by CustomOidcUserService)
+            String jwtToken = (String) oidcUser.getAttributes().get("jwtToken");
 
-        // Construct the frontend URL with the JWT token as a query parameter
-        String redirectUrl = "http://localhost:3000/login-success?token=" + jwtToken;
+            // Construct the frontend URL with the JWT token as a query parameter
+            String redirectUrl = "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com/login-success?token=" + jwtToken;
 
-        // Redirect the user to the frontend with the token
-        response.sendRedirect(redirectUrl);
-    };
-}
+            // Redirect the user to the frontend with the token
+            response.sendRedirect(redirectUrl);
+        };
+    }
 }

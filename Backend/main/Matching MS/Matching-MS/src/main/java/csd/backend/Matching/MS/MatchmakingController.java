@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
@@ -25,6 +27,7 @@ public class MatchmakingController {
         this.playerService = playerService;
     }
 
+    @CrossOrigin
     @PostMapping("/join")
     public String joinMatchmaking(@RequestParam String playerId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
@@ -66,6 +69,7 @@ public class MatchmakingController {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/join/speedupQueue")
     public String joinSpeedUpMatchmaking(@RequestParam String playerId, @RequestParam String email,
             @RequestParam int rankId) {

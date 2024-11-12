@@ -71,20 +71,7 @@ public class PlayerService {
         }
         playerRepository.save(player);
     }
-
-    // Handle match completion and recalculate stats
-    @Transactional
-    public void handleMatchCompletion(Long playerId, Long championId, double kdRate, int finalPlacement, int rankPoints, boolean isWin) {
-        // Check if player already exists
-        if (!playerRepository.existsById(playerId)) {
-            throw new PlayerNotFoundException(playerId);
-        }
-
-        // Update Player stats in overall stats and champion stats
-        playerStatsService.updateOverallStats(playerId, rankPoints, kdRate, finalPlacement, isWin);
-        playerStatsService.updateChampionStats(playerId, championId, kdRate, finalPlacement, isWin);
-    }
-
+    
     // New method to format top champions
     public List<Map<String, Object>> getFormattedTopChampions(Long playerId) {
         // Retrieve the top 3 played champions
@@ -201,46 +188,44 @@ public class PlayerService {
             }
 
             // Prepare the message body to be sent to the SQS queue
-            String messageBody = prepareMessageBody(playerId, playerName, email, password);
+            String messageBody = prepareMessageBody(playerId, username, playerName, email, password);
             
             // Define the message attributes
             Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
             messageAttributes.put("actionType", MessageAttributeValue.builder().stringValue("updatePlayerProfile").build());
 
             // Send the message to the SQS queue
-            // sqsService.sendMessageToQueue("login", messageBody, messageAttributes);
+            sqsService.sendMessageToQueue("login", messageBody, messageAttributes);
         }
         return player;
     }
+    
+    // Delete Player
+    public String deletePlayer(Long playerId) {
+        try {
+            // Retrieve player
+            Player player = getPlayerById(playerId);
 
-    // Helper method to hash the password using bcrypt
-    private String hashPassword(String password) {
-        // Generate a salt
-        String salt = BCrypt.gensalt();
-        
-        // Hash the password using the salt
-        return BCrypt.hashpw(password, salt);
+            playerRepository.delete(player);  // Delete player from the repository
+            return "Player deleted successfully";
+        } catch (Exception e) {
+            System.err.println("Error deleting player: " + e.getMessage());
+            return "Error deleting player";
+        }
     }
+    
 
     // Helper method to prepare the message body for SQS
-    private String prepareMessageBody(Long playerId, String playerName, String email, String password) {
+    private String prepareMessageBody(Long playerId, String username, String playerName, String email, String password) {
         // Create a JSON-like structure for the message body
         Map<String, String> messageData = new HashMap<>();
         messageData.put("playerId", playerId.toString());
         if (playerName != null) messageData.put("playerName", playerName);
+        if (username != null) messageData.put("username", username);
         if (email != null) messageData.put("email", email);
         if (password != null) messageData.put("password", password);
 
         // Convert the map into a string (you can also use a JSON library like Jackson for this)
         return messageData.toString();
-    }
-
-    // Helper method to prepare the message body for SQS with updated username
-    private String prepareUsernameMessageBody(Long playerId, String username) {
-        Map<String, String> messageData = new HashMap<>();
-        messageData.put("playerId", playerId.toString());
-        messageData.put("username", username); 
-
-        return messageData.toString(); 
     }
 }

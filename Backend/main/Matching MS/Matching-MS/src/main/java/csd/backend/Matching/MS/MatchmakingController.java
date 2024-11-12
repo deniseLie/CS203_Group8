@@ -29,7 +29,7 @@ public class MatchmakingController {
 
     @CrossOrigin
     @PostMapping("/join")
-    public String joinMatchmaking(@RequestParam String playerId) {
+    public String joinMatchmaking(@RequestParam Long playerId) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
         int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
 
@@ -71,7 +71,7 @@ public class MatchmakingController {
 
     @CrossOrigin
     @PostMapping("/join/speedupQueue")
-    public String joinSpeedUpMatchmaking(@RequestParam String playerId, @RequestParam String email,
+    public String joinSpeedUpMatchmaking(@RequestParam Long playerId, @RequestParam String email,
             @RequestParam int rankId) {
         logger.info("Received request to join matchmaking. Player: {}, Email: {}", playerId, email);
         try {
@@ -84,7 +84,7 @@ public class MatchmakingController {
 
             if (players.size() >= 8) {
                 // If enough players, create a match and remove them from the queue
-                matchmakingService.createMatch(players);
+                matchmakingService.createTournament(players);
                 matchmakingService.removePlayersFromQueue(players);
                 logger.info("Match created with players of rank range {} to {}: {}", rankId - 1, rankId + 1, players);
                 return "Match started with players of rank range " + (rankId - 1) + " to " + (rankId + 1) + ": "

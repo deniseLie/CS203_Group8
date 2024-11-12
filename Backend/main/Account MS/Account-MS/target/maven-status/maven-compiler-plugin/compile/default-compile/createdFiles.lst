@@ -20,6 +20,7 @@ csd\backend\Account\MS\AccountListener.class
 csd\backend\Account\MS\Controller\HealthCheckController.class
 csd\backend\Account\MS\Repository\Rank\RankRepository.class
 csd\backend\Account\MS\Service\Rank\RankService.class
+csd\backend\Account\MS\Service\Tournament\TournamentPlayerStatsService.class
 csd\backend\Account\MS\Repository\Tournament\TournamentPlayerStatsRepository.class
 csd\backend\Account\MS\Model\Rank\Rank.class
 csd\backend\Account\MS\Service\Player\PlayerStatsService.class

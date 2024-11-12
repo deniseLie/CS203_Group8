@@ -76,6 +76,9 @@ public class MatchmakingQueueListener {
             case "updatePlayerProfile":
                 processUpdatePlayer(messageBody);
                 break;
+            case "deletePlayerProfile":
+                processDeletePlayer(messageBody);
+                break;
             default: 
                 System.err.println("Unknown action type: " + actionType);
                 break;
@@ -99,7 +102,7 @@ public class MatchmakingQueueListener {
         // ADD PLAYER
         if (playerData != null) {
             // Call addPlayerToPool with extracted data
-            String playerId = playerData.get("playerId");
+            Long playerId = Long.parseLong(playerData.get("playerId"));
             String email = playerData.get("email");
             String queueStatus = playerData.getOrDefault("queueStatus", "available");
             int rankId = Integer.parseInt(playerData.getOrDefault("rankId", "1")); 
@@ -115,7 +118,7 @@ public class MatchmakingQueueListener {
         // Only process the message if it's a ban-related action
         String[] parts = messageBody.split(", until: ");
         if (parts.length == 2) {
-            String playerId = parts[0];         // Player ID
+            Long playerId = Long.parseLong(parts[0]);         // Player ID
             String banUntilString = parts[1].trim();  // Ban end time (until when)
 
             // Log for debugging
@@ -171,9 +174,25 @@ public class MatchmakingQueueListener {
             JsonNode rootNode = objectMapper.readTree(messageBody);
 
             Long playerId = rootNode.path("playerId").asLong();
-            Long rankId = rootNode.path("rank").asLong();
+            Long rankId = rootNode.path("rankId").asLong();
 
             playerService.updatePlayerRank(playerId, rankId);
+            System.out.println("Player profile updated for playerId: " + playerId);
+        } catch (Exception e) {
+            System.err.println("Failed to process update player message: " + e.getMessage());
+        }
+    }
+
+    // Process Delete Player action 
+    private void processDeletePlayer(String messageBody) {
+        try {
+            // Parse the update player profile request
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(messageBody);
+
+            Long playerId = rootNode.path("playerId").asLong();
+
+            playerService.deletePlayerStatus(playerId);
             System.out.println("Player profile updated for playerId: " + playerId);
         } catch (Exception e) {
             System.err.println("Failed to process update player message: " + e.getMessage());

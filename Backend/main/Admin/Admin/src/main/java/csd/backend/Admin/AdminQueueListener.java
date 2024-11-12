@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.*;
 import csd.backend.Admin.Service.*;
+import csd.backend.Admin.Service.User.PlayerService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,15 +19,18 @@ public class AdminQueueListener {
 
     private final SqsService sqsService;
     private final UserService userService;
+    private final PlayerService playerService;
     private final TournamentService tournamentService;
     private final TournamentPlayerService tournamentPlayerService;
 
     @Autowired
     public AdminQueueListener(
-        SqsService sqsService, UserService userService, TournamentService tournamentService, TournamentPlayerService tournamentPlayerService
+        SqsService sqsService, UserService userService, PlayerService playerService,
+        TournamentService tournamentService, TournamentPlayerService tournamentPlayerService
     ) {
         this.sqsService = sqsService;
         this.userService = userService;
+        this.playerService = playerService;
         this.tournamentService = tournamentService;
         this.tournamentPlayerService = tournamentPlayerService;
     }
@@ -135,13 +139,14 @@ public class AdminQueueListener {
             JsonNode rootNode = objectMapper.readTree(messageBody);
 
             // Extract player data from message
-            String playerId = rootNode.path("playerId").asText();
+            Long playerId = rootNode.path("playerId").asLong();
+            String playerName = rootNode.path("playerName").asText(null);
             String username = rootNode.path("username").asText(null);
             String email = rootNode.path("email").asText(null);
             String password = rootNode.path("password").asText(null);
 
             // Call the service to update player details
-            String result = userService.updatePlayerProfile(playerId, username, email, password);
+            String result = playerService.updatePlayerProfile(playerId, playerName, username, email, password);
         } catch (Exception e) {
             System.err.println("Failed to process update player message: " + e.getMessage());
         }
@@ -156,7 +161,7 @@ public class AdminQueueListener {
 
             // Extract tournament data from message
             String timestampStart = rootNode.path("timestampStart").asText();
-            int tournamentSize = Integer.parseInt(rootNode.path("tournamentSize").asText());
+            int tournamentSize = rootNode.path("tournamentSize").asInt();
 
             // Convert timestampStart to LocalDateTime
             LocalDateTime tournamentStartTime = LocalDateTime.parse(timestampStart);

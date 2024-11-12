@@ -1,11 +1,10 @@
 package csd.backend.Admin.Model;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "MatchPlayers")
-public class MatchPlayer {
+@Table(name = "TournamentPlayer")
+public class TournamentPlayer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,8 +13,8 @@ public class MatchPlayer {
     private String playerId;
 
     @ManyToOne
-    @JoinColumn(name = "matchId", nullable = false)
-    private Match match;
+    @JoinColumn(name = "tournamentId", nullable = false)
+    private Tournament tournament;
 
     // Getters and setters
     public Long getId() {
@@ -34,12 +33,12 @@ public class MatchPlayer {
         this.playerId = playerId;
     }
 
-    public Match getMatch() {
-        return match;
+    public Tournament getTournament() {
+        return tournament;
     }
 
-    public void setMatch(Match match) {
-        this.match = match;
+    public void setTournament(Tournament tournament) {
+        this.tournament = tournament;
     }
 }
 

@@ -12,29 +12,29 @@ import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity
-@Table(name = "Matches")
-public class Match {
+@Table(name = "Tournament")
+public class Tournament {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int matchId;
+    private int tournamentId;
 
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<MatchPlayer> players;
+    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TournamentPlayer> players;
 
-    public int getMatchId() {
-        return matchId;
+    public int getTournamentId() {
+        return tournamentId;
     }
 
-    public void setMatchId(int matchId) {
-        this.matchId = matchId;
+    public void setTournamentId(int tournamentId) {
+        this.tournamentId = tournamentId;
     }
 
-    public List<MatchPlayer> getPlayers() {
+    public List<TournamentPlayer> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<MatchPlayer> players) {
+    public void setPlayers(List<TournamentPlayer> players) {
         this.players = players;
     }
 }

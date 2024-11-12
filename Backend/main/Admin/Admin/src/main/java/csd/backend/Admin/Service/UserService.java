@@ -13,13 +13,11 @@ import csd.backend.Admin.Repository.*;
 public class UserService {
 
     private final UserRepository userRepository; //PLAYER ADMIN ACTION
-    private final MatchRepository matchRepository; // Match ADMIN FUNCT
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, MatchRepository matchRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.matchRepository = matchRepository;
         this.passwordEncoder = new BCryptPasswordEncoder(); // Initialize the password encoder
     }
     
@@ -122,23 +120,4 @@ public class UserService {
             return "User not found";
         }
     }
-    
-    //MATCH ADMIN ACTION
-    public Match createMatch(Match match) {
-        return matchRepository.save(match);
-    }
-    public List<Match> getAllMatches() {
-        return matchRepository.findAll();
-    }
-    
-    // not necessary.. i think..
-    // public String deleteMatch(int matchId) {
-    //     if (matchRepository.existsById(matchId)) {
-    //         matchRepository.deleteById(matchId);
-    //         return "Match deleted successfully";
-    //     } else {
-    //         return "Match not found";
-    //     }
-    // }
-    
 }

@@ -37,34 +37,34 @@ public class AdminController {
 
     //MATCH ADMIN ACTIONS
     //remove in next commit
-    // @GetMapping("/getAllMatches")
-    // public List<Match> getAllMatches() {
-    //     return userService.getAllMatches();
+    // @GetMapping("/getAllTournaments")
+    // public List<Tournament> getAllTournaments() {
+    //     return userService.getAllTournaments();
     // }
     //may need to keep
     // @PostMapping("/create")
-    // public Match createMatch(@RequestParam int matchId) {
-    //     Match match = new Match();
-    //     return userService.createMatch(match);
+    // public Tournament createTournament(@RequestParam int matchId) {
+    //     Tournament tournament = new Tournament();
+    //     return userService.createTournament(tournament);
     // }
 
     @Autowired
-    private MatchResultService matchResultService;
+    private TournamentResultService tournamentResultService;
 
-    @GetMapping("/matchresult/{matchresultId}")
-    public ResponseEntity<?> getMatchResultById(@PathVariable int matchresultId) {
-        MatchResult matchResult = matchResultService.getMatchResultByTournamentId(matchresultId);
-        if (matchResult != null) {
-            return ResponseEntity.ok(matchResult);
+    @GetMapping("/tournamentResult/{tournamentResultId}")
+    public ResponseEntity<?> getTournamentResultById(@PathVariable int tournamentResultId) {
+        TournamentResult tournamentResult = tournamentResultService.getTournamentResultByTournamentId(tournamentResultId);
+        if (tournamentResult != null) {
+            return ResponseEntity.ok(tournamentResult);
         } else {
-            return ResponseEntity.status(404).body("Match result not found");
+            return ResponseEntity.status(404).body("Tournament result not found");
         }
     }
 
-    @PostMapping("/matchresult")
-    public ResponseEntity<MatchResult> createMatchResult(@RequestBody MatchResultRequest request) {
-        MatchResult newMatchResult = matchResultService.createMatchResult(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newMatchResult);
+    @PostMapping("/tournamentResult")
+    public ResponseEntity<TournamentResult> createTournamentResult(@RequestBody TournamentResultRequest request) {
+        TournamentResult newTournamentResult = tournamentResultService.createTournamentResult(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newTournamentResult);
     }
 }
 

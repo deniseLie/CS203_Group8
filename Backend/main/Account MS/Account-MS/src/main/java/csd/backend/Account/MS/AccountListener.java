@@ -1,13 +1,15 @@
 package csd.backend.Account.MS;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import csd.backend.Account.MS.Model.Player;
-import csd.backend.Account.MS.Service.PlayerService;
+import csd.backend.Account.MS.Model.Player.Player;
 import csd.backend.Account.MS.Service.SqsService;
+import csd.backend.Account.MS.Service.Player.PlayerService;
+import csd.backend.Account.MS.Service.Tournament.TournamentService;
 
 import java.util.*;
 
@@ -16,10 +18,13 @@ public class AccountListener {
 
     private final SqsService sqsService;
     private final PlayerService playerService;
+    private final TournamentService tournamentService;
 
-    public AccountListener(SqsService sqsService, PlayerService playerService) {
+    @Autowired
+    public AccountListener(SqsService sqsService, PlayerService playerService, TournamentService tournamentService) {
         this.sqsService = sqsService;
         this.playerService = playerService;
+        this.tournamentService = tournamentService;
     }
 
     // Listen for messages in the Account Queue
@@ -135,11 +140,14 @@ public class AccountListener {
             // Convert the values to appropriate types before passing to handleMatchCompletion
             try {
                 Long playerId = Long.parseLong(tournamentData.get("playerId"));
-                int championId = Integer.parseInt(tournamentData.get("championId"));
+                Long championId = Long.parseLong(tournamentData.get("championId"));
                 double kdRate = Double.parseDouble(tournamentData.get("kdRate"));
                 int finalPlacement = Integer.parseInt(tournamentData.get("finalPlacement"));
                 int rankPoints = Integer.parseInt(tournamentData.get("rankPoints"));
                 boolean isWin = Boolean.parseBoolean(tournamentData.get("isWin"));
+
+                // Call the TournamentService to handle tournament creation and saving
+                tournamentService.createAndSaveTournament(tournamentData);
 
                 // Call the PlayerService to handle the match completion
                 playerService.handleMatchCompletion(playerId, championId, kdRate, finalPlacement, rankPoints, isWin);
@@ -151,7 +159,6 @@ public class AccountListener {
             System.err.println("Failed to process AddTournament message due to parsing issues.");
         }
     }
-
 
     // Parse match data from JSON message body and create Player object
     private Map<String, String> processMatchMessage(String messageBody) {

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import csd.backend.Admin.Repository.*;
 import java.util.*;
 import csd.backend.Admin.Model.*;
+import csd.backend.Admin.Model.Tournament.Tournament;
 
 @Service
 public class TournamentService {

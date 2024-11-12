@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import csd.backend.Admin.Model.*;
+import csd.backend.Admin.Model.Tournament.TournamentResult;
+import csd.backend.Admin.Model.Tournament.TournamentResultRequest;
+import csd.backend.Admin.Model.User.User;
 import csd.backend.Admin.Service.*;
 
 @RestController

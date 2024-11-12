@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import csd.backend.Admin.Model.*;
+import csd.backend.Admin.Model.Tournament.TournamentPlayer;
 import csd.backend.Admin.Repository.*;
 
 @Service

@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import csd.backend.Admin.Model.*;
+import csd.backend.Admin.Model.Tournament.Tournament;
+import csd.backend.Admin.Model.Tournament.TournamentPlayer;
+import csd.backend.Admin.Model.User.User;
 import csd.backend.Admin.Service.*;
 
 import java.time.LocalDateTime;

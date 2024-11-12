@@ -1,14 +1,13 @@
-package csd.backend.Admin.Model;
+package csd.backend.Admin.Model.User;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-// import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // This defines the inheritance strategy
+@DiscriminatorColumn(name = "role_type", discriminatorType = DiscriminatorType.STRING) // This will differentiate between roles
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String username;
@@ -16,9 +15,7 @@ public class User {
     private String email;
     private String role;
 
-    @Column(name = "playerName", nullable = true)
-    private String playerName;
-
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -58,17 +55,4 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-    
-    // Getters and setters
-    
-
 }
-

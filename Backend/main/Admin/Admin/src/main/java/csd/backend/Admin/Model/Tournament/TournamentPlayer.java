@@ -1,4 +1,4 @@
-package csd.backend.Admin.Model;
+package csd.backend.Admin.Model.Tournament;
 
 import jakarta.persistence.*;
 

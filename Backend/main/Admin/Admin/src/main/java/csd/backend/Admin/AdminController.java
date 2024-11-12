@@ -3,6 +3,7 @@ package csd.backend.Admin;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,14 +33,29 @@ public class AdminController {
     }
 
     //MATCH ADMIN ACTIONS
-    @GetMapping("/getAllMatches")
-    public List<Match> getAllMatches() {
-        return adminService.getAllMatches();
-    }
-    @PostMapping("/create")
-    public Match createMatch(@RequestParam int matchId) {
-        Match match = new Match();
-        return adminService.createMatch(match);
+    //remove in next commit
+    // @GetMapping("/getAllMatches")
+    // public List<Match> getAllMatches() {
+    //     return adminService.getAllMatches();
+    // }
+    //may need to keep
+    // @PostMapping("/create")
+    // public Match createMatch(@RequestParam int matchId) {
+    //     Match match = new Match();
+    //     return adminService.createMatch(match);
+    // }
+
+    @Autowired
+    private MatchResultService matchResultService;
+
+    @GetMapping("/matchresult/{matchresultId}")
+    public ResponseEntity<?> getMatchResultById(@PathVariable int matchresultId) {
+        MatchResult matchResult = matchResultService.getMatchResultByTournamentId(matchresultId);
+        if (matchResult != null) {
+            return ResponseEntity.ok(matchResult);
+        } else {
+            return ResponseEntity.status(404).body("Match result not found");
+        }
     }
 }
 

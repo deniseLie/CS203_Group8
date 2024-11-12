@@ -35,13 +35,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Set stateless session
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Set
+                                                                                                                // stateless
+                                                                                                                // session
                 .authorizeHttpRequests(account -> account
                         .requestMatchers("/account/**").permitAll()
                         .anyRequest().permitAll()
+                        .and()
+                        .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 );
 
-        // http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        // http.addFilterBefore(jwtRequestFilter,
+        // UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -55,8 +60,7 @@ public class SecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow CORS for all paths
                         .allowedOrigins(
-                            "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com"
-                        ) // Allow specific origins
+                                "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com") // Allow specific origins
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allow specific HTTP methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true); // Allow cookies/credentials to be sent

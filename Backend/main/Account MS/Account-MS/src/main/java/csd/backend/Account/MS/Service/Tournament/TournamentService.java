@@ -6,11 +6,13 @@ import csd.backend.Account.MS.Model.Tournament.*;
 import csd.backend.Account.MS.Repository.Champion.*;
 import csd.backend.Account.MS.Repository.Player.*;
 import csd.backend.Account.MS.Repository.Tournament.*;
+import csd.backend.Account.MS.Service.Champion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TournamentService {
@@ -19,17 +21,22 @@ public class TournamentService {
     private final TournamentPlayerStatsRepository tournamentPlayerStatsRepository;
     private final PlayerRepository playerRepository;
     private final ChampionRepository championRepository;
+    private final ChampionService championService;
 
     // Constructor injection
     @Autowired
-    public TournamentService(TournamentRepository tournamentRepository, 
-                             TournamentPlayerStatsRepository tournamentPlayerStatsRepository, 
-                             PlayerRepository playerRepository, 
-                             ChampionRepository championRepository) {
+    public TournamentService(
+        TournamentRepository tournamentRepository, 
+        TournamentPlayerStatsRepository tournamentPlayerStatsRepository, 
+        PlayerRepository playerRepository, 
+        ChampionRepository championRepository,
+        ChampionService championService
+    ) { 
         this.tournamentRepository = tournamentRepository;
         this.tournamentPlayerStatsRepository = tournamentPlayerStatsRepository;
         this.playerRepository = playerRepository;
         this.championRepository = championRepository;
+        this.championService = championService;
     }
 
     // Get all tournaments
@@ -105,5 +112,57 @@ public class TournamentService {
         } catch (Exception e) {
             System.err.println("Error processing tournament data: " + e.getMessage());
         }
+    }
+
+    // Get Match History
+    public List<Map<String, Object>> getPlayerMatchHistory(Long playerId) {
+        List<Map<String, Object>> response = new ArrayList<>();
+
+        try {
+            // Get all TournamentPlayerStats for the player
+            List<TournamentPlayerStats> playerTournamentStats = getTournamentPlayerStatsForPlayer(playerId);
+
+            // Collect all tournamentIds
+            List<Long> tournamentIds = playerTournamentStats.stream()
+                    .map(tournamentPlayerStats -> tournamentPlayerStats.getTournament().getTournamentId())
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            // Loop through tournamentIds and gather data
+            for (Long tournamentId : tournamentIds) {
+                Map<String, Object> tournamentData = new HashMap<>();
+                List<TournamentPlayerStats> statsForTournament = getTournamentPlayerStats(tournamentId);
+
+                // Fetch tournament details from the Tournament entity
+                Tournament tournament = getTournamentById(tournamentId);
+                tournamentData.put("tournamentId", tournamentId);
+                tournamentData.put("tournamentSize", tournament.getTournamentSize());
+                tournamentData.put("timestampStart", tournament.getTimestampStart().toString());
+
+                List<Map<String, Object>> matchDetails = new ArrayList<>();
+
+                // For each player's stats in the tournament
+                for (TournamentPlayerStats stats : statsForTournament) {
+                    Map<String, Object> playerData = new HashMap<>();
+                    playerData.put("standing", stats.getFinalPlacement());
+                    playerData.put("champion", championService.getChampionById(stats.getChampionPlayedId()).getChampionName());
+                    playerData.put("playerName", stats.getPlayer().getUsername());
+                    playerData.put("kd", stats.getKillCount() + "/" + stats.getDeathCount());
+                    playerData.put("kda", (stats.getDeathCount() == 0) ? "Infinity" : String.format("%.2f KDA", (float) stats.getKillCount() / stats.getDeathCount()));
+                    playerData.put("lpChange", stats.getPointObtain());
+                    playerData.put("time", stats.getTimeEndPerPlayer() != null ? stats.getTimeEndPerPlayer().toLocalTime().toString() : "N/A");
+                    playerData.put("date", stats.getTimeEndPerPlayer() != null ? stats.getTimeEndPerPlayer().toLocalDate().toString() : "N/A");
+                    playerData.put("isAFK", stats.getIsAFK());
+                    matchDetails.add(playerData);
+                }
+
+                tournamentData.put("players", matchDetails);
+                response.add(tournamentData);
+            }
+        } catch (Exception e) {
+            // Handle any errors and log
+            System.err.println("Error processing match history: " + e.getMessage());
+        }
+        return response;
     }
 }

@@ -1,6 +1,7 @@
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\AccountListener.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\AccountMsApplication.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Controller\AccountController.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\DTO\PlayerProfileUpdateRequest.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Exception\ChampionNotFoundException.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Exception\GlobalExceptionHandler.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Account MS\Account-MS\src\main\java\csd\backend\Account\MS\Exception\PlayerChampionStatsNotFoundException.java

@@ -37,6 +37,8 @@ public class SqsService {
                 return penaltyQueueUrl;
             case "account":
                 return accountQueueUrl;
+            case "login":
+                return accountQueueUrl;
             default:
                 throw new IllegalArgumentException("Invalid queue name");
         }

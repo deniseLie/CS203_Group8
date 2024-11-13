@@ -95,26 +95,29 @@ public class AccountController {
 
     // Endpoint to get match history
     @GetMapping("/{playerId}/match-history")
-    public ResponseEntity<List<Map<String, Object>>> getPlayerMatchHistory(@PathVariable Long playerId) {
-        List<Map<String, Object>> response = new ArrayList<>();
-
+    public ResponseEntity<Object> getPlayerMatchHistory(@PathVariable Long playerId) {
         try {
-            // Get player match history via PlayerService
-            Map<String, Object> matchHistory = new HashMap<>();
-            matchHistory.put("matchHistory", tournamentService.getPlayerMatchHistory(playerId));
+            // Get player match history via TournamentService
+            List<Map<String, Object>> matchHistory = tournamentService.getPlayerMatchHistory(playerId);
 
-            // Add matchHistory to the response list
-            response.add(matchHistory);
+            // Check if matchHistory is null or empty
+            if (matchHistory == null || matchHistory.isEmpty()) {
+                Map<String, Object> noDataResponse = new HashMap<>();
+                noDataResponse.put("message", "No match history found for player " + playerId);
+                return new ResponseEntity<>(noDataResponse, HttpStatus.NOT_FOUND);
+            }
 
-            // Return the response as formatted JSON
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            // Return the match history directly
+            return new ResponseEntity<>(matchHistory, HttpStatus.OK);
+
         } catch (Exception e) {
             // Handle exceptions and send error response
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "An error occurred while fetching the match history: " + e.getMessage());
-            return new ResponseEntity<>(List.of(errorResponse), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Endpoint to get player's rank name
     @GetMapping("/{playerId}/rank")

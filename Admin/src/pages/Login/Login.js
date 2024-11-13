@@ -17,15 +17,17 @@ const Login = () => {
     setError(``);
 
     try {
-      const response = await axios.post('/admin/user/login', {
-        username,
-        password,
-      });
+      login();
+      navigate('/dashboard');
+      // const response = await axios.post('/admin/user/login', {
+      //   username,
+      //   password,
+      // });
 
-      if (response.status === 200) {
-        login();  // Set authentication to true in your context or state management
-        navigate('/dashboard');  // Redirect to dashboard
-      }
+      // if (response.status === 200) {
+      //   login();  // Set authentication to true in your context or state management
+      //   navigate('/dashboard');  // Redirect to dashboard
+      // }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setError('Incorrect Username or Password.');

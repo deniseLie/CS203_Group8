@@ -9,5 +9,5 @@ import java.util.*;
 public interface TournamentPlayerRepository extends JpaRepository<TournamentPlayer, Long>{
     Optional<TournamentPlayer> findByPlayerId(Long playerId);
     List<TournamentPlayer> findByTournament(Tournament tournament);
-    Optional<TournamentPlayer> findByPlayerIdAndTournamentId(Long playerId, Long tournamentId);
+    Optional<TournamentPlayer> findByPlayerIdAndTournament_TournamentId(Long playerId, Long tournamentId);
 }

@@ -111,7 +111,7 @@ public class PlayerService {
         }
     }
     // Update player's champion in the database
-    public void updatePlayerChampion(String playerId, String championId) {
+    public void updatePlayerChampion(Long playerId, String championId) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("championId", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder().s(championId).build())  // Store championId as a string
@@ -121,7 +121,7 @@ public class PlayerService {
         // Update the player's championId in DynamoDB
         UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build())) // Use playerId as key
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build())) // Use playerId as key
                 .attributeUpdates(updates)  // Specify the updates to be made
                 .build();
 
@@ -132,7 +132,7 @@ public class PlayerService {
     }
 
     // Remove player's championId from the database
-    public void removePlayerChampion(String playerId) {
+    public void removePlayerChampion(Long playerId) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("championId", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder().s("").build())  // Set championId to an empty string or null equivalent
@@ -142,7 +142,7 @@ public class PlayerService {
         // Update the player's championId in DynamoDB (set it to empty string or null)
         UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build())) // Use playerId as key
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId).toString()).build())) // Use playerId as key
                 .attributeUpdates(updates)  // Specify the updates to be made
                 .build();
 

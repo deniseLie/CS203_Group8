@@ -40,7 +40,7 @@ public class MatchmakingController {
         Map<String, Object> response = new HashMap<>();
 
         // Access playerId and championId from joinRequest
-        String playerId = joinRequestBody.getPlayerId();
+        Long playerId = Long.parseLong(joinRequestBody.getPlayerId());
         String championId = joinRequestBody.getChampionId();
 
         try {
@@ -100,7 +100,7 @@ public class MatchmakingController {
         Map<String, Object> response = new HashMap<>();
 
         // Access playerId and championId from joinRequest
-        String playerId = joinRequestBody.getPlayerId();
+        Long playerId = Long.parseLong(joinRequestBody.getPlayerId());
         String championId = joinRequestBody.getChampionId();
         try {
             // Check if the player is banned
@@ -152,7 +152,7 @@ public class MatchmakingController {
     // Stop queueing (unqueue player)
     @CrossOrigin(origins = "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com")
     @PostMapping("/unqueue")
-    public ResponseEntity<Map<String, Object>> unqueuePlayer(@RequestParam String playerId) {
+    public ResponseEntity<Map<String, Object>> unqueuePlayer(@RequestParam Long playerId) {
         Map<String, Object> response = new HashMap<>();
         try {
 

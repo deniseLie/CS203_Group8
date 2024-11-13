@@ -3,7 +3,7 @@ import { Box, Typography } from '@mui/material';
 import Navbar from '../components/Navbar';
 import GameCard from '../components/GameCard';
 import ProfileBanner from '../components/ProfileBanner';
-import backgroundImage from '../assets/srbackground.png';
+import backgroundImage from '../assets/backgrounds/srbackground.png';
 import avatarImage from '../assets/summonerIcon/1.jpg';
 import diamondRankImage from '../assets/ranks/diamond.png';
 import diamondBanner from '../assets/rank-banners/diamond.png';
@@ -41,8 +41,6 @@ function History() {
             headers: {
               'Authorization': `Bearer ${token}`
             }
-            ,
-            withCredentials: true
           }
         );
         console.log(response)

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
-import backgroundImage from '../assets/srbackground.png';
+import backgroundImage from '../assets/backgrounds/srbackground.png';
 import {
   Box,
   Select,

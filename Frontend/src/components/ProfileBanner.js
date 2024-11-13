@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import PlayerIcon from '../components/PlayerIcon'; // Ensure this path is correct based on your project structure
-import editIcon from '../assets/button-edit.png'; // Adjust the path to your edit icon
+import editIcon from '../assets/buttons/button-edit.png'; // Adjust the path to your edit icon
 import EditProfileModal from './EditProfileModal'; // Import the modal component
 
 function ProfileBanner({ profile, displayType }) {

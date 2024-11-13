@@ -1,5 +1,6 @@
 package com.loltournament.loginservice.controller;
 
+import com.loltournament.loginservice.exception.UserNotFoundException;
 import com.loltournament.loginservice.model.Player;
 import com.loltournament.loginservice.security.SecurityConfig;
 import com.loltournament.loginservice.util.JwtUtil;
@@ -142,6 +143,55 @@ public class AuthController {
         } catch (Exception ex) {
             logger.error("An error occurred during login: {}", ex.getMessage(), ex);
             throw new RuntimeException("An error occurred during login", ex);
+        }
+    }
+
+    /**
+     * Endpoint to retrieve a user by their ID.
+     *
+     * @param userId The ID of the user to retrieve
+     * @return ResponseEntity with user details or error message if user not found
+     */
+    @GetMapping(value = "/user/{userId}")
+    public ResponseEntity<Map<String, Object>> getUserById(@PathVariable Long userId) {
+        try {
+            // Load user details by ID
+            UserDetails userDetails = userService.loadUserById(userId);
+
+            // Assuming UserDetails is an instance of Player or can be cast to it
+            if (userDetails instanceof Player) {
+                Player player = (Player) userDetails;
+
+                // Prepare a structured JSON response with user details
+                Map<String, Object> responseBody = new HashMap<>();
+                responseBody.put("userId", player.getUserId());
+                responseBody.put("username", player.getUsername());
+                responseBody.put("email", player.getEmail());
+                responseBody.put("playername", player.getPlayername());
+                responseBody.put("authProvider", player.getAuthProvider());
+
+                return ResponseEntity.ok(responseBody);
+            } else {
+                throw new RuntimeException("User details not found.");
+            }
+
+        } catch (UserNotFoundException ex) {
+            logger.error("User with ID {} not found: {}", userId, ex.getMessage());
+
+            // Prepare an error response
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "User not found");
+            errorResponse.put("error", ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse); // Return 404 Not Found
+        } catch (Exception ex) {
+            logger.error("An error occurred while fetching user by ID: {}", ex.getMessage(), ex);
+
+            // Prepare a generic error response
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("message", "An error occurred while retrieving the user");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse); // Return 500 Internal Server Error
         }
     }
 }

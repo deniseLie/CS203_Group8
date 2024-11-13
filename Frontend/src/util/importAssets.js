@@ -65,6 +65,16 @@ import yasuoSplash from '../assets/championSplash/yasuo.jpg';
 import zedSplash from '../assets/championSplash/zed.jpg';
 import viSplash from '../assets/championSplash/vi.jpg';
 
+// Rank Icons
+import bronzeIcon from '../assets/rankIcon/bronze.png';
+import diamondIcon from '../assets/rankIcon/diamond.png';
+import emeraldIcon from '../assets/rankIcon/emerald.png';
+import goldIcon from '../assets/rankIcon/gold.png';
+import ironIcon from '../assets/rankIcon/iron.png';
+import platinumIcon from '../assets/rankIcon/platinum.png';
+import silverIcon from '../assets/rankIcon/silver.png';
+import unrankedIcon from '../assets/rankIcon/unranked.png';
+
 // Summoner Icons Collection
 export const summonerIcons = {
   icon1,
@@ -138,4 +148,16 @@ export const championSplashAssets = {
   yasuo: yasuoSplash,
   zed: zedSplash,
   vi: viSplash,
+};
+
+// Rank Icons Collection
+export const rankIconsAssets = {
+  bronze: bronzeIcon,
+  diamond: diamondIcon,
+  emerald: emeraldIcon,
+  gold: goldIcon,
+  iron: ironIcon,
+  platinum: platinumIcon,
+  silver: silverIcon,
+  unranked: unrankedIcon,
 };

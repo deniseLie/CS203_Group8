@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import backgroundImage from '../assets/background-with-banner.png';
-import arenaIcon from '../assets/arena-icon.png';
+import backgroundImage from '../assets/backgrounds/background-with-banner.png';
+import arenaIcon from '../assets/icons/arena-icon.png';
 import PlayerIcon from '../components/PlayerIcon';
 import profileAvatar from '../assets/summonerIcon/1.jpg';
-import findMatchDisabled from '../assets/button-accept-disabled.png';
-import findMatch from '../assets/button-accept-default.png';
-import inQueue from '../assets/button-accept-in-queue.png';
+import findMatchDisabled from '../assets/buttons/button-accept-disabled.png';
+import findMatch from '../assets/buttons/button-accept-default.png';
+import inQueue from '../assets/buttons/button-accept-in-queue.png';
 import championSelected from '../assets/champions/0.png';
 import SelectChampionModal from './SelectChampionModal';
 import diamondRank from '../assets/rankIcon/diamond.png';
 import Navbar from '../components/Navbar';
 import SpeedUpModal from '../components/SpeedupModal';
-import speedupQueueIcon from '../assets/speedQueue.png';
-import redWarning from '../assets/red-warning.png'; // Import the red warning icon
+import speedupQueueIcon from '../assets/icons/speedQueue.png';
 import LowPriorityQueue from '../components/LowPriorityQueue';
 import { useAuth } from '../auth/AuthProvider';
 import axios from 'axios';
@@ -33,7 +32,6 @@ const FindTournament = ({ logout }) => {
   const navigate = useNavigate();
   
   const { user } = useAuth();
-  console.log(useAuth());
   // DUMMY: if user is lowpriority
   const IS_LOW_PRIORITY = false;
   // constant : how many seconds to show speed up q
@@ -56,18 +54,14 @@ const FindTournament = ({ logout }) => {
     try{
       const token = Cookies.get('jwtToken');
     console.log(`Bearer ${token}`)
-
+      console.log("testttt "
+        +user.sub);
       const response = await axios.post(
-        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
-        {
-          playerId: user.sub
-        },
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join?playerId=${user.sub}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
-          }
-          ,
-          withCredentials: true
+          },
         }
       );
   

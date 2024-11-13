@@ -23,6 +23,7 @@ csd\backend\Account\MS\Service\Rank\RankService.class
 csd\backend\Account\MS\Service\Tournament\TournamentPlayerStatsService.class
 csd\backend\Account\MS\Repository\Tournament\TournamentPlayerStatsRepository.class
 csd\backend\Account\MS\Model\Rank\Rank.class
+csd\backend\Account\MS\Security\PasswordEncoderConfig.class
 csd\backend\Account\MS\Service\Player\PlayerStatsService.class
 csd\backend\Account\MS\Model\Player\PlayerOverallStats.class
 csd\backend\Account\MS\Service\Champion\ChampionService.class

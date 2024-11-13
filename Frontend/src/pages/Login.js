@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Box, TextField, Typography, IconButton, InputAdornment, Alert, Button } from "@mui/material";
 import { ArrowForward, Visibility, VisibilityOff } from "@mui/icons-material";
-import loginSplash from "../assets/login_splash.jpg";
+import loginSplash from "../assets/backgrounds/login_splash.jpg";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import logo from "../assets/riot_logo.png";
-import Cookies from 'js-cookie'; // Import js-cookie
+import logo from "../assets/icons/riot_logo.png";
 import env from "react-dotenv";
 
 function Login({ login }) {

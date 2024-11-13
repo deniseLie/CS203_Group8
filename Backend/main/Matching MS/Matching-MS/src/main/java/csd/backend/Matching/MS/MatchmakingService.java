@@ -4,6 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.sqs.model.*;
@@ -28,7 +31,7 @@ public class MatchmakingService {
 
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final int MAX_PLAYERS = 8;
+    private static final int MAX_PLAYERS = 2;
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
 
     // Add a player to the matchmaking pool
@@ -95,7 +98,7 @@ public class MatchmakingService {
     }
 
     // Check Match : Enough Players with same rankId
-    public boolean checkForMatch(Long rankId) {
+    public boolean checkForMatch(Long rankId, boolean isSpeedUp) {
 
         // Get players queueing + same rankId
         List<Map<String, AttributeValue>> players = checkPlayersInQueue(rankId);
@@ -126,7 +129,7 @@ public class MatchmakingService {
     }
 
     // Check if there are enough players in the pool to start a match
-    public List<Map<String, AttributeValue>> checkPlayersInSpeedUpQueue(int rankId) {
+    public List<Map<String, AttributeValue>> checkPlayersInSpeedUpQueue(Long rankId) {
         ScanRequest scanRequest = ScanRequest.builder()
                 .tableName(PLAYERS_TABLE)
                 .filterExpression("queueStatus = :queueStatus and rankId BETWEEN :minRankId AND :maxRankId")
@@ -139,7 +142,7 @@ public class MatchmakingService {
         ScanResponse scanResponse = dynamoDbClient.scan(scanRequest);
         return scanResponse.items();
     }
-
+    
     // Remove players from the pool after a match is found
     public void removePlayersFromQueue(List<Map<String, AttributeValue>> players) {
         for (Map<String, AttributeValue> player : players) {
@@ -249,8 +252,17 @@ public class MatchmakingService {
                             + "\"tournamentSize\": \"" + playerIds.split(",").length + "\", "
                             + "\"playerIds\": [" + playerIds + "]}";
 
-        // Send message to the matchmaking queue
-        sqsService.sendMessageToQueue("admin", messageBody, messageAttributes);
-        System.out.println("Automatically triggered matchmaking for players: " + playerIds);
+        try {
+            // Convert map to JSON string using Jackson
+            ObjectMapper objectMapper = new ObjectMapper();
+            String messageBody = objectMapper.writeValueAsString(messageBodyMap);
+
+            // Send message to the matchmaking queue
+            sqsService.sendMessageToQueue("admin", messageBody, messageAttributes);
+            System.out.println("Automatically triggered matchmaking for players: " + playerIds);
+        } catch (Exception e) {
+            logger.error("Error creating JSON message body for matchmaking", e);
+        }
     }
+
 }

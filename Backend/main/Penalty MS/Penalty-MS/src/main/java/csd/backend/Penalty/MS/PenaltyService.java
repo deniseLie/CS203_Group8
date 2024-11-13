@@ -215,4 +215,25 @@ public class PenaltyService {
         SendMessageResponse response = sqsService.getSqsClient().sendMessage(sendMsgRequest);
         System.out.println("Message sent to Penalty Queue with MessageId: " + response.messageId());
     }
+
+    // Delete player
+    public void deletePlayer(Long playerId) {
+        // Build the key to identify the item to be deleted
+        Map<String, AttributeValue> key = new HashMap<>();
+        key.put("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build());
+
+        // Create the delete item request
+        DeleteItemRequest deleteItemRequest = DeleteItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(key)
+                .build();
+
+        try {
+            // Execute the delete item request
+            dynamoDbClient.deleteItem(deleteItemRequest);
+            System.out.println("Player with playerId " + playerId + " deleted successfully.");
+        } catch (Exception e) {
+            System.err.println("Error deleting player: " + e.getMessage());
+        }
+    }
 }

@@ -28,7 +28,7 @@ public class TournamentPlayerService {
     }
         
     // Method to create and save the TournamentPlayer relationship
-    public String createTournamentPlayer(Long playerId, Long tournamentId) {
+    public String createTournamentPlayer(Long playerId, Long tournamentId, String championId) {
         try {
             // Find the tournament and player by their IDs
             Tournament tournament = tournamentService.getTournamentById(tournamentId);
@@ -42,6 +42,7 @@ public class TournamentPlayerService {
             TournamentPlayer tournamentPlayer = new TournamentPlayer();
             tournamentPlayer.setPlayerId(playerId);
             tournamentPlayer.setTournament(tournament);
+            tournamentPlayer.setChampionId(championId);  
 
             // Save the TournamentPlayer object to the database
             tournamentPlayerRepository.save(tournamentPlayer);

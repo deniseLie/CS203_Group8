@@ -1,11 +1,8 @@
 package csd.backend.Account.MS.Service.Player;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Exception.*;
@@ -13,13 +10,10 @@ import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Repository.Player.*;
 import csd.backend.Account.MS.Service.*;
 import csd.backend.Account.MS.Service.Champion.ChampionService;
-import jakarta.transaction.Transactional;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.mindrot.jbcrypt.BCrypt;
 
 @Service
 public class PlayerService {
@@ -200,18 +194,13 @@ public class PlayerService {
         return player;
     }
     
-    // Delete Player
-    public String deletePlayer(Long playerId) {
-        try {
-            // Retrieve player
-            Player player = getPlayerById(playerId);
-
-            playerRepository.delete(player);  // Delete player from the repository
-            return "Player deleted successfully";
-        } catch (Exception e) {
-            System.err.println("Error deleting player: " + e.getMessage());
-            return "Error deleting player";
+    // Method to delete a player by playerId
+    public void deletePlayerByPlayerId(Long playerId) {
+        if (!playerRepository.existsById(playerId)) {
+            throw new PlayerNotFoundException(playerId);
         }
+
+        playerRepository.deleteByPlayerId(playerId);  // This will delete the player with the given playerId
     }
     
 

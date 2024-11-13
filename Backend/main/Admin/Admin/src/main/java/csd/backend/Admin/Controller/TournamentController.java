@@ -58,13 +58,13 @@ public class TournamentController {
     }
 
     // Endpoint to get tournament size
-    @PostMapping("/getTournamentSize")
-    public ResponseEntity<Map<String, Object>> updateTournamentSize(@RequestBody int newTournamentSize) {
+    @GetMapping("/getTournamentSize")
+    public ResponseEntity<Map<String, Object>> getTournamentSize() {
         Map<String, Object> response = new HashMap<>();
         
         try {
             // Call service to update tournament size
-            String result = tournamentService.getTournamentSize();
+            int result = tournamentService.getTournamentSize();
             
             // Success response
             response.put("message", result);
@@ -84,10 +84,10 @@ public class TournamentController {
         
         try {
             // Call service to update tournament size
-            String result = tournamentService.updateTournamentSize(newTournamentSize);
+            tournamentService.updateTournamentSize(newTournamentSize);
             
             // Success response
-            response.put("message", result);
+            response.put("message", "successful");
             return new ResponseEntity<>(response, HttpStatus.OK);  // OK response for successful operation
         } catch (Exception e) {
             // Error handling

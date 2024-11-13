@@ -15,6 +15,8 @@ public class TournamentPlayer {
     @ManyToOne
     @JoinColumn(name = "tournamentId", nullable = false)
     private Tournament tournament;
+    ;
+    private String championId;
 
     // Getters and setters
     public Long getId() {
@@ -39,6 +41,14 @@ public class TournamentPlayer {
 
     public void setTournament(Tournament tournament) {
         this.tournament = tournament;
+    }
+
+    public String getChampionId() {
+        return championId;
+    }
+
+    public void setChampionId(String championId) {
+        this.championId = championId;
     }
 }
 

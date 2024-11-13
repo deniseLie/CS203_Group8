@@ -1,4 +1,4 @@
-package csd.backend.Admin.Model.Tournament;
+package csd.backend.Matching.MS.Model;
 
 public class TournamentSize {
     private static int tournamentSize = 8; // Default value is 8

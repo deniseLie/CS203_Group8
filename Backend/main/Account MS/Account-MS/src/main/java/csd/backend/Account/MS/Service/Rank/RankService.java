@@ -3,7 +3,6 @@ package csd.backend.Account.MS.Service.Rank;
 import csd.backend.Account.MS.Exception.*;
 import csd.backend.Account.MS.Model.Rank.Rank;
 import csd.backend.Account.MS.Repository.Rank.RankRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,7 +10,6 @@ public class RankService {
 
     private final RankRepository rankRepository;
 
-    @Autowired
     public RankService(RankRepository rankRepository) {
         this.rankRepository = rankRepository;
     }

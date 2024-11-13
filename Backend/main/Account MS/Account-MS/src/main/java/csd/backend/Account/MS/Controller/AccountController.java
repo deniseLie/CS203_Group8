@@ -1,35 +1,21 @@
 package csd.backend.Account.MS.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.amazonaws.services.lambda.runtime.events.CloudFrontEvent.Response;
-
-import org.springframework.stereotype.Service;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Exception.PlayerNotFoundException;
 import csd.backend.Account.MS.Model.Player.*;
-import csd.backend.Account.MS.Model.Tournament.*;
 import csd.backend.Account.MS.Service.Tournament.*;
 import csd.backend.Account.MS.Service.Player.*;
-import csd.backend.Account.MS.Service.Champion.*;
 
-import java.io.*;
-import java.nio.file.*;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/account")
@@ -38,16 +24,13 @@ public class AccountController {
     private final PlayerService playerService;
     private final PlayerStatsService playerStatsService;
     private final TournamentService tournamentService;
-    private final ChampionService championService;
 
-    @Autowired
     public AccountController(
-        PlayerService playerService, PlayerStatsService playerStatsService, TournamentService tournamentService, ChampionService championService
+        PlayerService playerService, PlayerStatsService playerStatsService, TournamentService tournamentService
     ) {
         this.playerService = playerService;
         this.playerStatsService = playerStatsService;
         this.tournamentService = tournamentService;
-        this.championService = championService;
     }
 
     // Edit Player Profile (username, playerName, email, password)

@@ -2,14 +2,12 @@ package csd.backend.Admin.Controller;
 
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import csd.backend.Admin.Model.DTO.TournamentDTO;
 import csd.backend.Admin.Model.RequestBody.CreateOrUpdateRoundRequest;
-import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Service.*;
 
 @RestController
@@ -19,7 +17,6 @@ public class TournamentController {
     private final TournamentService tournamentService;
     private final TournamentRoundService tournamentRoundService;
 
-    @Autowired
     public TournamentController(TournamentService tournamentService, TournamentRoundService tournamentRoundService) {
         this.tournamentService = tournamentService;
         this.tournamentRoundService = tournamentRoundService;

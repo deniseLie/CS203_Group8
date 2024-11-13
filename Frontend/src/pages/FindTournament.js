@@ -50,32 +50,11 @@ const FindTournament = ({ logout }) => {
     if (selectedChampion){
       
       startQueueUI(); // Start queue UI independently of server response
-     
-    try{
-      const token = Cookies.get('jwtToken');
-    console.log(`Bearer ${token}`)
-      console.log("testttt "
-        +user.sub + " champ : " + selectedChampion.name);
-      const response = await axios.post(
-        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
-        {playerId: ""+user.sub, championId: selectedChampion.name},
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-        }
-      );
-  
-      // once match found, then redirect to tournament bracket page
-      const tournamentId = response.data.tournamentId; // Adjust according to your response structure
-      if (tournamentId) {
+      
         navigate(`/tournamentBracket/${tournamentId}`);
       }
       
     }
-    catch(e){
-      console.log(e);
-    } 
     }
   };
 

@@ -2,29 +2,43 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
+import axios from 'axios';
 
 const CreatePlayerPage = () => {
   const [playerId, setPlayerId] = useState('');
   const [username, setUsername] = useState('');
+  const [playername, setPlayername] = useState(''); // New state for playername
   const [email, setEmail] = useState('');
   const [authProvider, setAuthProvider] = useState('LOCAL'); // Default value
   const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
+  const [error, setError] = useState(''); // State for error handling
+  const [success, setSuccess] = useState(''); // State for success message
 
   const handleSave = () => {
     setOpenConfirmation(true); // Open confirmation dialog
   };
 
-  const handleConfirmSave = () => {
+  const handleConfirmSave = async () => {
     const playerData = {
       playerId,
       username,
+      playername,  // Include playername in data
       email,
       authProvider,
     };
-    console.log('New Player Data:', playerData);
-    // Here you would typically send this data to your backend or update your state management
-    resetForm(); // Clear the form fields after saving
-    setOpenConfirmation(false); // Close the dialog after saving
+
+    try {
+      const response = await axios.post('/admin/user/createUser', playerData);
+      if (response.status === 201) {
+        setSuccess('Player created successfully!');
+        resetForm(); // Clear the form fields after saving
+      }
+    } catch (error) {
+      setError('Failed to create player. Please try again.');
+      console.error('Error creating player:', error);
+    } finally {
+      setOpenConfirmation(false); // Close the dialog after saving
+    }
   };
 
   const handleCloseConfirmation = () => {
@@ -34,8 +48,11 @@ const CreatePlayerPage = () => {
   const resetForm = () => {
     setPlayerId('');
     setUsername('');
+    setPlayername(''); // Reset playername field
     setEmail('');
     setAuthProvider('LOCAL');
+    setError('');
+    setSuccess('');
   };
 
   return (
@@ -71,6 +88,13 @@ const CreatePlayerPage = () => {
               required
             />
             <TextField
+              label="Player Name"
+              value={playername}
+              onChange={(e) => setPlayername(e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
               label="Email"
               type="email"
               value={email}
@@ -89,6 +113,18 @@ const CreatePlayerPage = () => {
                 {/* Add more auth providers as needed */}
               </Select>
             </FormControl>
+
+            {error && (
+              <Typography color="error" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
+
+            {success && (
+              <Typography color="primary" sx={{ mt: 1 }}>
+                {success}
+              </Typography>
+            )}
 
             <Button variant="contained" color="primary" onClick={handleSave}>
               Save Player

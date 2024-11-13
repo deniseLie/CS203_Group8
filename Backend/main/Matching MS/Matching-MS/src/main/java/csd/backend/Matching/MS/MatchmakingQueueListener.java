@@ -103,11 +103,10 @@ public class MatchmakingQueueListener {
         if (playerData != null) {
             // Call addPlayerToPool with extracted data
             Long playerId = Long.parseLong(playerData.get("playerId"));
-            String email = playerData.get("email");
             String queueStatus = playerData.getOrDefault("queueStatus", "available");
             int rankId = Integer.parseInt(playerData.getOrDefault("rankId", "1")); 
 
-            matchmakingService.addPlayerToPool(playerId, email, queueStatus, rankId);
+            matchmakingService.addPlayerToPool(playerId, queueStatus, rankId);
             System.out.println("Player added to pool: " + playerId);
         }
     }

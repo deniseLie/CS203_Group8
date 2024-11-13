@@ -108,6 +108,9 @@ public class AccountController {
             Map<String, Object> matchHistory = new HashMap<>();
             matchHistory.put("matchHistory", tournamentService.getPlayerMatchHistory(playerId));
 
+            // Add matchHistory to the response list
+            response.add(matchHistory);
+
             // Return the response as formatted JSON
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

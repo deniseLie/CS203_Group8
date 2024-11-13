@@ -40,7 +40,7 @@ public class MatchmakingController {
         Map<String, Object> response = new HashMap<>();
 
         // Access playerId and championId from joinRequest
-        String playerId = joinRequestBody.getPlayerId();
+        Long playerId = Long.parseLong(joinRequestBody.getPlayerId());
         String championId = joinRequestBody.getChampionId();
 
         try {
@@ -57,7 +57,7 @@ public class MatchmakingController {
              
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");
-            playerService.updatePlayerChampion(playerId, championId);
+            playerService.updatePlayerChampion(playerId.toString(), championId);
 
             // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
@@ -100,7 +100,7 @@ public class MatchmakingController {
         Map<String, Object> response = new HashMap<>();
 
         // Access playerId and championId from joinRequest
-        String playerId = joinRequestBody.getPlayerId();
+        Long playerId = Long.parseLong(joinRequestBody.getPlayerId());
         String championId = joinRequestBody.getChampionId();
         try {
             // Check if the player is banned
@@ -116,7 +116,7 @@ public class MatchmakingController {
 
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");
-            playerService.updatePlayerChampion(playerId, championId);
+            playerService.updatePlayerChampion(playerId.toString(), championId);
 
             // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
@@ -157,7 +157,7 @@ public class MatchmakingController {
         try {
 
             // Update the player's status in the queue
-            playerService.updatePlayerStatus(playerId, "not queue");
+            playerService.updatePlayerStatus(Long.parseLong(playerId), "not queue");
 
             // Remove the player's championId
             playerService.removePlayerChampion(playerId);

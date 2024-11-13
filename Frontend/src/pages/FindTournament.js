@@ -55,9 +55,10 @@ const FindTournament = ({ logout }) => {
       const token = Cookies.get('jwtToken');
     console.log(`Bearer ${token}`)
       console.log("testttt "
-        +user.sub);
+        +user.sub + " champ : " + selectedChampion.name);
       const response = await axios.post(
-        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join?playerId=${user.sub}`,
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
+        {playerId: user.sub, championId: selectedChampion.name},
         {
           headers: {
             'Authorization': `Bearer ${token}`

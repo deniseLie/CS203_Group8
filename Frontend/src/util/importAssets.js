@@ -76,7 +76,7 @@ import silverIcon from '../assets/rankIcon/silver.png';
 import unrankedIcon from '../assets/rankIcon/unranked.png';
 
 // Summoner Icons Collection
-export const summonerIcons = {
+export const summonerIcons = [
   icon1,
   icon2,
   icon3,
@@ -85,7 +85,7 @@ export const summonerIcons = {
   icon6,
   icon7,
   icon8,
-};
+];
 
 // Role Icons Collection
 export const roleIconsAssets = {

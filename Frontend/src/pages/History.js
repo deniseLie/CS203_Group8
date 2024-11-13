@@ -30,7 +30,7 @@ function History() {
   useEffect(() => {
     const fetchMatchHistory = async () => {
       try {
-          
+          console.log("Trying fetch hisotry")
         const token = Cookies.get('jwtToken');
         const response = await axios.get(
           `${env.ACCOUNT_SERVER_URL}/account/${user.sub}/match-history`,

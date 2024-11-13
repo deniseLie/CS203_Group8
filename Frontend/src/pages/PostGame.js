@@ -17,7 +17,7 @@ const leaderboardData = [
   { standing: '5TH', champion: 'Galio', playerName: 'GodanRoose', kd: '8/0', kda: '8.0 KDA' },
   { standing: '6TH', champion: 'Zac', playerName: 'Radon', kd: '8/0', kda: '8.0 KDA' },
   { standing: '7TH', champion: 'Jinx', playerName: 'LikeFromArcane', kd: '1/1', kda: '1.0 KDA' },
-  { standing: '8TH', champion: 'Vi', playerName: 'hide on bush', kd: '0/1', kda: '0.0 KDA', isAFK: true },
+  { standing: '8TH', champion: 'Vi', playerName: 'hide on bush', kd: '0/1', kda: '0.0 KDA' },
 ];
 
 const currentPlayer = 'hide on bush';

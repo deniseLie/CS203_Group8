@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import csd.backend.Admin.Model.DTO.TournamentDTO;
+import csd.backend.Admin.Model.RequestBody.CreateOrUpdateRoundRequest;
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Service.*;
 
@@ -32,19 +33,18 @@ public class TournamentController {
 
     // Endpoint to create or update a tournament round
     @PostMapping("/round")
-    public ResponseEntity<Map<String, Object>> createOrUpdateRound(
-            @RequestParam Long tournamentId,
-            @RequestParam Long firstPlayerId,
-            @RequestParam Long secondPlayerId,
-            @RequestParam Long winnerPlayerId,
-            @RequestParam int roundNumber
-    ) {
+    public ResponseEntity<Map<String, Object>> createOrUpdateRound(@RequestBody CreateOrUpdateRoundRequest request) {
         Map<String, Object> response = new HashMap<>();
         
         try {
             // Call service to process the round
             String result = tournamentRoundService.createOrUpdateTournamentRound(
-                    tournamentId, firstPlayerId, secondPlayerId, winnerPlayerId, roundNumber);
+                    request.getTournamentId(),
+                    request.getFirstPlayerId(),
+                    request.getSecondPlayerId(),
+                    request.getWinnerPlayerId(),
+                    request.getRoundNumber()
+            );
 
             // Success response
             response.put("message", result);
@@ -52,6 +52,46 @@ public class TournamentController {
         } catch (Exception e) {
             // Error handling
             response.put("message", "Error occurred while processing the round.");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);  // 500 status for errors
+        }
+    }
+
+    // Endpoint to get tournament size
+    @PostMapping("/getTournamentSize")
+    public ResponseEntity<Map<String, Object>> updateTournamentSize(@RequestBody int newTournamentSize) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Call service to update tournament size
+            String result = tournamentService.getTournamentSize();
+            
+            // Success response
+            response.put("message", result);
+            return new ResponseEntity<>(response, HttpStatus.OK);  // OK response for successful operation
+        } catch (Exception e) {
+            // Error handling
+            response.put("message", "Error occurred while updating the tournament size.");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);  // 500 status for errors
+        }
+    }
+
+    // Endpoint to update tournament size
+    @PostMapping("/updateTournamentSize")
+    public ResponseEntity<Map<String, Object>> updateTournamentSize(@RequestBody int newTournamentSize) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Call service to update tournament size
+            String result = tournamentService.updateTournamentSize(newTournamentSize);
+            
+            // Success response
+            response.put("message", result);
+            return new ResponseEntity<>(response, HttpStatus.OK);  // OK response for successful operation
+        } catch (Exception e) {
+            // Error handling
+            response.put("message", "Error occurred while updating the tournament size.");
             response.put("error", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);  // 500 status for errors
         }

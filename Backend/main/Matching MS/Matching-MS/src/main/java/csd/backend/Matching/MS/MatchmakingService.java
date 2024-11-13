@@ -17,14 +17,13 @@ import java.util.*;
 @Service
 public class MatchmakingService {
 
-    @Autowired
-    private DynamoDbClient dynamoDbClient;
-
+    private final DynamoDbClient dynamoDbClient;
     private final SqsService sqsService;
     private final PlayerService playerService;
 
     @Autowired
-    public MatchmakingService(SqsService sqsService, PlayerService playerService) {
+    public MatchmakingService(DynamoDbClient dynamoDbClient, SqsService sqsService, PlayerService playerService) {
+        this.dynamoDbClient = dynamoDbClient;
         this.sqsService = sqsService;
         this.playerService = playerService;
     }
@@ -247,10 +246,11 @@ public class MatchmakingService {
                 .dataType("String")
                 .build());
 
-        // Define message body with tournament details and player IDs
-        String messageBody = "{\"timestampStart\": \"" + tournamentStartTime + "\", "
-                            + "\"tournamentSize\": \"" + playerIds.split(",").length + "\", "
-                            + "\"playerIds\": [" + playerIds + "]}";
+        // Prepare the message body using a Map
+        Map<String, Object> messageBodyMap = new HashMap<>();
+        messageBodyMap.put("timestampStart", tournamentStartTime.toString()); // Use toString to convert LocalDateTime
+        messageBodyMap.put("tournamentSize", playerIds.split(",").length);
+        messageBodyMap.put("playerIds", Arrays.asList(playerIds.split(",")));
 
         try {
             // Convert map to JSON string using Jackson

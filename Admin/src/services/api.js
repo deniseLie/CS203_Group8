@@ -7,6 +7,4 @@ const api = axios.create({
   },
 });
 
-export const fetchUsers = () => api.get('/users');
-export const fetchReports = () => api.get('/reports');
 export default api;

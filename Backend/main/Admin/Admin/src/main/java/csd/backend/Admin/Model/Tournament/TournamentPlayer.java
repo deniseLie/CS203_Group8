@@ -15,7 +15,7 @@ public class TournamentPlayer {
     @ManyToOne
     @JoinColumn(name = "tournamentId", nullable = false)
     private Tournament tournament;
-    ;
+    
     private String championId;
 
     // Getters and setters

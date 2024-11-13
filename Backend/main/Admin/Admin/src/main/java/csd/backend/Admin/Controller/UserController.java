@@ -21,7 +21,7 @@ public class UserController {
     //PLAYER ADMIN ACTIONS
     //to do: add jwt
     @PostMapping("/login")
-    public String authenticate(@RequestParam LoginRequest loginRequest) {
+    public String authenticate(@RequestBody LoginRequest loginRequest) {
         return userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
@@ -48,9 +48,10 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestBody Long userId) {
+    @DeleteMapping("/deleteUser/{userId}")
+    public String deleteUser(@PathVariable Long userId) {
         return userService.deleteUser(userId);
     }
+
 }
 

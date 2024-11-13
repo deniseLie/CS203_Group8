@@ -20,8 +20,8 @@ public class SqsService {
     @Value("${penalty.queue.url}")
     private String penaltyQueueUrl;
 
-    public SqsService(SqsClient sqsClient) {
-        this.sqsClient = sqsClient;
+    public SqsService() {
+        this.sqsClient = SqsClient.builder().build();
     }
 
     // Method to get the SqsClient instance

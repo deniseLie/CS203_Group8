@@ -215,24 +215,10 @@ import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
 import PlayerTable from '../../components/PlayerTable';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../services/api';
 
-// Import profile pictures
-import player1Profile from '../../assets/summonerIcon/1.jpg';
-import player2Profile from '../../assets/summonerIcon/2.jpg';
-import player3Profile from '../../assets/summonerIcon/8.jpg';
-import player4Profile from '../../assets/summonerIcon/4.jpg';
-import player5Profile from '../../assets/summonerIcon/5.jpg';
-import player6Profile from '../../assets/summonerIcon/6.jpg';
-import player7Profile from '../../assets/summonerIcon/7.jpg';
-import player8Profile from '../../assets/summonerIcon/8.jpg';
-
-// Function to simulate getting a random champion (mock data)
-const getRandomChampion = () => {
-  const champions = ['Aatrox', 'Zed', 'Yasuo', 'Lux', 'Thresh'];
-  const randomChampion = champions[Math.floor(Math.random() * champions.length)];
-  return { champion: randomChampion };
-};
+// Import profile pictures dynamically
+import * as profileImages from '../../assets/summonerIcon'; // assuming all images are in this directory
 
 const PlayerDatasetPage = () => {
   const [playerData, setPlayerData] = useState([]);
@@ -240,19 +226,19 @@ const PlayerDatasetPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filterQuery, setFilterQuery] = useState(''); // State for the filter query
-  
+
   const navigate = useNavigate();
 
   // Fetch player data from the API
   const fetchPlayerData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/admin/user/getAllUser');
+      const response = await api.get('/admin/user/getAllUser');
       const players = response.data; // Assuming the response data contains the player data
       setPlayerData(players); // Set the player data
       setFilteredData(players); // Set filtered data initially to all players
     } catch (error) {
-      setError('Failed to fetch player data. Please try again later.');
+      setError('Failed to fetch player data. Please try again later.' + error);
       console.error('Error fetching player data:', error);
     } finally {
       setLoading(false);
@@ -322,7 +308,7 @@ const PlayerDatasetPage = () => {
         ) : error ? (
           <Typography color="error">{error}</Typography>
         ) : (
-          <PlayerTable data={filteredData} onDelete={handleDeletePlayer} onEdit={handleEditPlayer} />
+          <PlayerTable data={filteredData} onDelete={handleDeletePlayer} onEdit={handleEditPlayer} profileImages={profileImages} />
         )}
       </Box>
     </Box>

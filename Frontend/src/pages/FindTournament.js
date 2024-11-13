@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Modal } from '@mui/material';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import backgroundImage from '../assets/backgrounds/background-with-banner.png';
 import arenaIcon from '../assets/icons/arena-icon.png';
@@ -28,56 +28,53 @@ const FindTournament = ({ logout }) => {
   const [timer, setTimer] = useState(0); 
   const [showSpeedUpModal, setShowSpeedUpModal] = useState(false); 
   const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false);
-  const [showLowPriority, setShowLowPriority] = useState(false); // Track if low priority queue should be shown
+  const [showLowPriority, setShowLowPriority] = useState(false); 
+  const [matchFoundModal, setMatchFoundModal] = useState(false); // New state for match found modal
   const navigate = useNavigate();
   
   const { user } = useAuth();
-  // DUMMY: if user is lowpriority
+
+  // Data for the current user to be passed to TournamentBracket
+  const userRank = "Diamond I"; // Replace with the actual rank if it's dynamic
+  const userData = {
+    playerName: user?.playername || "Player",
+    rank: userRank,
+    playerIcon: profileAvatar,
+    champion: selectedChampion ? selectedChampion.name : "No Champion",
+    championImg: selectedChampion ? selectedChampion.src : championSelected,
+    status: "pending",
+  };
   const IS_LOW_PRIORITY = false;
-  // constant : how many seconds to show speed up q
   const SPEED_UP_SECONDS = 5;
 
-  
-    // Function to start UI for queue
-    const startQueueUI = () => {
-      setInQueueState(true);
-      setTimer(0); // reset timer to start counting
-      if (IS_LOW_PRIORITY) setShowLowPriority(true);
-    };
-  
-  // Function : when user starts the queue
+  const startQueueUI = () => {
+    setInQueueState(true);
+    setTimer(0);
+    if (IS_LOW_PRIORITY) setShowLowPriority(true);
+  };
+
   const handleFindMatchClick = async () => {
     if (selectedChampion){
-      
-      startQueueUI(); // Start queue UI independently of server response
-      
-        navigate(`/tournamentBracket/${tournamentId}`);
-      }
-      
-    }
+      startQueueUI();
     }
   };
 
-  // Functions: Open and close champion modal
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  // Function: Set selected champion from champion modal
   const handleChampionSelect = (champion) => {
     setSelectedChampion(champion); 
     handleClose(); 
   };
 
-  // Function: Cancel queue -> Reset timer, hide all modals, timer
   const handleCancelQueue = () => {
     setInQueueState(false);
     setTimer(0);
     setShowSpeedUpModal(false); 
     setInSpeedUpQueue(false); 
-    setShowLowPriority(false); // Hide low priority queue box when exiting queue
+    setShowLowPriority(false); 
   };
 
-  // Function: Render timer text every second, and if timer > speed up seconds show speedup modal
   useEffect(() => {
     let interval;
     if (inQueueState) {
@@ -97,18 +94,29 @@ const FindTournament = ({ logout }) => {
     return () => clearInterval(interval);
   }, [inQueueState]);
 
-  // Function: Format Time to minutes:seconds
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = timeInSeconds % 60;
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
-  // Function: When speed up, don't show speedup modal
   const handleSpeedUpQueue = () => {
     setInSpeedUpQueue(true); 
     setShowSpeedUpModal(false); 
   };
+
+  // New useEffect to listen for the "Q" key press
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key.toLowerCase() === 'q') {
+        setMatchFoundModal(true);
+        setTimeout(() => navigate('/tournamentBracket', { state: { userData } }), 1000); // Auto-navigate after 5 seconds
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [navigate, userData]);
 
   return (
     <Box
@@ -119,12 +127,10 @@ const FindTournament = ({ logout }) => {
         overflow: 'hidden', 
       }}
     >
-      {/* Navbar */}
       <Box sx={{ flexShrink: 0, zIndex: 100 }}>
         <Navbar logout={logout} />
       </Box>
 
-      {/* Main content area */}
       <Box
         sx={{
           flexGrow: 1,
@@ -138,7 +144,6 @@ const FindTournament = ({ logout }) => {
           flexDirection: 'column', 
         }}
       >
-        {/* Top content: Arena Icon and Arena Ranked */}
         <Box
           sx={{
             position: 'absolute',
@@ -169,7 +174,6 @@ const FindTournament = ({ logout }) => {
           </Box>
         </Box>
 
-        {/* Centered content: profile pic, rank, etc. */}
         <Box
           sx={{
             display: 'flex',
@@ -179,14 +183,14 @@ const FindTournament = ({ logout }) => {
           }}
         >
           <PlayerIcon
-            alt={user? user.playername : ""}
+            alt={user ? user.playername : ""}
             src={profileAvatar}
             width={6}
             height={6}
             clickable={false}
           />
           <Typography className="headerPrimary" fontSize={'1.25em'}>
-            {user? user.playername : ""}
+            {user ? user.playername : ""}
           </Typography>
           <Box display={'flex'} alignItems={'center'}>
             <Box component="img" src={diamondRank} alt="Rank" sx={{ width: '3vh', height: '3vh', marginRight: 1 }} />
@@ -195,7 +199,6 @@ const FindTournament = ({ logout }) => {
             </Typography>
           </Box>
 
-          {/* Choose champion and select a champion text */}
           <Box alignSelf={'center'} display={'flex'} flexDirection={'column'} marginTop={4} alignItems={'center'}>
             <Box
               component="img"
@@ -218,7 +221,6 @@ const FindTournament = ({ logout }) => {
           </Box>
         </Box>
 
-        {/* Bottom content: Find Match button and optional cancel icon */}
         <Box
           sx={{
             position: 'relative', 
@@ -249,7 +251,6 @@ const FindTournament = ({ logout }) => {
           />
         </Box>
 
-        {/* Low Priority Queue and Timer section */}
         {inQueueState && (
           <Box
             sx={{
@@ -257,27 +258,23 @@ const FindTournament = ({ logout }) => {
               bottom: '4vh',
               left: '2vw',
               display: 'flex',
-              flexDirection: 'column', // Stack elements vertically
+              flexDirection: 'column',
               alignItems: 'flex-start',
             }}
           >
-            {/* Low Priority Queue Warning - shows only when in queue */}
             {showLowPriority && (
               <LowPriorityQueue/>
             )}
 
-            {/* FINDING MATCH */}
             <Typography variant="h6" className='findMatch' sx={{ marginBottom: -2.5 }}>
               FINDING MATCH
             </Typography>
 
-            {/* Timer with speed-up icon next to it */}
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: -2.5 }}>
               <Typography variant="h6" className="timer" sx={{ marginRight: '0.5rem' }}>
                 {formatTime(timer)}
               </Typography>
 
-              {/* Show speed-up icon next to timer if user is in the speed-up queue */}
               {inSpeedUpQueue && (
                 <Box
                   component="img"
@@ -288,12 +285,10 @@ const FindTournament = ({ logout }) => {
               )}
             </Box>
 
-            {/* Estimated Time */}
             <Typography className='estimated' sx={{ color: "#0AC1DC", marginTop: '0.5rem' }}>
               Estimated: 1:12
             </Typography>
 
-            {/* Speed up modal above the timer */}
             {showSpeedUpModal && (
               <SpeedUpModal 
                 show={showSpeedUpModal} 
@@ -303,9 +298,32 @@ const FindTournament = ({ logout }) => {
           </Box>
         )}
 
-        {/* Pass the handleChampionSelect function to the modal */}
         <SelectChampionModal open={open} handleClose={handleClose} onChampionSelect={handleChampionSelect} />
       </Box>
+
+      {/* Match Found Modal */}
+      <Modal
+        open={matchFoundModal}
+        onClose={() => setMatchFoundModal(false)}
+        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Box
+          sx={{
+            bgcolor: 'background.paper',
+            borderRadius: 2,
+            p: 4,
+            boxShadow: 24,
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Match Found!
+          </Typography>
+          <Typography variant="body1">
+            Redirecting to the tournament bracket in 5 seconds...
+          </Typography>
+        </Box>
+      </Modal>
     </Box>
   );
 };

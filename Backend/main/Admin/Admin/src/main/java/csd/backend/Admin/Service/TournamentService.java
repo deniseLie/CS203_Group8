@@ -2,6 +2,10 @@ package csd.backend.Admin.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import csd.backend.Admin.Repository.*;
 import csd.backend.Admin.Repository.User.*;
 
@@ -10,6 +14,8 @@ import java.util.*;
 import csd.backend.Admin.Model.DTO.*;
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.Player;
+import csd.backend.Admin.Service.SqsService;
+import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
 @Service
 public class TournamentService {
@@ -18,16 +24,22 @@ public class TournamentService {
     private final TournamentPlayerRepository tournamentPlayerRepository;
     private final PlayerRepository playerRepository;
     private final TournamentRoundRepository tournamentRoundRepository;
+    private final SqsService sqsService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
     @Autowired
     public TournamentService(TournamentRepository tournamentRepository, 
                              TournamentPlayerRepository tournamentPlayerRepository,
-                             PlayerRepository playerRepository, // Injected the PlayerRepository
-                             TournamentRoundRepository tournamentRoundRepository) { // Injected the TournamentRoundRepository
+                             PlayerRepository playerRepository, 
+                             TournamentRoundRepository tournamentRoundRepository,
+                             SqsService sqsService
+    ) {
         this.tournamentRepository = tournamentRepository;
         this.tournamentPlayerRepository = tournamentPlayerRepository;
         this.playerRepository = playerRepository;
         this.tournamentRoundRepository = tournamentRoundRepository;
+        this.sqsService = sqsService;
     }
 
     // Function create tournament
@@ -105,13 +117,34 @@ public class TournamentService {
 
     // Get tournament constant size
     public int getTournamentSize() {
-        return new TournamentSize().getTournamentSize();
+        return TournamentSize.getTournamentSize();
     }
     
     // Method to update tournament constant size
-    public int updateTournamentSize(int newTournamentSize) {
-        // Retrieve all tournaments
-        
+    public void updateTournamentSize(int newTournamentSize) {
+
+        // update tournament size
+        TournamentSize.setTournamentSize(newTournamentSize);
+
+        String messageBody = "";
+        try {
+            // Create the message body JSON using ObjectNode
+            ObjectNode messageJson = objectMapper.createObjectNode();
+            messageJson.put("size", newTournamentSize);
+            messageBody = objectMapper.writeValueAsString(messageJson);
+        } catch (Exception e) {
+            System.err.println("Failed to create message body JSON: " + e.getMessage());
+        }
+
+        // Prepare message attributes (optional)
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("actionType", MessageAttributeValue.builder()
+                .stringValue("changeTournamentSize")
+                .dataType("String")
+                .build());
+
+        // pass out through sqs
+        sqsService.sendMessageToQueue("account", messageBody, messageAttributes);
     }
 
     // Get Latest Round of a tournament

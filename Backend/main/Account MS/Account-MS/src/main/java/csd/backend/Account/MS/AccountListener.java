@@ -285,8 +285,7 @@ public class AccountListener {
             Long playerId = rootNode.path("playerId").asLong();
 
             if (playerId != null) {
-                // Call the service method to delete the player from the database
-                String result = playerService.deletePlayer(playerId);
+                playerService.deletePlayerByPlayerId(playerId);
                 System.out.println("Player deleted: " + playerId);
             } else {
                 System.err.println("Player ID not found in message.");

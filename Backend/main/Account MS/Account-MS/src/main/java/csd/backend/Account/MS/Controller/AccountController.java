@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.amazonaws.services.lambda.runtime.events.CloudFrontEvent.Response;
+
 import org.springframework.stereotype.Service;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
@@ -32,12 +35,16 @@ import java.util.stream.Collectors;
 public class AccountController {
 
     private final PlayerService playerService;
+    private final PlayerStatsService playerStatsService;
     private final TournamentService tournamentService;
     private final ChampionService championService;
 
     @Autowired
-    public AccountController(PlayerService playerService, TournamentService tournamentService, ChampionService championService) {
+    public AccountController(
+        PlayerService playerService, PlayerStatsService playerStatsService, TournamentService tournamentService, ChampionService championService
+    ) {
         this.playerService = playerService;
+        this.playerStatsService = playerStatsService;
         this.tournamentService = tournamentService;
         this.championService = championService;
     }
@@ -110,5 +117,23 @@ public class AccountController {
             return new ResponseEntity<>(List.of(errorResponse), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+    // Endpoint to get player's rank name
+    @GetMapping("/{playerId}/rank")
+    public ResponseEntity<Map<String, Object>> getPlayerRank(@PathVariable Long playerId) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Get player rank via PlayerService
+            String rankName = playerStatsService.getPlayerRankName(playerId);
+
+            // Return the response as formatted JSON
+            response.put("rankName", rankName);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            // Handle exceptions and send error response
+            response.put("error", "An error occurred while fetching the player's rank: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }   
 }

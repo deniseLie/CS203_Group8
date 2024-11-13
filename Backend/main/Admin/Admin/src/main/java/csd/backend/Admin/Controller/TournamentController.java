@@ -31,7 +31,7 @@ public class TournamentController {
     }
 
     // Endpoint to create or update a tournament round
-    @PutMapping("/round")
+    @PostMapping("/round")
     public ResponseEntity<Map<String, Object>> createOrUpdateRound(
             @RequestParam Long tournamentId,
             @RequestParam Long firstPlayerId,

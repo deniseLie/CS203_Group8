@@ -34,6 +34,24 @@ public class PlayerStatsService {
     @Autowired
     private SqsService sqsService;
 
+    // Get player's rank id 
+    public String getPlayerRankName(Long playerId) {
+        // Check if player already exists
+        if (!playerRepository.existsById(playerId)) {
+            throw new PlayerNotFoundException(playerId);
+        }
+
+        // Retrieve player's rank id
+        Long rankId = playerOverallStatsRepository.findRankIdByPlayerId(playerId);
+
+        // Retrieve rank name
+        String rankName = rankService.getRankNameById(rankId);
+
+        // Prepare the message body
+        return rankName;
+
+    }
+
     // Handle match completion and recalculate stats
     public void handleMatchCompletion(Long playerId, Long championId, double kdRate, int finalPlacement, int rankPoints, boolean isWin) {
         // Check if player already exists

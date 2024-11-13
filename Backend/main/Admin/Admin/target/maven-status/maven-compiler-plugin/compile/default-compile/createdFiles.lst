@@ -21,6 +21,7 @@ csd\backend\Admin\Repository\TournamentRoundRepository.class
 csd\backend\Admin\Service\User\PlayerService.class
 csd\backend\Admin\Controller\UserController.class
 csd\backend\Admin\Model\User\Admin.class
+csd\backend\Admin\Model\Rank\Rank.class
 csd\backend\Admin\Model\User\Player.class
 csd\backend\Admin\Service\SqsService.class
 csd\backend\Admin\Service\TournamentPlayerService.class

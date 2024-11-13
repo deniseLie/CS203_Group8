@@ -3,13 +3,9 @@ package csd.backend.Admin.Controller;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import csd.backend.Admin.Model.DTO.TournamentDTO;
 import csd.backend.Admin.Model.Tournament.*;
@@ -28,6 +24,7 @@ public class TournamentController {
         this.tournamentRoundService = tournamentRoundService;
     }
 
+    // Get all tournaments with details
     @GetMapping("/getAllTournaments")
     public List<TournamentDTO> getAllTournaments() {
         return tournamentService.getAllTournamentsDTO();
@@ -35,20 +32,31 @@ public class TournamentController {
 
     // Endpoint to create or update a tournament round
     @PutMapping("/round")
-    public String createOrUpdateRound(
+    public ResponseEntity<Map<String, Object>> createOrUpdateRound(
             @RequestParam Long tournamentId,
             @RequestParam Long firstPlayerId,
             @RequestParam Long secondPlayerId,
             @RequestParam Long winnerPlayerId,
-            @RequestParam int roundNumber) {
+            @RequestParam int roundNumber
+    ) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Call service to process the round
+            String result = tournamentRoundService.createOrUpdateTournamentRound(
+                    tournamentId, firstPlayerId, secondPlayerId, winnerPlayerId, roundNumber);
 
-        // Call service to process the round
-        String result = tournamentRoundService.createOrUpdateTournamentRound(tournamentId, firstPlayerId, secondPlayerId, winnerPlayerId, roundNumber);
-
-        return result; // Response message indicating success or failure
+            // Success response
+            response.put("message", result);
+            return new ResponseEntity<>(response, HttpStatus.OK);  // OK response for successful operation
+        } catch (Exception e) {
+            // Error handling
+            response.put("message", "Error occurred while processing the round.");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);  // 500 status for errors
+        }
     }
 
-    
     //MATCH ADMIN ACTIONS
     
     //may need to keep

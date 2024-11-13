@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import csd.backend.Admin.Model.RequestBody.*;
 import csd.backend.Admin.Model.User.User;
 import csd.backend.Admin.Service.*;
 
@@ -18,20 +20,36 @@ public class UserController {
 
     //PLAYER ADMIN ACTIONS
     //to do: add jwt
-    @PostMapping("/authenticate")
-    public String authenticate(@RequestParam String username, @RequestParam String password) {
-        return userService.authenticateUser(username, password);
+    @PostMapping("/login")
+    public String authenticate(@RequestParam LoginRequest loginRequest) {
+        return userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
+
+    // Get All users
     @GetMapping("/getAllUsers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
+
+    // Create user
     @PostMapping("/createUser")
-    public String createUser(@RequestParam String username, @RequestParam String password, @RequestParam String role) {
-        return userService.createUser(username, password, role);
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest createUserRequest) {
+        String responseMessage = userService.createUser(
+            createUserRequest.getUsername(),
+            createUserRequest.getPassword(),
+            createUserRequest.getRole(),
+            createUserRequest.getPlayerName(),
+            createUserRequest.getProfilePicture()
+        );
+        if (responseMessage.equals("User created successfully")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseMessage);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMessage);
+        }
     }
+
     @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestParam Long userId) {
+    public String deleteUser(@RequestBody Long userId) {
         return userService.deleteUser(userId);
     }
 }

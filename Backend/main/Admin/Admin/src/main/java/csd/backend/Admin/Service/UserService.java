@@ -41,7 +41,7 @@ public class UserService {
     }
 
     // Create a new user with role validation
-    public String createUser(String username, String password, String role) {
+    public String createUser(String username, String password, String role, String playerName, String profilePicture) {
         if (userRepository.existsByUsername(username)) {
             return "User already exists";
         }
@@ -54,11 +54,31 @@ public class UserService {
         // Hash the password
         String hashedPassword = passwordEncoder.encode(password);
 
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(hashedPassword);
-        user.setRole(role);
-        
+        User user;
+
+        // Create a player or admin based on the role
+        if (role.equalsIgnoreCase("player")) {
+            // Ensure player-specific data is provided
+            if (playerName == null || profilePicture == null) {
+                return "Player must provide a playerName and profilePicture.";
+            }
+
+            // Create Player
+            Player player = new Player();
+            player.setUsername(username);
+            player.setPassword(hashedPassword);
+            player.setRole(role);
+            player.setPlayerName(playerName);
+            player.setProfilePicture(profilePicture);
+            user = player;
+        } else {
+            // Create Admin
+            user = new User();
+            user.setUsername(username);
+            user.setPassword(hashedPassword);
+            user.setRole(role);
+        }
+
         // Save the user to the repository
         userRepository.save(user);
 

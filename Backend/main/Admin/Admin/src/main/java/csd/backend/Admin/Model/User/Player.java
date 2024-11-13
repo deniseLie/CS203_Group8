@@ -9,6 +9,8 @@ public class Player extends User {
     @Column(name = "playerId", nullable = true)
     private Long playerId;
 
+    private Long rankId;
+
     @Column(name = "playerName", nullable = false)
     private String playerName;
 

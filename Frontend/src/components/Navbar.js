@@ -64,19 +64,6 @@ function Navbar({  activePage }) {
           HISTORY
         </Typography>
 
-        <Typography
-          component={Link}
-          to="/leaderboard"
-          className="headerPrimary"
-          sx={{
-            ...(activePage === 'leaderboard' && { color: '#d4b106' }),
-            '&:hover': {
-              color: '#d4b106',
-            },
-          }}
-        >
-          LEADERBOARD
-        </Typography>
       </Box>
 
       {/* Right side: Profile Avatar, Name, and Rank */}

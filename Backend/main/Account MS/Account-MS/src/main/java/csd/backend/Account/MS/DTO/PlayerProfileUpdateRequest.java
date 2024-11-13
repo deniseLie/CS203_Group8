@@ -1,13 +1,22 @@
 package csd.backend.Account.MS.DTO;
 
 public class PlayerProfileUpdateRequest {
-     private String username;
+    private Long playerId;
+    private String username;
     private String playerName;
     private String email;
     private String password;
     private String profilePicture; 
     
     // Getters and setters
+    public Long getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(Long playerId) {
+        this.playerId = playerId;
+    }
+    
     public String getUsername() {
         return username;
     }

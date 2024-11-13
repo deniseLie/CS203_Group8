@@ -61,7 +61,7 @@ public class TournamentService {
     }
 
     // Create a new tournament and save associated player stats
-    public void createAndSaveTournament(Map<String, String> tournamentData) {
+    public Tournament createAndSaveTournament(Map<String, String> tournamentData) {
         try {
             // Extract values from the map
             int tournamentSize = Integer.parseInt(tournamentData.get("tournamentSize"));
@@ -103,8 +103,8 @@ public class TournamentService {
 
             // Save TournamentPlayerStats
             tournamentPlayerStatsRepository.save(tournamentPlayerStats);
-
             System.out.println("Tournament details processed and saved for player: " + playerId);
+            return tournament;
         } catch (NumberFormatException e) {
             System.err.println("Error processing tournament data: Invalid number format. " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -112,6 +112,7 @@ public class TournamentService {
         } catch (Exception e) {
             System.err.println("Error processing tournament data: " + e.getMessage());
         }
+        return null;
     }
 
     // Get Match History

@@ -57,6 +57,26 @@ public class TournamentController {
         }
     }
 
+    // Endpoint to get tournament size
+    @PostMapping("/getTournamentSize")
+    public ResponseEntity<Map<String, Object>> updateTournamentSize(@RequestBody int newTournamentSize) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            // Call service to update tournament size
+            String result = tournamentService.getTournamentSize();
+            
+            // Success response
+            response.put("message", result);
+            return new ResponseEntity<>(response, HttpStatus.OK);  // OK response for successful operation
+        } catch (Exception e) {
+            // Error handling
+            response.put("message", "Error occurred while updating the tournament size.");
+            response.put("error", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);  // 500 status for errors
+        }
+    }
+
     // Endpoint to update tournament size
     @PostMapping("/updateTournamentSize")
     public ResponseEntity<Map<String, Object>> updateTournamentSize(@RequestBody int newTournamentSize) {

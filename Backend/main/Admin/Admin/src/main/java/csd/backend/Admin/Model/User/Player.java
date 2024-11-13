@@ -9,6 +9,7 @@ public class Player extends User {
     @Column(name = "playerId", nullable = true)
     private Long playerId;
 
+    @Column(name = "rankId", nullable = true)
     private Long rankId;
 
     @Column(name = "playerName", nullable = false)
@@ -24,6 +25,14 @@ public class Player extends User {
 
     public void setPlayerId(Long playerId) {
         this.playerId = playerId;
+    }
+
+    public Long getRankId() {
+        return rankId;
+    }
+
+    public void setRankId(Long rankId) {
+        this.rankId = rankId;
     }
 
     public String getPlayerName() {

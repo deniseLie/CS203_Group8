@@ -3,20 +3,15 @@ package csd.backend.Matching.MS;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
-import software.amazon.awssdk.services.sqs.model.*;
 
 @Service
 public class PlayerService {
-    private static final String PLAYERS_TABLE = "Players";
-    private static final String MATCHES_TABLE = "Matches";
-    private static final int MAX_PLAYERS = 8;
 
+    private static final String PLAYERS_TABLE = "Players";
     private final DynamoDbClient dynamoDbClient;
 
     @Autowired

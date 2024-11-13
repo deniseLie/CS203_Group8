@@ -13,6 +13,7 @@ import csd.backend.Admin.Model.User.Player;
 
 @Service
 public class TournamentService {
+    
     private final TournamentRepository tournamentRepository; // Tournament ADMIN FUNCT
     private final TournamentPlayerRepository tournamentPlayerRepository;
     private final PlayerRepository playerRepository;
@@ -60,7 +61,6 @@ public class TournamentService {
         return tournamentDTOs;
     }
     
-
     // Method to get tournament details with additional calculations
     public TournamentDTO getTournamentDetails(Long tournamentId) {
         Tournament tournament = getTournamentById(tournamentId);
@@ -102,7 +102,19 @@ public class TournamentService {
 
         return tournamentDTO;
     }
+
+    // Get tournament constant size
+    public int getTournamentSize() {
+        return new TournamentSize().getTournamentSize();
+    }
     
+    // Method to update tournament constant size
+    public int updateTournamentSize(int newTournamentSize) {
+        // Retrieve all tournaments
+        
+    }
+
+    // Get Latest Round of a tournament
     private int getCurrentRound(Tournament tournament) {
         // Find the latest round from TournamentRound table based on tournament ID
         TournamentRound latestRound = tournamentRoundRepository

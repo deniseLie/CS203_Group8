@@ -17,14 +17,13 @@ import java.util.*;
 @Service
 public class MatchmakingService {
 
-    @Autowired
-    private DynamoDbClient dynamoDbClient;
-
+    private final DynamoDbClient dynamoDbClient;
     private final SqsService sqsService;
     private final PlayerService playerService;
 
     @Autowired
-    public MatchmakingService(SqsService sqsService, PlayerService playerService) {
+    public MatchmakingService(DynamoDbClient dynamoDbClient, SqsService sqsService, PlayerService playerService) {
+        this.dynamoDbClient = dynamoDbClient;
         this.sqsService = sqsService;
         this.playerService = playerService;
     }

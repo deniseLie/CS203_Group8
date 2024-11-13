@@ -20,6 +20,9 @@ public class SqsService {
     @Value("${penalty.queue.url}")
     private String penaltyQueueUrl;
 
+    @Value("${login.queue.url}")
+    private String loginQueueUrl;
+
     public SqsService() {
         this.sqsClient = SqsClient.builder().build();
     }
@@ -38,6 +41,9 @@ public class SqsService {
                 return penaltyQueueUrl;
             case "account":
                 return accountQueueUrl;
+            case "login":
+                return accountQueueUrl;
+                
             default:
                 throw new IllegalArgumentException("Invalid queue name");
         }

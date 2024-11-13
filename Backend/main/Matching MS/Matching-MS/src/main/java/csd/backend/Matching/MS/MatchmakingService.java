@@ -11,6 +11,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.sqs.model.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -34,10 +35,10 @@ public class MatchmakingService {
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
 
     // Add a player to the matchmaking pool
-    public void addPlayerToPool(String playerName, String email, String queueStatus, int rankId) {
+    public void addPlayerToPool(Long playerId, String email, String queueStatus, int rankId) {
 
         Map<String, AttributeValue> item = new HashMap<>();
-        item.put("playerName", AttributeValue.builder().s(playerName).build());
+        item.put("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build());
         item.put("email", AttributeValue.builder().s(email).build());
         item.put("queueStatus", AttributeValue.builder().s(queueStatus).build());
         item.put("rankId", AttributeValue.builder().n(String.valueOf(rankId)).build());
@@ -48,21 +49,21 @@ public class MatchmakingService {
                 .build();
 
         try {
-            logger.info("Attempting to add player {} with item: {}", playerName, item);
+            logger.info("Attempting to add player {} with item: {}", playerId, item);
             dynamoDbClient.putItem(putItemRequest);
-            logger.info("Successfully added player {} to the pool", playerName);
+            logger.info("Successfully added player {} to the pool", playerId);
         } catch (Exception e) {
-            logger.error("Error adding player {} to pool", playerName, e);
+            logger.error("Error adding player {} to pool", playerId, e);
             throw new RuntimeException("Error adding player to pool");
         }
     }
 
-     // Retrieve player details from the database
-     private Map<String, AttributeValue> getPlayerDetails(String playerId) {
+    // Retrieve player details from the database
+    private Map<String, AttributeValue> getPlayerDetails(Long playerId) {
         // Get player details
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build()))
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build()))
                 .build();
 
         GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
@@ -70,12 +71,12 @@ public class MatchmakingService {
     }
 
     // Check Player Status: If banned, return remaining ban time
-    public Map<String, Object> checkPlayerStatus(String playerId) {
+    public Map<String, Object> checkPlayerStatus(Long playerId) {
         Map<String, AttributeValue> player = getPlayerDetails(playerId);
         Map<String, Object> status = new HashMap<>();
 
         if (player != null) {
-            status.put("playerId", player.get("playerId").s());
+            status.put("playerId", player.get("playerId").n());
             status.put("queueStatus", player.get("queueStatus").s());
             long banUntil = Long.parseLong(player.get("banUntil").n());
 
@@ -107,7 +108,7 @@ public class MatchmakingService {
 
             // Take the first MAX_PLAYERS players and create a match
             List<Map<String, AttributeValue>> playersToMatch = players.subList(0, MAX_PLAYERS);
-            createMatch(playersToMatch);
+            createTournament(playersToMatch);
             return true;
         }
         return false;
@@ -145,7 +146,7 @@ public class MatchmakingService {
     // Remove players from the pool after a match is found
     public void removePlayersFromQueue(List<Map<String, AttributeValue>> players) {
         for (Map<String, AttributeValue> player : players) {
-            String playerName = player.get("playerName").s();
+            String playerId = player.get("playerId").s();
 
             // Update the player's queueStatus to 'not queue' after they are matched
             Map<String, AttributeValueUpdate> updates = new HashMap<>();
@@ -156,7 +157,7 @@ public class MatchmakingService {
 
             UpdateItemRequest updateRequest = UpdateItemRequest.builder()
                     .tableName(PLAYERS_TABLE)
-                    .key(Map.of("playerName", AttributeValue.builder().s(playerName).build()))
+                    .key(Map.of("playerId", AttributeValue.builder().s(playerId).build()))
                     .attributeUpdates(updates)
                     .build();
 
@@ -164,7 +165,8 @@ public class MatchmakingService {
         }
     }
 
-    public void updatePlayerBanStatus(String playerId, String queueStatus, long banEndTime) {
+    // Update Player Status - ban
+    public void updatePlayerBanStatus(Long playerId, String queueStatus, long banEndTime) {
         
         // Update player's status to 'banned' and set the 'banUntil' timestamp
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
@@ -180,7 +182,7 @@ public class MatchmakingService {
         // Prepare the update request to DynamoDB
         UpdateItemRequest updateRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().s(playerId).build())) // Player key
+                .key(Map.of("playerId", AttributeValue.builder().s(String.valueOf(playerId)).build())) // Player key
                 .attributeUpdates(updates)
                 .build();
     
@@ -193,9 +195,8 @@ public class MatchmakingService {
         }
     }
     
-
     // Create a new match with players from the database
-    public void createMatch(List<Map<String, AttributeValue>> players) {
+    public void createTournament(List<Map<String, AttributeValue>> players) {
         Map<String, AttributeValue> matchItem = new HashMap<>();
         matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()); // Use timestamp as matchId
     
@@ -204,20 +205,19 @@ public class MatchmakingService {
         StringBuilder playerIds = new StringBuilder();  // StringBuilder to accumulate player IDs
 
         for (Map<String, AttributeValue> player : players) {
-            String playerName = player.get("playerName").s();
-            String playerId = player.get("playerId").n();  // Assuming playerId exists in the map
+            Long playerId = Long.parseLong(player.get("playerId").n()); 
         
-            // Add player name to the match player list
-            playerList.add(AttributeValue.builder().s(playerName).build());
+            // Add player to the match player list
+            playerList.add(AttributeValue.builder().n(String.valueOf(playerId)).build());
             
             // Add player ID to the comma-separated string
             if (playerIds.length() > 0) {
                 playerIds.append(",");  // Add a comma between IDs
             }
             playerIds.append(String.valueOf(playerId));  // Append the player ID
-            
-            // Update the player status to "unqueue"
-            playerService.updatePlayerStatus(playerName, "unqueue");  
+
+            // unqueue player
+            playerService.updatePlayerStatus(playerId, "unqueue");  
         }
     
         matchItem.put("players", AttributeValue.builder().l(playerList).build());
@@ -229,7 +229,7 @@ public class MatchmakingService {
     
         try {
             dynamoDbClient.putItem(matchRequest);
-            triggerMatchmaking(playerIds.toString());
+            triggerMatchmaking(playerIds.toString(), LocalDateTime.now());
             logger.info("Match created successfully with players: {}", players);
         } catch (Exception e) {
             logger.error("Error creating match", e);
@@ -237,14 +237,20 @@ public class MatchmakingService {
         }
     }
 
-    public void triggerMatchmaking(String playerIds) {
-        // Create message attributes if needed
-        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
-        messageAttributes.put("AttributeKey", MessageAttributeValue.builder().stringValue("AttributeValue").dataType("String").build());
+    // Method to send out matchmaking sqs to other services
+    public void triggerMatchmaking(String playerIds, LocalDateTime tournamentStartTime) {
 
-        // Define message body using proper JSON format
-        Map<String, Object> messageBodyMap = new HashMap<>();
-        messageBodyMap.put("playerIds", playerIds);
+        // Prepare message attributes
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("actionType", MessageAttributeValue.builder()
+                .stringValue("createTournament")
+                .dataType("String")
+                .build());
+
+        // Define message body with tournament details and player IDs
+        String messageBody = "{\"timestampStart\": \"" + tournamentStartTime + "\", "
+                            + "\"tournamentSize\": \"" + playerIds.split(",").length + "\", "
+                            + "\"playerIds\": [" + playerIds + "]}";
 
         try {
             // Convert map to JSON string using Jackson

@@ -9,10 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Model.Player.Player;
+import csd.backend.Account.MS.Model.Tournament.*;
 import csd.backend.Account.MS.Service.SqsService;
-import csd.backend.Account.MS.Service.Player.PlayerService;
-import csd.backend.Account.MS.Service.Tournament.TournamentService;
+import csd.backend.Account.MS.Service.Player.*;
+import csd.backend.Account.MS.Service.Tournament.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -25,13 +27,21 @@ public class AccountListener {
 
     private final SqsService sqsService;
     private final PlayerService playerService;
+    private final PlayerStatsService playerStatsService;
     private final TournamentService tournamentService;
+    private final TournamentPlayerStatsService tournamentPlayerStatsService;
 
     @Autowired
-    public AccountListener(SqsService sqsService, PlayerService playerService, TournamentService tournamentService) {
+    public AccountListener(
+        SqsService sqsService, PlayerService playerService, 
+        PlayerStatsService playerStatsService, TournamentService tournamentService, 
+        TournamentPlayerStatsService tournamentPlayerStatsService
+    ) {
         this.sqsService = sqsService;
         this.playerService = playerService;
+        this.playerStatsService = playerStatsService;
         this.tournamentService = tournamentService;
+        this.tournamentPlayerStatsService = tournamentPlayerStatsService;
     }
 
     // Listen for messages in the Account Queue
@@ -85,9 +95,14 @@ public class AccountListener {
             case "addPlayer":
                 processAddPlayer(messageBody);
                 break;
-            case "addMatch":
+            case "addTournament":
                 processAddTournament(messageBody);
                 break;
+            case "updatePlayerProfile":
+                processUpdatePlayer(messageBody);
+                break;
+            case "deletePlayerProfile": 
+                processDeletePlayer(messageBody);
             default:
                 System.err.println("Unknown action type: " + actionType);
                 break;
@@ -155,11 +170,25 @@ public class AccountListener {
                 int rankPoints = Integer.parseInt(tournamentData.get("rankPoints"));
                 boolean isWin = Boolean.parseBoolean(tournamentData.get("isWin"));
 
-                // Call the TournamentService to handle tournament creation and saving
-                tournamentService.createAndSaveTournament(tournamentData);
+                // Create Tournament
+                Tournament tournament = tournamentService.createAndSaveTournament(tournamentData);
+                
+                // Create TournamentPlayerStats for the player in this tournament
+                TournamentPlayerStats playerStats = new TournamentPlayerStats();
+                playerStats.setTournament(tournament);
+                playerStats.setPlayer(playerService.getPlayerById(playerId));
+                playerStats.setRankIdAfterTournament(rankPoints);  // Assuming rankPoints correlates to rankId
+                playerStats.setPointObtain(rankPoints);
+                playerStats.setChampionPlayedId(championId);
+                playerStats.setFinalPlacement(finalPlacement);
+                playerStats.setTimeEndPerPlayer(LocalDateTime.now()); // Assuming match ends now for the player
 
-                // Call the PlayerService to handle the match completion
-                playerService.handleMatchCompletion(playerId, championId, kdRate, finalPlacement, rankPoints, isWin);
+                // Save Tournament + TournamentPlayerStats
+                tournamentPlayerStatsService.savePlayerStats(playerStats);
+
+                // Call the PlayerStatsService to handle the match completion
+                playerStatsService.handleMatchCompletion(playerId, championId, kdRate, finalPlacement, rankPoints, isWin);
+
                 System.out.println("Tournament details processed for player: " + playerId);
             } catch (NumberFormatException e) {
                 System.err.println("Error processing tournament data: " + e.getMessage());
@@ -197,6 +226,73 @@ public class AccountListener {
         } catch (Exception e) {
             System.err.println("Failed to parse match data from message: " + e.getMessage());
             return null; // Return null if parsing fails
+        }
+    }
+
+    // Process Update Player action
+    private void processUpdatePlayer(String messageBody) {
+        // Parse the message body and create the Player object
+        PlayerProfileUpdateRequest updateRequest = parseUpdatePlayerDataFromMessage(messageBody);
+
+        // Call the PlayerService to save the new player to the database
+        if (updateRequest != null) {
+            Player result = playerService.updatePlayerProfile(updateRequest.getPlayerId(), updateRequest);
+            System.out.println("Player updated: " + updateRequest.getPlayerId());
+        } else {
+            System.err.println("Failed to process UpdatePlayer message due to parsing issues.");
+        }
+    }
+
+    // Parse the update player data from the message
+    private PlayerProfileUpdateRequest parseUpdatePlayerDataFromMessage(String messageBody) {
+        try {
+            // Use ObjectMapper to parse the JSON message body
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(messageBody);
+
+            // Extract player details from the message body
+            Long playerId = rootNode.path("playerId").asLong();
+            String playerName = rootNode.path("playerName").asText(null);
+            String username = rootNode.path("username").asText(null);
+            String email = rootNode.path("email").asText(null);
+            String password = rootNode.path("password").asText(null);
+            String profilePicture = rootNode.path("profilePicture").asText(null);
+
+            // Create and populate the PlayerProfileUpdateRequest object
+            PlayerProfileUpdateRequest updateRequest = new PlayerProfileUpdateRequest();
+            updateRequest.setPlayerId(playerId);
+            updateRequest.setPlayerName(playerName);
+            updateRequest.setUsername(username);
+            updateRequest.setEmail(email);
+            updateRequest.setPassword(password);
+            updateRequest.setProfilePicture(profilePicture);
+
+            return updateRequest;
+        } catch (Exception e) {
+            // If parsing fails, print an error message and return null
+            System.err.println("Error parsing update player message: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // Process Delete Player action
+    private void processDeletePlayer(String messageBody) {
+        try {
+            // Parse the player ID from the message body
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(messageBody);
+
+            Long playerId = rootNode.path("playerId").asLong();
+
+            if (playerId != null) {
+                // Call the service method to delete the player from the database
+                String result = playerService.deletePlayer(playerId);
+                System.out.println("Player deleted: " + playerId);
+            } else {
+                System.err.println("Player ID not found in message.");
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to process DeletePlayer message: " + e.getMessage());
         }
     }
 

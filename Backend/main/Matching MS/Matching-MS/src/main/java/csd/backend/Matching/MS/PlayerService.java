@@ -25,10 +25,10 @@ public class PlayerService {
     }
 
     // Get Player by playerId in the database
-    public Map<String, AttributeValue> getPlayerById(String playerId) {
+    public Map<String, AttributeValue> getPlayerById(Long playerId) {
         GetItemRequest getItemRequest = GetItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build()))
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build()))
                 .build();
 
         GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
@@ -36,7 +36,7 @@ public class PlayerService {
     }
 
     // Get the rankId of the player
-    public Long getPlayerRankId(String playerId) {
+    public Long getPlayerRankId(Long playerId) {
         Map<String, AttributeValue> playerData = getPlayerById(playerId);
 
         // Extract rankId from the player's data (assuming rankId is stored as an integer)
@@ -69,7 +69,7 @@ public class PlayerService {
     }
 
     // Update player's queue status in database
-    public void updatePlayerStatus(String playerId, String status) {
+    public void updatePlayerStatus(Long playerId, String status) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
 
         updates.put("status", AttributeValueUpdate.builder()
@@ -86,6 +86,30 @@ public class PlayerService {
         dynamoDbClient.updateItem(updateRequest);
     }
 
+    // Update player's queue status in database
+    public void deletePlayerStatus(Long playerId) {
+
+        // Define the update to remove the 'queueStatus' attribute
+        Map<String, AttributeValueUpdate> updates = new HashMap<>();
+        updates.put("queueStatus", AttributeValueUpdate.builder()
+                .action("remove")
+                .build());
+
+        // Build the update request
+        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build()))
+                .attributeUpdates(updates)
+                .build();
+
+        try {
+            // Execute the update request
+            dynamoDbClient.updateItem(updateRequest);
+            System.out.println("Queue status for player " + playerId + " removed successfully.");
+        } catch (Exception e) {
+            System.err.println("Error removing player status: " + e.getMessage());
+        }
+    }
     // Update player's champion in the database
     public void updatePlayerChampion(String playerId, String championId) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();

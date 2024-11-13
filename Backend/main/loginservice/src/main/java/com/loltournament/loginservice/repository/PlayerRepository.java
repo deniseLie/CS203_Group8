@@ -9,6 +9,7 @@ import com.loltournament.loginservice.model.Player;
 
 
 public interface PlayerRepository extends JpaRepository<Player, Long>  {
+    Optional<Player> findByPlayerId(Long playerId);
     Optional<Player> findByUsername(String username);
     Optional<Player> findByEmail(String email);
     Optional<Player> findByUserId(Long userId);

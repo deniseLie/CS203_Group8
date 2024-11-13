@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import csd.backend.Account.MS.Exception.PlayerNotFoundException;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Repository.Player.*;
 import csd.backend.Account.MS.Service.SqsService;
 import csd.backend.Account.MS.Service.Rank.RankService;
+import jakarta.transaction.Transactional;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 import csd.backend.Account.MS.Repository.Champion.*;
 import java.util.*;
@@ -31,6 +33,36 @@ public class PlayerStatsService {
 
     @Autowired
     private SqsService sqsService;
+
+    // Get player's rank id 
+    public String getPlayerRankName(Long playerId) {
+        // Check if player already exists
+        if (!playerRepository.existsById(playerId)) {
+            throw new PlayerNotFoundException(playerId);
+        }
+
+        // Retrieve player's rank id
+        Long rankId = playerOverallStatsRepository.findRankIdByPlayerId(playerId);
+
+        // Retrieve rank name
+        String rankName = rankService.getRankNameById(rankId);
+
+        // Prepare the message body
+        return rankName;
+
+    }
+
+    // Handle match completion and recalculate stats
+    public void handleMatchCompletion(Long playerId, Long championId, double kdRate, int finalPlacement, int rankPoints, boolean isWin) {
+        // Check if player already exists
+        if (!playerRepository.existsById(playerId)) {
+            throw new PlayerNotFoundException(playerId);
+        }
+
+        // Update Player stats in overall stats and champion stats
+        updateOverallStats(playerId, rankPoints, kdRate, finalPlacement, isWin);
+        updateChampionStats(playerId, championId, kdRate, finalPlacement, isWin);
+    }
 
     // Update overall stats (after a match)
     public void updateOverallStats(Long playerId, int rankPoints, double kdRate, int finalPlacement, boolean isWin) {

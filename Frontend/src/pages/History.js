@@ -89,7 +89,7 @@ function History() {
           <Typography className="headerPrimary" sx={{ marginBottom: 3 }}>
             RECENT GAMES (LAST 20 PLAYED)
           </Typography>
-          {loading || !leaderboardData ? (
+          {loading || leaderboardData.length === 0 ? (
             <Box
       sx={{
         display: 'flex',

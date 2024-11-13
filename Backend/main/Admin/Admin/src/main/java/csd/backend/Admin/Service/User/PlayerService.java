@@ -1,8 +1,5 @@
 package csd.backend.Admin.Service.User;
 
-import java.util.*;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import csd.backend.Admin.Model.User.Player;
@@ -14,7 +11,6 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
     public PlayerService(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();

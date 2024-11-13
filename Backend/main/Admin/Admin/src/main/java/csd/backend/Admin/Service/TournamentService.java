@@ -1,6 +1,5 @@
 package csd.backend.Admin.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +13,6 @@ import java.util.*;
 import csd.backend.Admin.Model.DTO.*;
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.Player;
-import csd.backend.Admin.Service.SqsService;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
 @Service
@@ -28,7 +26,6 @@ public class TournamentService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     
-    @Autowired
     public TournamentService(TournamentRepository tournamentRepository, 
                              TournamentPlayerRepository tournamentPlayerRepository,
                              PlayerRepository playerRepository, 

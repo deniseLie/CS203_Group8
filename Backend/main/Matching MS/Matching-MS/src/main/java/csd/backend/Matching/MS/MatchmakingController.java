@@ -59,7 +59,7 @@ public class MatchmakingController {
              
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");
-            playerService.updatePlayerChampion(playerId.toString(), championId);
+            playerService.updatePlayerChampion(playerId, championId);
 
             // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
@@ -121,7 +121,7 @@ public class MatchmakingController {
 
             // Queue Player 
             playerService.updatePlayerStatus(playerId, "queue");
-            playerService.updatePlayerChampion(playerId.toString(), championId);
+            playerService.updatePlayerChampion(playerId, championId);
 
             // Keep looping
             for (int attempt = 0; attempt < maxAttempts; attempt++) {
@@ -162,7 +162,7 @@ public class MatchmakingController {
         try {
 
             // Update the player's status in the queue
-            playerService.updatePlayerStatus(Long.parseLong(playerId), "not queue");
+            playerService.updatePlayerStatus(playerId, "not queue");
 
             // Remove the player's championId
             playerService.removePlayerChampion(playerId);

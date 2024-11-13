@@ -2,7 +2,6 @@ package csd.backend.Admin;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,7 +22,6 @@ public class AdminQueueListener {
     private final TournamentService tournamentService;
     private final TournamentPlayerService tournamentPlayerService;
 
-    @Autowired
     public AdminQueueListener(
         SqsService sqsService, UserService userService, PlayerService playerService,
         TournamentService tournamentService, TournamentPlayerService tournamentPlayerService

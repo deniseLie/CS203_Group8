@@ -4,7 +4,6 @@ import csd.backend.Account.MS.Exception.*;
 import csd.backend.Account.MS.Model.Champion.*;
 import csd.backend.Account.MS.Repository.Champion.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +13,6 @@ public class ChampionService {
 
     private final ChampionRepository championRepository;
 
-    @Autowired
     public ChampionService(ChampionRepository championRepository) {
         this.championRepository = championRepository;
     }

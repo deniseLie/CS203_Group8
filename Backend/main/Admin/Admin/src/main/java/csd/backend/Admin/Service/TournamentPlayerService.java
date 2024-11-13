@@ -2,9 +2,7 @@ package csd.backend.Admin.Service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.*;
 import csd.backend.Admin.Service.User.*;
@@ -17,7 +15,6 @@ public class TournamentPlayerService {
     private final TournamentService tournamentService;
     private final PlayerService playerService;
 
-    @Autowired
     public TournamentPlayerService(TournamentPlayerRepository tournamentPlayerRepository,
                                    TournamentService tournamentService,
                                    PlayerService playerService

@@ -3,11 +3,9 @@ package csd.backend.Account.MS.Service.Tournament;
 import csd.backend.Account.MS.Exception.*;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Model.Tournament.*;
-import csd.backend.Account.MS.Repository.Champion.*;
 import csd.backend.Account.MS.Repository.Player.*;
 import csd.backend.Account.MS.Repository.Tournament.*;
 import csd.backend.Account.MS.Service.Champion.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,22 +18,18 @@ public class TournamentService {
     private final TournamentRepository tournamentRepository;
     private final TournamentPlayerStatsRepository tournamentPlayerStatsRepository;
     private final PlayerRepository playerRepository;
-    private final ChampionRepository championRepository;
     private final ChampionService championService;
 
     // Constructor injection
-    @Autowired
     public TournamentService(
         TournamentRepository tournamentRepository, 
         TournamentPlayerStatsRepository tournamentPlayerStatsRepository, 
         PlayerRepository playerRepository, 
-        ChampionRepository championRepository,
         ChampionService championService
     ) { 
         this.tournamentRepository = tournamentRepository;
         this.tournamentPlayerStatsRepository = tournamentPlayerStatsRepository;
         this.playerRepository = playerRepository;
-        this.championRepository = championRepository;
         this.championService = championService;
     }
 
@@ -73,7 +67,6 @@ public class TournamentService {
             int deathCount = Integer.parseInt(tournamentData.get("deathCount"));
             int finalPlacement = Integer.parseInt(tournamentData.get("finalPlacement"));
             int rankPoints = Integer.parseInt(tournamentData.get("rankPoints"));
-            boolean isWin = Boolean.parseBoolean(tournamentData.get("isWin"));
             boolean isAFK = Boolean.parseBoolean(tournamentData.get("isAFK"));
             LocalDateTime endTime = LocalDateTime.parse(tournamentData.get("endTime"));
 

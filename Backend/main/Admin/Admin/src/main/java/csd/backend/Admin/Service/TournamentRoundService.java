@@ -1,27 +1,22 @@
 package csd.backend.Admin.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.*;
 import csd.backend.Admin.Repository.*;
-import csd.backend.Admin.Service.User.*;
 
 @Service
 public class TournamentRoundService {
 
     private final TournamentService tournamentService;
-    private final PlayerService playerService;
     private final TournamentPlayerService tournamentPlayerService;
     private final TournamentRoundRepository tournamentRoundRepository;
     
-    @Autowired
     public TournamentRoundService(
-        TournamentService tournamentService, PlayerService playerService, TournamentPlayerService tournamentPlayerService, TournamentRoundRepository tournamentRoundRepository
+        TournamentService tournamentService, TournamentPlayerService tournamentPlayerService, TournamentRoundRepository tournamentRoundRepository
     ) {
         this.tournamentService = tournamentService;
-        this.playerService = playerService;
         this.tournamentPlayerService = tournamentPlayerService;
         this.tournamentRoundRepository = tournamentRoundRepository;
     }

@@ -3,13 +3,9 @@ package csd.backend.Admin.Service;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.http.HttpStatus;
 import csd.backend.Admin.Model.User.*;
 import csd.backend.Admin.Repository.*;
-import csd.backend.Admin.Service.*;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
 @Service

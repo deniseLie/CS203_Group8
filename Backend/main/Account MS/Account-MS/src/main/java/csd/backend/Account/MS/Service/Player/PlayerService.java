@@ -22,7 +22,6 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final PlayerOverallStatsRepository playerOverallStatsRepository;
     private final PlayerChampionStatsRepository playerChampionStatsRepository;
-    private final PlayerStatsService playerStatsService;
     private final SqsService sqsService;
     private final ChampionService championService;  
     private final PasswordEncoder passwordEncoder; 
@@ -33,7 +32,6 @@ public class PlayerService {
         PlayerRepository playerRepository,
         PlayerOverallStatsRepository playerOverallStatsRepository,
         PlayerChampionStatsRepository playerChampionStatsRepository,
-        PlayerStatsService playerStatsService,
         SqsService sqsService,
         ChampionService championService,
         PasswordEncoder passwordEncoder
@@ -41,7 +39,6 @@ public class PlayerService {
         this.playerRepository = playerRepository;
         this.playerOverallStatsRepository = playerOverallStatsRepository;
         this.playerChampionStatsRepository = playerChampionStatsRepository;
-        this.playerStatsService = playerStatsService;
         this.sqsService = sqsService;
         this.championService = championService;
         this.passwordEncoder = passwordEncoder;

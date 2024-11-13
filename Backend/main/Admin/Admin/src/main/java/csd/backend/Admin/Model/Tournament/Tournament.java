@@ -2,13 +2,7 @@ package csd.backend.Admin.Model.Tournament;
 
 import jakarta.persistence.*;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-
-import org.hibernate.type.descriptor.java.LocalDateTimeJavaType;
-
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @Entity
 public class Tournament {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Avatar, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import api from '../../services/api';
 import logo from '../../assets/logo.png';
 
 const Login = () => {
@@ -19,7 +19,7 @@ const Login = () => {
     try {
       login();
       navigate('/dashboard');
-      // const response = await axios.post('/admin/user/login', {
+      // const response = await api.post('/admin/user/login', {
       //   username,
       //   password,
       // });

@@ -48,8 +48,8 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 );
 
-        http.addFilterBefore(jwtRequestFilter,
-        UsernamePasswordAuthenticationFilter.class);
+        // http.addFilterBefore(jwtRequestFilter,
+        // UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

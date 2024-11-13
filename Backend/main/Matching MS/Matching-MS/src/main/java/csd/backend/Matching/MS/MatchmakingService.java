@@ -86,7 +86,7 @@ public class MatchmakingService {
             if (banUntilAttr != null && banUntilAttr.n() != null) {
                 long banUntil = Long.parseLong(banUntilAttr.n());
                 long remainingTime = banUntil > System.currentTimeMillis() ? banUntil - System.currentTimeMillis() : 0;
-                status.put("remainingTime", remainingTime);
+                status.put("remainingTime", Long.valueOf(remainingTime));
             } else {
                 status.put("remainingTime", 0);
             }

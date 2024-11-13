@@ -18,6 +18,7 @@ import com.amazonaws.services.lambda.runtime.events.CloudFrontEvent.Response;
 import org.springframework.stereotype.Service;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
+import csd.backend.Account.MS.Exception.PlayerNotFoundException;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Model.Tournament.*;
 import csd.backend.Account.MS.Service.Tournament.*;
@@ -79,10 +80,17 @@ public class AccountController {
         try {
             // Get formatted top 3 played champions
             List<Map<String, Object>> topChampions = playerService.getFormattedTopChampions(playerId);
-    
+            if (topChampions == null) {
+                topChampions = Collections.emptyList();
+            }
+
             // Get player stats
             Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
-    
+            if (playerStats == null) {
+                response.put("message", "No player stats found for playerId " + playerId);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
             if (!topChampions.isEmpty() && !playerStats.isEmpty()) {
                 // Combine the results into a response map
                 playerStats.put("topChampions", topChampions);
@@ -92,11 +100,15 @@ public class AccountController {
                 response.put("message", "No data found for the player");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
+        } catch (PlayerNotFoundException e) {
+            response.put("error", "Player not found: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             response.put("error", "An error occurred: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Endpoint to get match history
     @GetMapping("/{playerId}/match-history")

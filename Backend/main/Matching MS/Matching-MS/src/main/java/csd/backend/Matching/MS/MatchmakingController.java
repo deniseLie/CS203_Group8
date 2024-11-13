@@ -46,11 +46,15 @@ public class MatchmakingController {
         try {
             // Check if the player is banned
             Map<String, Object> playerStatus = matchmakingService.checkPlayerStatus(playerId);
-            if (playerStatus.containsKey("remainingTime") && (long) playerStatus.get("remainingTime") > 0) {
-                long remainingTime = (long) playerStatus.get("remainingTime");
-                response.put("message", "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.");
-                return new ResponseEntity<>(response, HttpStatus.FORBIDDEN); // Return the ResponseEntity here
+            if (playerStatus.containsKey("remainingTime")) {
+                Number remainingTimeValue = (Number) playerStatus.get("remainingTime");
+                long remainingTime = remainingTimeValue.longValue();
+                if (remainingTime > 0) {
+                    response.put("message", "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.");
+                    return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+                }
             }
+            
             
             // Get rank id
             Long rankId = playerService.getPlayerRankId(playerId);
@@ -105,11 +109,14 @@ public class MatchmakingController {
         try {
             // Check if the player is banned
             Map<String, Object> playerStatus = matchmakingService.checkPlayerStatus(playerId);
-            if (playerStatus.containsKey("remainingTime") && (long) playerStatus.get("remainingTime") > 0) {
-                long remainingTime = (long) playerStatus.get("remainingTime");
-                response.put("message", "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.");
-                return new ResponseEntity<>(response, HttpStatus.FORBIDDEN); // Return the ResponseEntity here
-            }
+            if (playerStatus.containsKey("remainingTime")) {
+                Number remainingTimeValue = (Number) playerStatus.get("remainingTime");
+                long remainingTime = remainingTimeValue.longValue();
+                if (remainingTime > 0) {
+                    response.put("message", "You are currently banned. Please try again in " + remainingTime / 1000 + " seconds.");
+                    return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+                }
+            }            
             
             // Get rank id
             Long rankId = playerService.getPlayerRankId(playerId);

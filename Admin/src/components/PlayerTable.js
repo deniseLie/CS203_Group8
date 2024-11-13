@@ -3,7 +3,7 @@ import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, Icon
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
-const PlayerTable = ({ data, onDelete, onEdit }) => {
+const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
 
@@ -41,7 +41,14 @@ const PlayerTable = ({ data, onDelete, onEdit }) => {
             <TableRow key={player.id}>
               <TableCell>{player.userId}</TableCell> {/* Display User ID */}
               <TableCell>
-                <img src={player.profilePicture} alt={player.username} width="50" height="50" style={{ borderRadius: '50%' }} />
+                {/* Dynamically render the profile picture */}
+                <img 
+                  src={profileImages[`player${player.profilePicture}`]} 
+                  alt={player.username} 
+                  width="50" 
+                  height="50" 
+                  style={{ borderRadius: '50%' }} 
+                />
               </TableCell>
               <TableCell>{player.username}</TableCell>
               <TableCell>{player.playername}</TableCell>

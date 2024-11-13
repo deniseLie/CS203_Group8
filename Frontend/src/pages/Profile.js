@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Typography, Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
 import diamondBanner from '../assets/rank-banners/diamond.png';
@@ -10,38 +10,34 @@ import swordIcon from "../assets/icons/sword.png";
 import ProfileBanner from '../components/ProfileBanner';
 import { useAuth } from '../auth/AuthProvider';
 import getChampionImage from '../util/getChampionImage';
-import axios from 'axios';
-import env from 'react-dotenv';
-import Cookies from 'js-cookie';
 
 const Profile = ({ logout }) => {
     const { user } = useAuth();
-    const [profileData, setProfileData] = useState(null);
 
-    useEffect(() => {
-        const fetchProfileData = async () => {
-            try {
-                const token = Cookies.get('jwtToken'); // Ensure user token is available here
-                const response = await axios.get(`${env.ACCOUNT_SERVER_URL}/account/${user.sub}/profile`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                setProfileData(response.data);
-            } catch (error) {
-                console.error("Error fetching profile data:", error);
+    // Dummy backend data
+    const backendData = {
+        topChampions: [
+            {
+                championId: 1,
+                totalWins: 10,
+                championName: "Miss Fortune",
+                totalMatchNumber: 15,
+                kdRate: 1.9,
+                averagePlace: 3.2,
+            },
+            {
+                championId: 2,
+                totalWins: 5,
+                championName: "Ahri",
+                totalMatchNumber: 12,
+                kdRate: 1.7,
+                averagePlace: 4.1,
             }
-        };
-
-        if (user?.sub) {
-            fetchProfileData();
-        }
-    }, [user?.sub]);
-
-    if (!profileData) {
-        return <Typography>Loading...</Typography>;
-    }
-
+        ],
+        firstPlacePercentage: 0.5,
+        totalMatches: 30,
+        averagePlace: 3.5
+    };
     return (
         <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
             <Box sx={{ flexShrink: 0, zIndex: 100 }}>
@@ -50,7 +46,7 @@ const Profile = ({ logout }) => {
 
             <Box
                 sx={{
-                    backgroundImage: `url(${getChampionImage(profileData.topChampions[0].championName, "splash")})`,
+                    backgroundImage: `url(${getChampionImage(backendData.topChampions[0].championName, "splash")})`,
                     backgroundSize: 'cover',
                     zIndex: 0,
                     backgroundPosition: 'center -100px',
@@ -116,19 +112,19 @@ const Profile = ({ logout }) => {
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>
                                         <Box component="img" src={arenaIcon} alt="Arena Icon" sx={{ width: '50px', mb: 1 }} />
-                                        <Typography className='headerPrimary' sx={{ fontSize: '1.2em', color: '#B68C34' }}>{profileData.totalMatches}</Typography>
+                                        <Typography className='headerPrimary' sx={{ fontSize: '1.2em', color: '#B68C34' }}>{backendData.totalMatches}</Typography>
                                         <Typography className='headerPrimary' sx={{ color: '#949083' }}>Games Played</Typography>
                                     </Box>
 
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>
                                         <Box component="img" src={swordIcon} alt="Sword Icon" sx={{ width: '50px', mb: 1, backgroundColor: "rgba(0,0,0,0.5)", borderRadius: 2 }} />
-                                        <Typography className="headerPrimary" sx={{ fontSize: '1.2em', color: '#B68C34' }}>#{profileData.averagePlace}</Typography>
+                                        <Typography className="headerPrimary" sx={{ fontSize: '1.2em', color: '#B68C34' }}>#{backendData.averagePlace}</Typography>
                                         <Typography className='headerPrimary' sx={{ color: '#949083' }}>Avg Place</Typography>
                                     </Box>
 
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>
                                         <Box component="img" src={crownIcon} alt="Crown Icon" sx={{ width: '50px', mb: 1 }} />
-                                        <Typography className="headerPrimary" sx={{ fontSize: '1.2em', color: '#B68C34' }}>{(profileData.firstPlacePercentage * 100).toFixed(1)}%</Typography>
+                                        <Typography className="headerPrimary" sx={{ fontSize: '1.2em', color: '#B68C34' }}>{(backendData.firstPlacePercentage * 100).toFixed(1)}%</Typography>
                                         <Typography className="headerPrimary" sx={{ color: '#949083' }}>1st Place Rate</Typography>
                                     </Box>
                                 </Box>
@@ -152,7 +148,7 @@ const Profile = ({ logout }) => {
                                         width: '100%',
                                     }}
                                 >
-                                    {profileData.topChampions.map((champion, index) => (
+                                    {backendData.topChampions.map((champion, index) => (
                                         <Box key={index} sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                             <Avatar
                                                 variant="square"

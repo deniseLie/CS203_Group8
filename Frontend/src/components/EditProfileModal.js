@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, TextField, Button, Box, Typography, IconButton, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { summonerIcons } from '../util/importAssets'; // Import the centralized icons object
-import axios from 'axios';
-import { useAuth } from '../auth/AuthProvider';
-import env from 'react-dotenv';
-import Cookies from 'js-cookie';
 
 const EditProfileModal = ({
   open,
   handleClose,
-  handleSaveChanges // callback after successful save
+  playerId,
+  username,
+  setUsername,
+  playerName,
+  setPlayerName,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  avatar,
+  setAvatar,
+  handleSaveChanges
 }) => {
-  const [username, setUsername] = useState('');
-  const [playerName, setPlayerName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [avatar, setAvatar] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -26,44 +28,33 @@ const EditProfileModal = ({
   const [emailError, setEmailError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [avatarNum, setAvatarNumber] = useState(1);
-  const [avatarChanged, setAvatarChanged] = useState(false);
-  const {user} = useAuth();
+  const [avatarChanged, setAvatarChanged] = useState(false); // Track if avatar was changed
+
+  // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Function to validate email format
   const validateEmail = (email) => emailRegex.test(email);
-  const playerId = user.sub;
-  const canSaveChanges = isEditing &&
-    username &&
-    playerName &&
-    email &&
-    validateEmail(email) &&
+
+  // Check if "Save Changes" or "Update Profile Picture" button should be enabled
+  const canSaveChanges = isEditing && 
+    username && 
+    playerName && 
+    email && 
+    validateEmail(email) && 
     password === confirmPassword;
 
-  const canUpdateProfilePicture = avatarChanged;
+  const canUpdateProfilePicture = avatarChanged; // Enable button if only avatar is changed
 
-  // Fetch user details when the modal opens
-  useEffect(() => {
-    if (open && playerId) {
-      const token = Cookies.get('jwtToken');
-      axios
-        .get(`${env.LOGIN_SERVER_URL}/auth/user/${playerId}`, {headers: {
-          Authorization: `Bearer ${token}`,
-        }})
-        .then((response) => {
-          console.log("got ",response)
-          const { username, playername, email } = response.data;
-          setUsername(username);
-          setPlayerName(playername);
-          setEmail(email);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch user details:", error);
-        });
-    }
-  }, [open, playerId]);
   // Handler for Save Changes or Update Profile Picture button
   const handleSave = async () => {
     if (isEditing || avatarChanged) {
       if (isEditing) {
+        if (password !== confirmPassword) {
+          setPasswordError("Passwords do not match");
+          return;
+        }
+        setPasswordError('');
 
         if (!validateEmail(email)) {
           setEmailError("Invalid email format");
@@ -128,7 +119,7 @@ const EditProfileModal = ({
                 }}
               >
                 <img
-                  src={avatar ? avatar: summonerIcons[0]}
+                  src={avatar}
                   alt="Avatar"
                   style={{
                     width: '100%',
@@ -156,8 +147,8 @@ const EditProfileModal = ({
                 error={isEditing && !!emailError}
                 helperText={isEditing ? emailError : ""}
               />
-              {/* <TextField label="Password" type={showPassword ? "text" : "password"} fullWidth value={password} onChange={(e) => setPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: '#949083' }}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
-              <TextField label="Confirm Password" type={showConfirmPassword ? "text" : "password"} fullWidth value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: '#949083' }}>{showConfirmPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} error={isEditing && !!passwordError} helperText={isEditing ? passwordError : ""} */}
+              <TextField label="Password" type={showPassword ? "text" : "password"} fullWidth value={password} onChange={(e) => setPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: '#949083' }}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
+              <TextField label="Confirm Password" type={showConfirmPassword ? "text" : "password"} fullWidth value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: '#949083' }}>{showConfirmPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} error={isEditing && !!passwordError} helperText={isEditing ? passwordError : ""}
               />
             </Box>
           </Box>

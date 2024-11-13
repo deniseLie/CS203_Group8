@@ -55,10 +55,19 @@ public class TournamentRoundService {
             // Save the round to the database
             tournamentRoundRepository.save(round);
 
+            // calculate loser elo when total tournament round != roundNumber 
+                // else calculate both loser and winner elo 
+
+            // return back ELO based on player id 
+
+            // call sqs to call account service "addTournament"
+
             return "Tournament round updated successfully";
         } catch (Exception e) {
             e.printStackTrace();
             return "Error processing tournament round: " + e.getMessage();
         }
     }
+
+    // Call Account service new Tournament
 }

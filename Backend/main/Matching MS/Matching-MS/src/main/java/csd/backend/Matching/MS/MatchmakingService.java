@@ -2,11 +2,11 @@ package csd.backend.Matching.MS;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import csd.backend.Matching.MS.Model.TournamentSize;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.sqs.model.*;
@@ -18,21 +18,18 @@ import java.util.stream.Collectors;
 @Service
 public class MatchmakingService {
 
-    @Autowired
-    private DynamoDbClient dynamoDbClient;
-
+    private final DynamoDbClient dynamoDbClient;
     private final SqsService sqsService;
     private final PlayerService playerService;
 
-    @Autowired
-    public MatchmakingService(SqsService sqsService, PlayerService playerService) {
+    public MatchmakingService(DynamoDbClient dynamoDbClient, SqsService sqsService, PlayerService playerService) {
+        this.dynamoDbClient = dynamoDbClient;
         this.sqsService = sqsService;
         this.playerService = playerService;
     }
 
     private static final String PLAYERS_TABLE = "Players";
     private static final String MATCHES_TABLE = "Matches";
-    private static final int MAX_PLAYERS = 2;
     private static final Logger logger = LoggerFactory.getLogger(MatchmakingService.class);
 
     // Add a player to the matchmaking pool
@@ -101,14 +98,16 @@ public class MatchmakingService {
     // Check Match : Enough Players with same rankId
     public boolean checkForMatch(Long rankId, boolean isSpeedUp) {
 
+        int maxPlayers = TournamentSize.getTournamentSize();
+
         // Get players queueing + same rankId
         List<Map<String, AttributeValue>> players = checkPlayersInQueue(rankId);
 
         // check do we have enough players
-        if (players.size() >= MAX_PLAYERS) {
+        if (players.size() >= maxPlayers) {
 
             // Take the first MAX_PLAYERS players and create a match
-            List<Map<String, AttributeValue>> playersToMatch = players.subList(0, MAX_PLAYERS);
+            List<Map<String, AttributeValue>> playersToMatch = players.subList(0, maxPlayers);
             createTournament(playersToMatch);
             return true;
         }
@@ -207,24 +206,20 @@ public class MatchmakingService {
         matchItem.put("matchId", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build());
     
         List<AttributeValue> playerList = new ArrayList<>();
-        StringBuilder playerIds = new StringBuilder();
-    
+        List<String> playerIdsAndChampions = new ArrayList<>(); // List to accumulate playerId and championId pairs
+
         for (Map<String, AttributeValue> player : players) {
-            AttributeValue playerIdAttr = player.get("playerId");
-            if (playerIdAttr != null && playerIdAttr.n() != null) {
-                Long playerId = Long.parseLong(playerIdAttr.n());
-                playerList.add(AttributeValue.builder().n(String.valueOf(playerId)).build());
-    
-                if (playerIds.length() > 0) {
-                    playerIds.append(",");
-                }
-                playerIds.append(playerId);
-    
-                // Unqueue player
-                playerService.updatePlayerStatus(playerId, "unqueue");
-            } else {
-                logger.warn("Missing playerId for a player in the match.");
-            }
+            Long playerId = Long.parseLong(player.get("playerId").n());
+            String championId = player.get("championId").s();  // Assuming championId is a string
+            
+            // Add player to the match player list
+            playerList.add(AttributeValue.builder().n(String.valueOf(playerId)).build());
+            
+            // Add playerId and championId to the list (e.g., "123,ChampionA")
+            playerIdsAndChampions.add(playerId + "," + championId);
+            
+            // Unqueue player
+            playerService.updatePlayerStatus(playerId, "unqueue");
         }
     
         matchItem.put("playerIds", AttributeValue.builder().l(playerList).build());
@@ -233,10 +228,13 @@ public class MatchmakingService {
                 .tableName(MATCHES_TABLE)
                 .item(matchItem)
                 .build();
-    
+
         try {
+            // Store the match in DynamoDB
             dynamoDbClient.putItem(matchRequest);
-            triggerMatchmaking(playerIds.toString(), LocalDateTime.now());
+            
+            // Pass the playerIds and their championIds to matchmaking
+            triggerMatchmaking(playerIdsAndChampions, LocalDateTime.now());
             logger.info("Match created successfully with players: {}", players);
         } catch (Exception e) {
             logger.error("Error creating match", e);
@@ -245,8 +243,8 @@ public class MatchmakingService {
     }
     
 
-    // Method to send out matchmaking SQS to other services
-    public void triggerMatchmaking(String playerIds, LocalDateTime tournamentStartTime) {
+    // Method to send out matchmaking sqs to other services
+    public void triggerMatchmaking(List<String> playerIdsAndChampions, LocalDateTime tournamentStartTime) {
 
         // Prepare message attributes
         Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
@@ -255,16 +253,11 @@ public class MatchmakingService {
                 .dataType("String")
                 .build());
 
-        // Prepare message body with tournament details
+        // Prepare the message body using a Map
         Map<String, Object> messageBodyMap = new HashMap<>();
-        messageBodyMap.put("timestampStart", tournamentStartTime.toString());  // Converts LocalDateTime to string
-        messageBodyMap.put("tournamentSize", playerIds.split(",").length);      // Calculates the number of players
-
-        // Convert playerIds to an array of Long values
-        List<Long> playerIdList = Arrays.stream(playerIds.split(","))
-                                        .map(Long::valueOf)
-                                        .collect(Collectors.toList());
-        messageBodyMap.put("playerIds", playerIdList);
+        messageBodyMap.put("timestampStart", tournamentStartTime.toString());  // Use toString to convert LocalDateTime
+        messageBodyMap.put("tournamentSize", playerIdsAndChampions.size());
+        messageBodyMap.put("players", playerIdsAndChampions);
 
         try {
             // Convert map to JSON string using Jackson
@@ -273,7 +266,7 @@ public class MatchmakingService {
 
             // Send message to the matchmaking queue
             sqsService.sendMessageToQueue("admin", messageBody, messageAttributes);
-            System.out.println("Automatically triggered matchmaking for players: " + playerIds);
+            logger.info("Automatically triggered matchmaking for players: {}", playerIdsAndChampions);
         } catch (Exception e) {
             logger.error("Error creating JSON message body for matchmaking", e);
         }

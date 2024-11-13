@@ -3,20 +3,15 @@ package csd.backend.Matching.MS;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
-import software.amazon.awssdk.services.sqs.model.*;
 
 @Service
 public class PlayerService {
-    private static final String PLAYERS_TABLE = "Players";
-    private static final String MATCHES_TABLE = "Matches";
-    private static final int MAX_PLAYERS = 8;
 
+    private static final String PLAYERS_TABLE = "Players";
     private final DynamoDbClient dynamoDbClient;
 
     @Autowired
@@ -86,32 +81,30 @@ public class PlayerService {
         dynamoDbClient.updateItem(updateRequest);
     }
 
-    // Update player's queue status in database
-    public void deletePlayerStatus(Long playerId) {
+    // Delete player from the database
+    public void deletePlayer(Long playerId) {
+        // Build the key to identify the item to be deleted
+        Map<String, AttributeValue> key = new HashMap<>();
+        key.put("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build());
 
-        // Define the update to remove the 'queueStatus' attribute
-        Map<String, AttributeValueUpdate> updates = new HashMap<>();
-        updates.put("queueStatus", AttributeValueUpdate.builder()
-                .action("remove")
-                .build());
-
-        // Build the update request
-        UpdateItemRequest updateRequest = UpdateItemRequest.builder()
+        // Create the delete item request
+        DeleteItemRequest deleteItemRequest = DeleteItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build()))
-                .attributeUpdates(updates)
+                .key(key)
                 .build();
 
         try {
-            // Execute the update request
-            dynamoDbClient.updateItem(updateRequest);
-            System.out.println("Queue status for player " + playerId + " removed successfully.");
+            // Execute the delete item request
+            dynamoDbClient.deleteItem(deleteItemRequest);
+            System.out.println("Player with playerId " + playerId + " deleted successfully.");
         } catch (Exception e) {
-            System.err.println("Error removing player status: " + e.getMessage());
+            System.err.println("Error deleting player: " + e.getMessage());
         }
     }
+
+    
     // Update player's champion in the database
-    public void updatePlayerChampion(String playerId, String championId) {
+    public void updatePlayerChampion(Long playerId, String championId) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("championId", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder().s(championId).build())  // Store championId as a string
@@ -121,7 +114,7 @@ public class PlayerService {
         // Update the player's championId in DynamoDB
         UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build())) // Use playerId as key
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build())) // Use playerId as key
                 .attributeUpdates(updates)  // Specify the updates to be made
                 .build();
 
@@ -132,7 +125,7 @@ public class PlayerService {
     }
 
     // Remove player's championId from the database
-    public void removePlayerChampion(String playerId) {
+    public void removePlayerChampion(Long playerId) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("championId", AttributeValueUpdate.builder()
                 .value(AttributeValue.builder().s("").build())  // Set championId to an empty string or null equivalent
@@ -142,7 +135,7 @@ public class PlayerService {
         // Update the player's championId in DynamoDB (set it to empty string or null)
         UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
                 .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(playerId).build())) // Use playerId as key
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId).toString()).build())) // Use playerId as key
                 .attributeUpdates(updates)  // Specify the updates to be made
                 .build();
 

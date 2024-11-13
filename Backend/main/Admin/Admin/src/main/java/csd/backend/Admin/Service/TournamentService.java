@@ -2,6 +2,10 @@ package csd.backend.Admin.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import csd.backend.Admin.Repository.*;
 import csd.backend.Admin.Repository.User.*;
 
@@ -10,23 +14,32 @@ import java.util.*;
 import csd.backend.Admin.Model.DTO.*;
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.Player;
+import csd.backend.Admin.Service.SqsService;
+import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
 @Service
 public class TournamentService {
+    
     private final TournamentRepository tournamentRepository; // Tournament ADMIN FUNCT
     private final TournamentPlayerRepository tournamentPlayerRepository;
     private final PlayerRepository playerRepository;
     private final TournamentRoundRepository tournamentRoundRepository;
+    private final SqsService sqsService;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
     @Autowired
     public TournamentService(TournamentRepository tournamentRepository, 
                              TournamentPlayerRepository tournamentPlayerRepository,
-                             PlayerRepository playerRepository, // Injected the PlayerRepository
-                             TournamentRoundRepository tournamentRoundRepository) { // Injected the TournamentRoundRepository
+                             PlayerRepository playerRepository, 
+                             TournamentRoundRepository tournamentRoundRepository,
+                             SqsService sqsService
+    ) {
         this.tournamentRepository = tournamentRepository;
         this.tournamentPlayerRepository = tournamentPlayerRepository;
         this.playerRepository = playerRepository;
         this.tournamentRoundRepository = tournamentRoundRepository;
+        this.sqsService = sqsService;
     }
 
     // Function create tournament
@@ -60,7 +73,6 @@ public class TournamentService {
         return tournamentDTOs;
     }
     
-
     // Method to get tournament details with additional calculations
     public TournamentDTO getTournamentDetails(Long tournamentId) {
         Tournament tournament = getTournamentById(tournamentId);
@@ -102,7 +114,40 @@ public class TournamentService {
 
         return tournamentDTO;
     }
+
+    // Get tournament constant size
+    public int getTournamentSize() {
+        return TournamentSize.getTournamentSize();
+    }
     
+    // Method to update tournament constant size
+    public void updateTournamentSize(int newTournamentSize) {
+
+        // update tournament size
+        TournamentSize.setTournamentSize(newTournamentSize);
+
+        String messageBody = "";
+        try {
+            // Create the message body JSON using ObjectNode
+            ObjectNode messageJson = objectMapper.createObjectNode();
+            messageJson.put("size", newTournamentSize);
+            messageBody = objectMapper.writeValueAsString(messageJson);
+        } catch (Exception e) {
+            System.err.println("Failed to create message body JSON: " + e.getMessage());
+        }
+
+        // Prepare message attributes (optional)
+        Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
+        messageAttributes.put("actionType", MessageAttributeValue.builder()
+                .stringValue("changeTournamentSize")
+                .dataType("String")
+                .build());
+
+        // pass out through sqs
+        sqsService.sendMessageToQueue("account", messageBody, messageAttributes);
+    }
+
+    // Get Latest Round of a tournament
     private int getCurrentRound(Tournament tournament) {
         // Find the latest round from TournamentRound table based on tournament ID
         TournamentRound latestRound = tournamentRoundRepository

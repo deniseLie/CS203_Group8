@@ -58,7 +58,7 @@ const FindTournament = ({ logout }) => {
         +user.sub + " champ : " + selectedChampion.name);
       const response = await axios.post(
         `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
-        {playerId: user.sub, championId: selectedChampion.name},
+        {playerId: ""+user.sub, championId: selectedChampion.name},
         {
           headers: {
             'Authorization': `Bearer ${token}`

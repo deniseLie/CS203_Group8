@@ -44,20 +44,4 @@ public class EloRating {
         // Calculate the updated Elo rating
         return calculateElo(playerElo, opponentElo, outcome, kFactor);
     }
-
-    public static void main(String[] args) {
-        // Example Elo calculation
-
-        double playerElo = 1500;
-        double opponentElo = 1400;
-        double outcome = 1; // Win
-        int winStreak = 3;
-        int lossStreak = 0;
-
-        // Calculate new Elo after the match
-        double newElo = updateElo(playerElo, opponentElo, outcome, winStreak, lossStreak);
-
-        // Print the new Elo rating
-        System.out.println("New Elo Rating: " + newElo);
-    }
 }

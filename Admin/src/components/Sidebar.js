@@ -56,7 +56,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Tournaments"
           icon={<SportsEsports />}
-          subItems={['Ongoing', 'Completed', 'Configure', 'Add']}
+          subItems={['Ongoing', 'Completed', 'Configure']}
           isOpen={openMenus['Tournaments']}
           onToggle={() => handleToggle('Tournaments')}
           onClick={(subPage) => {

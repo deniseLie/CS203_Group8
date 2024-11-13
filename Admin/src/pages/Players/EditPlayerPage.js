@@ -1,45 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box, Typography, TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle
 } from '@mui/material';
 import Sidebar from '../../components/Sidebar';
 
 const EditPlayerPage = () => {
-  const { playerId } = useParams(); // Get playerId from URL
-  const [player, setPlayer] = useState(null); // State to hold player data
+  const location = useLocation();
+  const [player, setPlayer] = useState(location.state?.player || null); // Get player data from state
   const [openConfirmation, setOpenConfirmation] = useState(false); // For dialog open state
-
-  // Dummy player data for testing layout
-  const dummyPlayer = {
-    id: "123",
-    username: "testUser",
-    playername: "Test Player",
-    email: "test@example.com",
-    authProvider: "LOCAL"
-  };
-
-  // Fetch player data based on playerId
-  useEffect(() => {
-    const fetchPlayer = async () => {
-      try {
-        const response = await fetch(`/api/players/${playerId}`); // Replace with your actual API endpoint
-        const data = await response.json();
-        setPlayer(data);
-      } catch (error) {
-        console.error("Failed to fetch player data:", error);
-        // Use dummy data if fetching fails
-        setPlayer(dummyPlayer);
-      }
-    };
-
-    if (playerId) {
-      fetchPlayer();
-    } else {
-      // Set dummy data if no playerId is provided
-      setPlayer(dummyPlayer);
-    }
-  }, [playerId]);
 
   // Handle state changes
   const handleChange = (e) => {
@@ -61,10 +30,7 @@ const EditPlayerPage = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-        
-      {/* Sidebar */}
       <Sidebar />
-
       <Box sx={{ flex: 1, p: 3, backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
         <Typography variant="h4" sx={{ mb: 2 }}>Edit Player</Typography>
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Link } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 
-const PlayerTable = ({ data, onDelete }) => {
+const PlayerTable = ({ data, onDelete, onEdit }) => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedPlayerId, setSelectedPlayerId] = useState(null);
 
@@ -28,25 +28,28 @@ const PlayerTable = ({ data, onDelete }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Player Id</TableCell>
+            <TableCell>User Id</TableCell>
+            <TableCell>Profile Picture</TableCell>
             <TableCell>Username</TableCell>
             <TableCell>Playername</TableCell>
             <TableCell>Email</TableCell>
-            <TableCell>Auth Provider</TableCell>
-            <TableCell>Details</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((player, index) => (
-            <TableRow key={index}>
-              <TableCell>{player.id}</TableCell>
+          {data.map((player) => (
+            <TableRow key={player.id}>
+              <TableCell>{player.userId}</TableCell> {/* Display User ID */}
+              <TableCell>
+                <img src={player.profilePicture} alt={player.username} width="50" height="50" style={{ borderRadius: '50%' }} />
+              </TableCell>
               <TableCell>{player.username}</TableCell>
               <TableCell>{player.playername}</TableCell>
               <TableCell>{player.email}</TableCell>
-              <TableCell>{player.authProvider}</TableCell>
-              <TableCell><Link to={`/players/edit/${player.id}`}>View</Link></TableCell>
               <TableCell>
+                <IconButton color="primary" onClick={() => onEdit(player)}>
+                  <EditIcon />
+                </IconButton>
                 <IconButton color="error" onClick={() => handleOpenDeleteDialog(player.id)}>
                   <DeleteIcon />
                 </IconButton>

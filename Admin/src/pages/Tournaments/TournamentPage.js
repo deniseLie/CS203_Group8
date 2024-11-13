@@ -22,8 +22,8 @@ const TournamentPage = ({ title, status, data }) => {
           {title}
         </Typography>
 
-        {/* Filter Bar */}
-        <FilterBar />
+        {/* Filter Bar
+        <FilterBar /> */}
 
         {/* Tournament Table */}
         <TournamentTable data={data} status={status} />

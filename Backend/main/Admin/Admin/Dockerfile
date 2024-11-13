@@ -5,7 +5,7 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the jar file created by Maven into the container
-COPY target/Admin-MS-0.0.1-SNAPSHOT.jar app.jar
+COPY target/Admin-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port that Spring Boot listens to
 EXPOSE 8080

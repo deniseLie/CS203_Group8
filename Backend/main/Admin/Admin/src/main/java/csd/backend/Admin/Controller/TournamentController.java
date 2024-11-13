@@ -24,8 +24,9 @@ public class TournamentController {
 
     // Get all tournaments with details
     @GetMapping("/getAllTournaments")
-    public List<TournamentDTO> getAllTournaments() {
-        return tournamentService.getAllTournamentsDTO();
+    public ResponseEntity<List<TournamentDTO>> getAllTournaments() {
+        List<TournamentDTO> tournamentDTOs = tournamentService.getAllTournamentsDTO();
+        return new ResponseEntity<>(tournamentDTOs, HttpStatus.OK);
     }
 
     // Endpoint to create or update a tournament round
@@ -84,7 +85,7 @@ public class TournamentController {
             tournamentService.updateTournamentSize(newTournamentSize);
             
             // Success response
-            response.put("message", "successful");
+            response.put("message", "Tournament size updated successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);  // OK response for successful operation
         } catch (Exception e) {
             // Error handling

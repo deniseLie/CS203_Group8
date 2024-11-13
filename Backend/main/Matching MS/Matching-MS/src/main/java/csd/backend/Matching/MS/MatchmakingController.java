@@ -93,11 +93,15 @@ public class MatchmakingController {
 
     @CrossOrigin(origins = "http://cs203-bucket.s3-website-ap-southeast-1.amazonaws.com")
     @PostMapping("/join/speedupQueue")
-    public ResponseEntity<Map<String, Object>> joinSpeedUpMatchmaking(@RequestBody String playerId, @RequestBody String championId) {
+    public ResponseEntity<Map<String, Object>> joinSpeedUpMatchmaking(@RequestBody JoinRequestBody joinRequestBody) {
         int maxAttempts = 20;       // Set the maximum number of checks to avoid infinite loops
         int checkInterval = 5000;   // Interval between checks in milliseconds (5 seconds)
                 
         Map<String, Object> response = new HashMap<>();
+
+        // Access playerId and championId from joinRequest
+        String playerId = joinRequestBody.getPlayerId();
+        String championId = joinRequestBody.getChampionId();
         try {
             // Check if the player is banned
             Map<String, Object> playerStatus = matchmakingService.checkPlayerStatus(playerId);

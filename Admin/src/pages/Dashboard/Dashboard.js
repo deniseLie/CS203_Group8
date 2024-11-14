@@ -41,10 +41,9 @@ const DashboardPage = () => {
         </Box>
         
         <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
-          <DashboardCard title="Tournaments" count="19" subCount="2 Ongoing" icon={<Dashboard />} />
-          <DashboardCard title="Matches" count="132" subCount="14 Ongoing" icon={<SportsEsports />} />
-          <DashboardCard title="Players" count="238" subCount="45 Online" icon={<People />} />
-          <DashboardCard title="Top Players" content={['Faker - 100%', 'KylieHill - 87.6%', 'TonyStark - 79.2%']} icon={<EmojiEventsIcon />} />
+          <DashboardCard title="Tournaments" count="20" subCount="10 Ongoing" icon={<Dashboard />} />
+          <DashboardCard title="Players" count="8" subCount="" icon={<People />} />
+          {/* <DashboardCard title="Top Players" content={['Faker - 100%', 'KylieHill - 87.6%', 'TonyStark - 79.2%']} icon={<EmojiEventsIcon />} /> */}
         </Stack>
 
         {/* Most Recent Tournaments Table */}

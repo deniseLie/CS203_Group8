@@ -12,28 +12,16 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    setError(``);
+    setError('');
 
-    try {
-      login();
-      navigate('/dashboard');
-      // const response = await api.post('/admin/user/login', {
-      //   username,
-      //   password,
-      // });
-
-      // if (response.status === 200) {
-      //   login();  // Set authentication to true in your context or state management
-      //   navigate('/dashboard');  // Redirect to dashboard
-      // }
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        setError('Incorrect Username or Password.');
-      } else {
-        setError('An error occurred. Please try again.');
-      }
+    // Check credentials (replace with your own logic)
+    if (username === 'admin' && password === 'password') {
+      login(); // Mark user as authenticated in AuthContext
+      navigate('/dashboard'); // Redirect to dashboard on success
+    } else {
+      setError('Incorrect Username or Password.');
     }
   };
 

@@ -56,7 +56,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Tournaments"
           icon={<SportsEsports />}
-          subItems={['Ongoing', 'Completed', 'Configure', 'Add']}
+          subItems={['Ongoing', 'Completed', 'Configure']}
           isOpen={openMenus['Tournaments']}
           onToggle={() => handleToggle('Tournaments')}
           onClick={(subPage) => {
@@ -80,7 +80,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Players"
           icon={<People />}
-          subItems={['Dataset', 'Leaderboards', 'Create']}
+          subItems={['Dataset', 'Create']}
           isOpen={openMenus['Players']}
           onToggle={() => handleToggle('Players')}
           onClick={(subPage) => {
@@ -89,7 +89,7 @@ const Sidebar = () => {
           }}
           activePage={activePage}
         />
-        <SidebarItem
+        {/* <SidebarItem
           text="Settings"
           icon={<Settings />}
           subItems={['Login Attempts', 'Admin Registration', 'Activity Logs', 'Profile']}
@@ -100,7 +100,7 @@ const Sidebar = () => {
             // handle navigation logic here based on subPage
           }}
           activePage={activePage}
-        />
+        /> */}
       </List>
     </Box>
   );

@@ -2,9 +2,7 @@ package csd.backend.Admin.Service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import csd.backend.Admin.Model.Tournament.*;
 import csd.backend.Admin.Model.User.*;
 import csd.backend.Admin.Service.User.*;
@@ -17,7 +15,6 @@ public class TournamentPlayerService {
     private final TournamentService tournamentService;
     private final PlayerService playerService;
 
-    @Autowired
     public TournamentPlayerService(TournamentPlayerRepository tournamentPlayerRepository,
                                    TournamentService tournamentService,
                                    PlayerService playerService
@@ -28,7 +25,7 @@ public class TournamentPlayerService {
     }
         
     // Method to create and save the TournamentPlayer relationship
-    public String createTournamentPlayer(Long playerId, Long tournamentId) {
+    public String createTournamentPlayer(Long playerId, Long tournamentId, String championId) {
         try {
             // Find the tournament and player by their IDs
             Tournament tournament = tournamentService.getTournamentById(tournamentId);
@@ -42,6 +39,7 @@ public class TournamentPlayerService {
             TournamentPlayer tournamentPlayer = new TournamentPlayer();
             tournamentPlayer.setPlayerId(playerId);
             tournamentPlayer.setTournament(tournament);
+            tournamentPlayer.setChampionId(championId);  
 
             // Save the TournamentPlayer object to the database
             tournamentPlayerRepository.save(tournamentPlayer);

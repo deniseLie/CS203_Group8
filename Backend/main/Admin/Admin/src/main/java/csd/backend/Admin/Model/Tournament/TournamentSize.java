@@ -1,15 +1,15 @@
 package csd.backend.Admin.Model.Tournament;
 
 public class TournamentSize {
-    private int tournamentSize = 8;
+    private static int tournamentSize = 8; // Default value is 8
 
     // Getter method to retrieve the tournament size
-    public int getTournamentSize() {
+    public static int getTournamentSize() {
         return tournamentSize;
     }
 
     // Setter method to change the tournament size
-    public void setTournamentSize(int newSize) {
+    public static void setTournamentSize(int newSize) {
         tournamentSize = newSize;
     }
 }

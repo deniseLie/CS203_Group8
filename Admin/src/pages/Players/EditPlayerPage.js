@@ -1,50 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Box, Typography, TextField, Button, Stack, FormControl, InputLabel, Select, MenuItem, Dialog, DialogActions, DialogContent, DialogTitle
+  Box, Typography, TextField, Button, Stack, Dialog, DialogActions, DialogContent, DialogTitle
 } from '@mui/material';
 import Sidebar from '../../components/Sidebar';
 
 const EditPlayerPage = () => {
-  const { playerId } = useParams(); // Get playerId from URL
-  const [player, setPlayer] = useState(null); // State to hold player data
-  const [openConfirmation, setOpenConfirmation] = useState(false); // For dialog open state
+  const location = useLocation();
+  const navigate = useNavigate(); // Hook to navigate programmatically
+  const { player, updatePlayer } = location.state || {}; // Get player data and updatePlayer function from state
+  const [editedPlayer, setEditedPlayer] = useState(player); // Use player data to populate form
+  const [openConfirmation, setOpenConfirmation] = useState(false);
 
-  // Dummy player data for testing layout
-  const dummyPlayer = {
-    id: "123",
-    username: "testUser",
-    playername: "Test Player",
-    email: "test@example.com",
-    authProvider: "LOCAL"
-  };
-
-  // Fetch player data based on playerId
-  useEffect(() => {
-    const fetchPlayer = async () => {
-      try {
-        const response = await fetch(`/api/players/${playerId}`); // Replace with your actual API endpoint
-        const data = await response.json();
-        setPlayer(data);
-      } catch (error) {
-        console.error("Failed to fetch player data:", error);
-        // Use dummy data if fetching fails
-        setPlayer(dummyPlayer);
-      }
-    };
-
-    if (playerId) {
-      fetchPlayer();
-    } else {
-      // Set dummy data if no playerId is provided
-      setPlayer(dummyPlayer);
-    }
-  }, [playerId]);
-
-  // Handle state changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setPlayer((prev) => ({ ...prev, [name]: value }));
+    setEditedPlayer((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = () => {
@@ -52,35 +22,27 @@ const EditPlayerPage = () => {
   };
 
   const handleCloseConfirmation = () => setOpenConfirmation(false);
+
   const handleConfirmSave = () => {
-    // Confirm save logic here
-    handleCloseConfirmation();
+    // Call updatePlayer to update the player data in the parent component
+    navigate("/players/dataset", { replace: true }); // Navigate back to the dataset page
+    handleCloseConfirmation(); // Close the confirmation dialog
   };
 
-  if (!player) return <Typography>Loading...</Typography>; // Show loading if data is not ready
+  if (!editedPlayer) return <Typography>Loading...</Typography>; // Show loading if data is not ready
 
   return (
     <Box sx={{ display: 'flex' }}>
-        
-      {/* Sidebar */}
       <Sidebar />
-
       <Box sx={{ flex: 1, p: 3, backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
         <Typography variant="h4" sx={{ mb: 2 }}>Edit Player</Typography>
 
         <Box sx={{ backgroundColor: '#ffffff', p: 3, borderRadius: 2, boxShadow: 1 }}>
           <Stack spacing={2}>
-            <TextField label="Player ID" value={player.id} fullWidth required disabled />
-            <TextField label="Username" name="username" value={player.username} onChange={handleChange} fullWidth required />
-            <TextField label="Email" name="email" value={player.email} onChange={handleChange} fullWidth required />
-            <TextField label="Playername" name="playername" value={player.playername} onChange={handleChange} fullWidth required />
-            <FormControl fullWidth required>
-              <InputLabel>Auth Provider</InputLabel>
-              <Select name="authProvider" value={player.authProvider} onChange={handleChange}>
-                <MenuItem value="LOCAL">Local</MenuItem>
-                <MenuItem value="GOOGLE">Google</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField label="Player ID" value={editedPlayer.id} fullWidth required disabled />
+            <TextField label="Username" name="username" value={editedPlayer.username} onChange={handleChange} fullWidth required />
+            <TextField label="Email" name="email" value={editedPlayer.email} onChange={handleChange} fullWidth required />
+            <TextField label="Playername" name="playername" value={editedPlayer.playername} onChange={handleChange} fullWidth required />
             <Button variant="contained" color="primary" onClick={handleSave}>Save Player</Button>
           </Stack>
         </Box>

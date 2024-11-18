@@ -2,7 +2,6 @@ package csd.backend.Admin;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -23,7 +22,6 @@ public class AdminQueueListener {
     private final TournamentService tournamentService;
     private final TournamentPlayerService tournamentPlayerService;
 
-    @Autowired
     public AdminQueueListener(
         SqsService sqsService, UserService userService, PlayerService playerService,
         TournamentService tournamentService, TournamentPlayerService tournamentPlayerService
@@ -166,11 +164,18 @@ public class AdminQueueListener {
             // Convert timestampStart to LocalDateTime
             LocalDateTime tournamentStartTime = LocalDateTime.parse(timestampStart);
 
-            // Extract player IDs
-            JsonNode playerIdsNode = rootNode.path("playerIds");
+            // Extract player details (playerId and championId)
+            JsonNode playersNode = rootNode.path("players");
             List<Long> playerIds = new ArrayList<>();
-            for (JsonNode playerIdNode : playerIdsNode) {
-                playerIds.add(playerIdNode.asLong());
+            List<String> championIds = new ArrayList<>();
+            
+            // Loop through players and extract playerId and championId
+            for (JsonNode playerNode : playersNode) {
+                String[] playerInfo = playerNode.asText().split(",");
+                if (playerInfo.length == 2) {
+                    playerIds.add(Long.parseLong(playerInfo[0]));  // playerId
+                    championIds.add(playerInfo[1]);  // championId
+                }
             }
 
             // Create a new Tournament object
@@ -181,11 +186,16 @@ public class AdminQueueListener {
             // Save the tournament via tournamentService
             Tournament savedTournament = tournamentService.createTournament(tournament);
 
-            // For each playerId,  Save the tournament-player relationship
-            for (Long playerId : playerIds) {
-                String result = tournamentPlayerService.createTournamentPlayer(playerId, savedTournament.getTournamentId());
-            }
+            // For each playerId, Save the tournament-player relationship
+            for (int i = 0; i < playerIds.size(); i++) {
+                Long playerId = playerIds.get(i);
+                String championId = championIds.get(i);
 
+                // Save the relationship between player and tournament
+                String result = tournamentPlayerService.createTournamentPlayer(playerId, savedTournament.getTournamentId(), championId);
+                System.out.println("Player " + playerId + " added to tournament with champion: " + championId);
+            }
+            
             // Print the result
             System.out.println("Tournament created: " + savedTournament.getTournamentId());
         } catch (Exception e) {

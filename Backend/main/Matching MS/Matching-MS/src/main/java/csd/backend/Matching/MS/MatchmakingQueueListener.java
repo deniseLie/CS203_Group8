@@ -6,6 +6,8 @@ import software.amazon.awssdk.services.sqs.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import csd.backend.Matching.MS.Model.TournamentSize;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -79,6 +81,9 @@ public class MatchmakingQueueListener {
             case "deletePlayerProfile":
                 processDeletePlayer(messageBody);
                 break;
+            case "changeTournamentSize":
+                processChangeTournamentSize(messageBody);
+                break;
             default: 
                 System.err.println("Unknown action type: " + actionType);
                 break;
@@ -103,11 +108,10 @@ public class MatchmakingQueueListener {
         if (playerData != null) {
             // Call addPlayerToPool with extracted data
             Long playerId = Long.parseLong(playerData.get("playerId"));
-            String email = playerData.get("email");
             String queueStatus = playerData.getOrDefault("queueStatus", "available");
             int rankId = Integer.parseInt(playerData.getOrDefault("rankId", "1")); 
 
-            matchmakingService.addPlayerToPool(playerId, email, queueStatus, rankId);
+            matchmakingService.addPlayerToPool(playerId, queueStatus, rankId);
             System.out.println("Player added to pool: " + playerId);
         }
     }
@@ -191,11 +195,31 @@ public class MatchmakingQueueListener {
             JsonNode rootNode = objectMapper.readTree(messageBody);
 
             Long playerId = rootNode.path("playerId").asLong();
-
-            playerService.deletePlayerStatus(playerId);
-            System.out.println("Player profile updated for playerId: " + playerId);
+            if (playerId != null) {
+                playerService.deletePlayer(playerId);
+                System.out.println("Player profile updated for playerId: " + playerId);
+            } else {
+                System.err.println("Player ID not found in message.");
+            }
         } catch (Exception e) {
             System.err.println("Failed to process update player message: " + e.getMessage());
+        }
+    }
+
+    // Method Change Tournament size
+    private void processChangeTournamentSize(String messageBody) {
+        try {
+            // Parse the update player profile request
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(messageBody);
+
+            Long tournamentId = rootNode.path("tournamentId").asLong();
+            int size = rootNode.path("size").asInt();
+
+            TournamentSize.setTournamentSize(size);
+            System.out.println("Tournament size updated for tournamentId: " + tournamentId);
+        } catch (Exception e) {
+            System.err.println("Failed to process update tournament size message: " + e.getMessage());
         }
     }
 

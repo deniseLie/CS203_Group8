@@ -2,8 +2,6 @@ package csd.backend.Penalty.MS;
 
 import java.util.Map;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.SqsClient;

@@ -1,34 +1,21 @@
 package csd.backend.Account.MS.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.amazonaws.services.lambda.runtime.events.CloudFrontEvent.Response;
-
-import org.springframework.stereotype.Service;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
+import csd.backend.Account.MS.Exception.PlayerNotFoundException;
 import csd.backend.Account.MS.Model.Player.*;
-import csd.backend.Account.MS.Model.Tournament.*;
 import csd.backend.Account.MS.Service.Tournament.*;
 import csd.backend.Account.MS.Service.Player.*;
-import csd.backend.Account.MS.Service.Champion.*;
 
-import java.io.*;
-import java.nio.file.*;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/account")
@@ -37,16 +24,13 @@ public class AccountController {
     private final PlayerService playerService;
     private final PlayerStatsService playerStatsService;
     private final TournamentService tournamentService;
-    private final ChampionService championService;
 
-    @Autowired
     public AccountController(
-        PlayerService playerService, PlayerStatsService playerStatsService, TournamentService tournamentService, ChampionService championService
+        PlayerService playerService, PlayerStatsService playerStatsService, TournamentService tournamentService
     ) {
         this.playerService = playerService;
         this.playerStatsService = playerStatsService;
         this.tournamentService = tournamentService;
-        this.championService = championService;
     }
 
     // Edit Player Profile (username, playerName, email, password)
@@ -79,10 +63,17 @@ public class AccountController {
         try {
             // Get formatted top 3 played champions
             List<Map<String, Object>> topChampions = playerService.getFormattedTopChampions(playerId);
-    
+            if (topChampions == null) {
+                topChampions = Collections.emptyList();
+            }
+
             // Get player stats
             Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
-    
+            if (playerStats == null) {
+                response.put("message", "No player stats found for playerId " + playerId);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
             if (!topChampions.isEmpty() && !playerStats.isEmpty()) {
                 // Combine the results into a response map
                 playerStats.put("topChampions", topChampions);
@@ -92,31 +83,41 @@ public class AccountController {
                 response.put("message", "No data found for the player");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
+        } catch (PlayerNotFoundException e) {
+            response.put("error", "Player not found: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             response.put("error", "An error occurred: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+
     // Endpoint to get match history
     @GetMapping("/{playerId}/match-history")
-    public ResponseEntity<List<Map<String, Object>>> getPlayerMatchHistory(@PathVariable Long playerId) {
-        List<Map<String, Object>> response = new ArrayList<>();
-
+    public ResponseEntity<Object> getPlayerMatchHistory(@PathVariable Long playerId) {
         try {
-            // Get player match history via PlayerService
-            Map<String, Object> matchHistory = new HashMap<>();
-            matchHistory.put("matchHistory", tournamentService.getPlayerMatchHistory(playerId));
+            // Get player match history via TournamentService
+            List<Map<String, Object>> matchHistory = tournamentService.getPlayerMatchHistory(playerId);
 
-            // Return the response as formatted JSON
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            // Check if matchHistory is null or empty
+            if (matchHistory == null || matchHistory.isEmpty()) {
+                Map<String, Object> noDataResponse = new HashMap<>();
+                noDataResponse.put("message", "No match history found for player " + playerId);
+                return new ResponseEntity<>(noDataResponse, HttpStatus.NOT_FOUND);
+            }
+
+            // Return the match history directly
+            return new ResponseEntity<>(matchHistory, HttpStatus.OK);
+
         } catch (Exception e) {
             // Handle exceptions and send error response
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "An error occurred while fetching the match history: " + e.getMessage());
-            return new ResponseEntity<>(List.of(errorResponse), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Endpoint to get player's rank name
     @GetMapping("/{playerId}/rank")

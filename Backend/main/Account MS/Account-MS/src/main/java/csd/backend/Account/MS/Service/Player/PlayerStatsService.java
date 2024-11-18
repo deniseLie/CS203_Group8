@@ -11,9 +11,7 @@ import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Repository.Player.*;
 import csd.backend.Account.MS.Service.SqsService;
 import csd.backend.Account.MS.Service.Rank.RankService;
-import jakarta.transaction.Transactional;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
-import csd.backend.Account.MS.Repository.Champion.*;
 import java.util.*;
 
 @Service

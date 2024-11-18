@@ -1,6 +1,5 @@
 package csd.backend.Account.MS;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
@@ -31,7 +30,6 @@ public class AccountListener {
     private final TournamentService tournamentService;
     private final TournamentPlayerStatsService tournamentPlayerStatsService;
 
-    @Autowired
     public AccountListener(
         SqsService sqsService, PlayerService playerService, 
         PlayerStatsService playerStatsService, TournamentService tournamentService, 
@@ -285,8 +283,7 @@ public class AccountListener {
             Long playerId = rootNode.path("playerId").asLong();
 
             if (playerId != null) {
-                // Call the service method to delete the player from the database
-                String result = playerService.deletePlayer(playerId);
+                playerService.deletePlayerByPlayerId(playerId);
                 System.out.println("Player deleted: " + playerId);
             } else {
                 System.err.println("Player ID not found in message.");

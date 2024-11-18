@@ -1,25 +1,20 @@
 package csd.backend.Account.MS.Service.Player;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.Exception.*;
+import csd.backend.Account.MS.Model.Champion.Champion;
 import csd.backend.Account.MS.Model.Player.*;
 import csd.backend.Account.MS.Repository.Player.*;
 import csd.backend.Account.MS.Service.*;
 import csd.backend.Account.MS.Service.Champion.ChampionService;
-import jakarta.transaction.Transactional;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.mindrot.jbcrypt.BCrypt;
 
 @Service
 public class PlayerService {
@@ -27,7 +22,6 @@ public class PlayerService {
     private final PlayerRepository playerRepository;
     private final PlayerOverallStatsRepository playerOverallStatsRepository;
     private final PlayerChampionStatsRepository playerChampionStatsRepository;
-    private final PlayerStatsService playerStatsService;
     private final SqsService sqsService;
     private final ChampionService championService;  
     private final PasswordEncoder passwordEncoder; 
@@ -38,7 +32,6 @@ public class PlayerService {
         PlayerRepository playerRepository,
         PlayerOverallStatsRepository playerOverallStatsRepository,
         PlayerChampionStatsRepository playerChampionStatsRepository,
-        PlayerStatsService playerStatsService,
         SqsService sqsService,
         ChampionService championService,
         PasswordEncoder passwordEncoder
@@ -46,7 +39,6 @@ public class PlayerService {
         this.playerRepository = playerRepository;
         this.playerOverallStatsRepository = playerOverallStatsRepository;
         this.playerChampionStatsRepository = playerChampionStatsRepository;
-        this.playerStatsService = playerStatsService;
         this.sqsService = sqsService;
         this.championService = championService;
         this.passwordEncoder = passwordEncoder;
@@ -74,20 +66,26 @@ public class PlayerService {
     
     // New method to format top champions
     public List<Map<String, Object>> getFormattedTopChampions(Long playerId) {
-        // Retrieve the top 3 played champions
         List<PlayerChampionStats> topChampions = getTop3PlayedChampions(playerId);
+        
+        // Check if topChampions is null or empty
+        if (topChampions == null || topChampions.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        // Format the top champions data
         return topChampions.stream()
             .map(championStats -> {
                 Map<String, Object> championData = new HashMap<>();
                 championData.put("championId", championStats.getChampionId());
 
-                // Get champion name using the ChampionService
-                String championName = championService.getChampionById(championStats.getChampionId()).getChampionName();
-                championData.put("championName", championName);
+                // Safely retrieve the champion name
+                Champion champion = championService.getChampionById(championStats.getChampionId());
+                if (champion != null) {
+                    championData.put("championName", champion.getChampionName());
+                } else {
+                    championData.put("championName", "Unknown Champion"); // Handle missing champion
+                }
 
-                // Add other attributes
                 championData.put("averagePlace", championStats.getAveragePlace());
                 championData.put("kdRate", championStats.getKdRate());
                 championData.put("totalWins", championStats.getTotalWins());
@@ -97,6 +95,7 @@ public class PlayerService {
             })
             .collect(Collectors.toList());
     }
+
 
     // Get the top 3 played champions for the player
     public List<PlayerChampionStats> getTop3PlayedChampions(Long playerId) {
@@ -122,29 +121,31 @@ public class PlayerService {
 
     // Get player statistics (total matches, average place, first place percentage)
     public Map<String, Object> getPlayerStats(Long playerId) {
-        // Check if the player exists
         if (!playerRepository.existsById(playerId)) {
             throw new PlayerNotFoundException(playerId);
         }
-
+    
         Optional<PlayerOverallStats> playerStatsOpt = Optional.ofNullable(playerOverallStatsRepository.findByPlayerId(playerId));
         Map<String, Object> statsMap = new HashMap<>();
-
+    
         if (playerStatsOpt.isPresent()) {
             PlayerOverallStats stats = playerStatsOpt.get();
-            double firstPlacePercentage = (double) stats.getTotalFirstPlaceMatches() / stats.getTotalNumberOfMatches() * 100;
-
-            // Return player stats as a map
-            statsMap.put("totalMatches", stats.getTotalNumberOfMatches());
+            int totalMatches = stats.getTotalNumberOfMatches();
+            double firstPlacePercentage = totalMatches > 0 ? (double) stats.getTotalFirstPlaceMatches() / totalMatches * 100 : 0;
+    
+            statsMap.put("totalMatches", totalMatches);
             statsMap.put("averagePlace", stats.getOverallAveragePlace());
             statsMap.put("firstPlacePercentage", firstPlacePercentage);
-
         } else {
             statsMap.put("message", "Player stats not found");
+            statsMap.put("totalMatches", 0);
+            statsMap.put("averagePlace", 0.0);
+            statsMap.put("firstPlacePercentage", 0.0);
         }
     
         return statsMap;
     }
+    
 
     // Get Profile Picture 
     public String getProfilePicture(Long playerId) {
@@ -200,18 +201,13 @@ public class PlayerService {
         return player;
     }
     
-    // Delete Player
-    public String deletePlayer(Long playerId) {
-        try {
-            // Retrieve player
-            Player player = getPlayerById(playerId);
-
-            playerRepository.delete(player);  // Delete player from the repository
-            return "Player deleted successfully";
-        } catch (Exception e) {
-            System.err.println("Error deleting player: " + e.getMessage());
-            return "Error deleting player";
+    // Method to delete a player by playerId
+    public void deletePlayerByPlayerId(Long playerId) {
+        if (!playerRepository.existsById(playerId)) {
+            throw new PlayerNotFoundException(playerId);
         }
+
+        playerRepository.deleteByPlayerId(playerId);  // This will delete the player with the given playerId
     }
     
 

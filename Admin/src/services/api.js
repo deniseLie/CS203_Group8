@@ -1,12 +1,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://your-api-endpoint.com',
+  baseURL: 'http://CS203-ALB-1399477535.ap-southeast-1.elb.amazonaws.com:8080',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-export const fetchUsers = () => api.get('/users');
-export const fetchReports = () => api.get('/reports');
 export default api;

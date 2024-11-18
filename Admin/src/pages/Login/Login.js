@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Avatar, Stack } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import api from '../../services/api';
 import logo from '../../assets/logo.png';
 
 const Login = () => {
@@ -11,16 +12,28 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError(``);
 
-    // Placeholder for authentication logic
-    if (username !== 'username' || password !== 'password') {
-      setError('Incorrect Username or Password.');
-    } else {
-      setError('');
-      login();  // Set authentication to true
-      navigate('/dashboard');  // Redirect to dashboard
+    try {
+      login();
+      navigate('/dashboard');
+      // const response = await api.post('/admin/user/login', {
+      //   username,
+      //   password,
+      // });
+
+      // if (response.status === 200) {
+      //   login();  // Set authentication to true in your context or state management
+      //   navigate('/dashboard');  // Redirect to dashboard
+      // }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setError('Incorrect Username or Password.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 

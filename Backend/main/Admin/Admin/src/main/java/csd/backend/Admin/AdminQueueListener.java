@@ -35,30 +35,30 @@ public class AdminQueueListener {
 
     // Listen for messages in the Admin Queue
     public void listenToAdminQueue() {
-        String queueUrl = sqsService.getQueueUrl("admin");
+        // String queueUrl = sqsService.getQueueUrl("admin");
 
-        while (true) {
-            ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
-                    .queueUrl(queueUrl)
-                    .maxNumberOfMessages(10)  // Process up to 10 messages at once
-                    .waitTimeSeconds(20)      // Long polling for efficiency
-                    .build();
+        // while (true) {
+        //     ReceiveMessageRequest receiveMessageRequest = ReceiveMessageRequest.builder()
+        //             .queueUrl(queueUrl)
+        //             .maxNumberOfMessages(10)  // Process up to 10 messages at once
+        //             .waitTimeSeconds(20)      // Long polling for efficiency
+        //             .build();
 
-            ReceiveMessageResponse response = sqsService.getSqsClient().receiveMessage(receiveMessageRequest);
+        //     ReceiveMessageResponse response = sqsService.getSqsClient().receiveMessage(receiveMessageRequest);
 
-            for (Message message : response.messages()) {
-                System.out.println("Processing Queue message: " + message.body());
+        //     for (Message message : response.messages()) {
+        //         System.out.println("Processing Queue message: " + message.body());
 
-                // Extract the message attributes from the received message
-                Map<String, MessageAttributeValue> messageAttributes = message.messageAttributes();
+        //         // Extract the message attributes from the received message
+        //         Map<String, MessageAttributeValue> messageAttributes = message.messageAttributes();
 
-                // Pass both the message body and message attributes to the processing method
-                processMessage(message.body(), messageAttributes);
+        //         // Pass both the message body and message attributes to the processing method
+        //         processMessage(message.body(), messageAttributes);
 
-                // Delete message after processing
-                deleteMessageFromQueue(queueUrl, message);
-            }
-        }
+        //         // Delete message after processing
+        //         deleteMessageFromQueue(queueUrl, message);
+        //     }
+        // }
     }
 
     // Placeholder for admin message processing logic

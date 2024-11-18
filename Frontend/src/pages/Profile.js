@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Typography, Avatar } from "@mui/material";
 import Navbar from "../components/Navbar";
+import { championsAssets, championSplashAssets } from '../util/importAssets';
+
 import diamondBanner from '../assets/rank-banners/diamond.png';
 import playerIcon from '../assets/summonerIcon/1.jpg';
 import diamondRankIcon from '../assets/rankIcon/diamond.png';
+// Other assets
 import arenaIcon from "../assets/icons/arena_big.png";
+import editButton from "../assets/buttons/button-edit.png";
 import crownIcon from "../assets/icons/win.png";
 import swordIcon from "../assets/icons/sword.png";
 import ProfileBanner from '../components/ProfileBanner';
@@ -47,6 +51,7 @@ const Profile = ({ logout }) => {
 
     return (
         <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            {/* Navbar */}
             <Box sx={{ flexShrink: 0, zIndex: 100 }}>
                 <Navbar logout={logout} />
             </Box>
@@ -54,23 +59,23 @@ const Profile = ({ logout }) => {
             {/* Background image is most played champ */}
             <Box
                 sx={{
-                    backgroundImage: `url(${getChampionImage(profileData.topChampions[0].championName, "splash")})`,
-                    backgroundSize: 'cover',
+                    backgroundImage: `url(${championSplashAssets.kayn})`, // Set Kayn's splash art as background
+                    backgroundSize:'cover',
                     zIndex: 0,
-                    backgroundPosition: 'center -100px',
+                    backgroundPosition: 'center -100px', // Moves the background image up (you can adjust the value further)
                 }}
             >
                 <Box
                     sx={{
                         display: 'flex',
-                        flexDirection: 'row',
+                        flexDirection: 'row', // Row layout to align profile banner to the left
                         color: '#F0E6D2',
                         px: 2,
-                        flexGrow: 1,
+                        flexGrow: 1, // Makes this section grow to fill available space
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         position: 'relative',
-                        zIndex: 2,
+                        zIndex: 2, // Ensure content is above the gradient
                     }}
                 >
                 {/* Banner and rank */}
@@ -87,25 +92,28 @@ const Profile = ({ logout }) => {
                         />
                     </Box>
 
+                    {/* Statistics Section, positioned above the gradient */}
                     <Box
                         sx={{
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            width: '100%',
-                            paddingBottom: '2%',
+                            width: '100%', // Occupy full width
+                            paddingBottom: '2%', // Spacing from bottom
                             gap: 4,
-                            marginTop: 'auto',
-                            zIndex: 3,
+                            marginTop: 'auto', // Pushes this section to the bottom of the main container
+                            zIndex: 3, // Ensure this content is above the gradient
                         }}
                     >
+                        {/* Arena Stats and Top Played Champions Side by Side */}
                         <Box
                             sx={{
                                 display: 'flex',
                                 width: '80%',
-                                alignContent: 'flex-start',
+                                alignContent:'flex-start'
                             }}
                         >
+                            {/* Arena Stats */}
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -113,28 +121,43 @@ const Profile = ({ logout }) => {
                                     alignItems: 'center',
                                     width: '45%',
                                     p: 3,
-                                    alignSelf: 'flex-end',
-                                    justifyItems: 'flex-start',
+                                    alignSelf:'flex-end',
+                                    justifyItems:'flex-start'
                                 }}
                             >
                             {/* overall account stats */}
                                 <Typography className='headerPrimary' sx={{ mb: 2, fontSize: '1.2em', alignSelf: 'flex-start' }}>ARENA</Typography>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>
-                                        <Box component="img" src={arenaIcon} alt="Arena Icon" sx={{ width: '50px', mb: 1 }} />
-                                        <Typography className='headerPrimary' sx={{ fontSize: '1.2em', color: '#B68C34' }}>{profileData.totalMatches}</Typography>
+                                        <Box
+                                            component="img"
+                                            src={arenaIcon}
+                                            alt="Arena Icon"
+                                            sx={{ width: '50px', mb: 1 }}
+                                        />
+                                        <Typography className='headerPrimary' sx={{fontSize:'1.2em', color:'#B68C34'}}>{dummyData.arenaStats.gamesPlayed}</Typography>
                                         <Typography className='headerPrimary' sx={{ color: '#949083' }}>Games Played</Typography>
                                     </Box>
 
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>
-                                        <Box component="img" src={swordIcon} alt="Sword Icon" sx={{ width: '50px', mb: 1, backgroundColor: "rgba(0,0,0,0.5)", borderRadius: 2 }} />
-                                        <Typography className="headerPrimary" sx={{ fontSize: '1.2em', color: '#B68C34' }}>#{profileData.averagePlace}</Typography>
+                                        <Box
+                                            component="img"
+                                            src={swordIcon}
+                                            alt="Sword Icon"
+                                            sx={{ width: '50px', mb: 1, backgroundColor: "rgba(0,0,0,0.5)", borderRadius:2 }}
+                                        />
+                                        <Typography className="headerPrimary" sx={{fontSize:'1.2em', color:'#B68C34'}} >#{dummyData.arenaStats.avgPlace}</Typography>
                                         <Typography className='headerPrimary' sx={{ color: '#949083' }}>Avg Place</Typography>
                                     </Box>
 
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>
-                                        <Box component="img" src={crownIcon} alt="Crown Icon" sx={{ width: '50px', mb: 1 }} />
-                                        <Typography className="headerPrimary" sx={{ fontSize: '1.2em', color: '#B68C34' }}>{(profileData.firstPlacePercentage * 100).toFixed(1)}%</Typography>
+                                        <Box
+                                            component="img"
+                                            src={crownIcon}
+                                            alt="Crown Icon"
+                                            sx={{ width: '50px', mb: 1 }}
+                                        />
+                                        <Typography className="headerPrimary" sx={{fontSize:'1.2em', color:'#B68C34'}} >{dummyData.arenaStats.firstPlaceRate}%</Typography>
                                         <Typography className="headerPrimary" sx={{ color: '#949083' }}>1st Place Rate</Typography>
                                     </Box>
                                 </Box>
@@ -150,7 +173,7 @@ const Profile = ({ logout }) => {
                                     width: '45%',
                                 }}
                             >
-                                <Typography className="headerPrimary" sx={{ mb: 2, fontSize: '1.2em' }}>TOP PLAYED CHAMPIONS</Typography>
+                                <Typography className="headerPrimary" sx={{ mb: 2 , fontSize:'1.2em'}}>TOP PLAYED CHAMPIONS</Typography>
                                 <Box
                                     sx={{
                                         display: 'flex',
@@ -158,16 +181,16 @@ const Profile = ({ logout }) => {
                                         width: '100%',
                                     }}
                                 >
-                                    {profileData.topChampions.map((champion, index) => (
+                                    {dummyData.topPlayedChampions.map((champion, index) => (
                                         <Box key={index} sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                             <Avatar
                                                 variant="square"
-                                                src={getChampionImage(champion.championName, "icon")}
-                                                alt={champion.championName}
+                                                src={champion.img}
+                                                alt={champion.name}
                                                 sx={{ width: '4vw', height: '4vw', mb: 1 }}
                                             />
-                                            <Typography className="headerPrimary" sx={{ color: '#B68C34', fontSize: '1.2em' }}>{champion.totalWins}W {champion.totalMatchNumber - champion.totalWins}L</Typography>
-                                            <Typography className="headerPrimary" sx={{ color: '#949083' }}>{`${(champion.totalWins / champion.totalMatchNumber * 100).toFixed(1)}% WR`}</Typography>
+                                            <Typography className="headerPrimary" sx={{ color: '#B68C34' ,fontSize:'1.2em'}}>{champion.winLoss}</Typography>
+                                            <Typography className="headerPrimary" sx={{ color: '#949083'  }}>{champion.winRate}</Typography>
                                         </Box>
                                     ))}
                                 </Box>
@@ -175,6 +198,19 @@ const Profile = ({ logout }) => {
                         </Box>
                     </Box>
                 </Box>
+
+                {/* Full-width Gradient Background at the Bottom */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        width: '100vw', // Ensures it covers the full viewport width
+                        height: '33vh', // One third of the viewport height
+                        backgroundColor: 'linear-gradient(to top, #000000 0%, transparent 100%)',
+                        zIndex: 1,
+                    }}
+                />
             </Box>
         </Box>
     );

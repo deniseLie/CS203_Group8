@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Matching.MS.controller;
 
 
 import org.slf4j.Logger;
@@ -6,6 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import csd.backend.Matching.MS.model.request.JoinRequestBody;
+import csd.backend.Matching.MS.service.matchmaking.MatchmakingService;
+import csd.backend.Matching.MS.service.player.PlayerService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

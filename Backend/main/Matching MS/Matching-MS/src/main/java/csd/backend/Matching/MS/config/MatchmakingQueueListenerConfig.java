@@ -1,9 +1,10 @@
-package csd.backend.config;
+package csd.backend.Matching.MS.config;
 
-import csd.backend.Matching.MS.MatchmakingQueueListener;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import csd.backend.Matching.MS.service.matchmaking.MatchmakingQueueListener;
 
 @Configuration
 public class MatchmakingQueueListenerConfig {

@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Matching.MS.service.matchmaking;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import csd.backend.Matching.MS.Model.TournamentSize;
+import csd.backend.Matching.MS.model.response.TournamentSize;
+import csd.backend.Matching.MS.service.player.PlayerService;
+import csd.backend.Matching.MS.service.sqs.SqsService;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import software.amazon.awssdk.services.sqs.model.*;

@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Matching.MS.service.sqs;
 
 import org.springframework.beans.factory.annotation.Value;
 // import io.github.cdimascio.dotenv.Dotenv;

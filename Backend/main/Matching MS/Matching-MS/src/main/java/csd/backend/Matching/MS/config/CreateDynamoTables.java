@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Matching.MS.config;
 
 // import java.util.HashMap;
 

@@ -1,4 +1,4 @@
-package csd.backend.config;
+package csd.backend.Matching.MS.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

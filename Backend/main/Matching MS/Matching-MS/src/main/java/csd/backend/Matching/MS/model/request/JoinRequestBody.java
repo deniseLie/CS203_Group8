@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS;
+package csd.backend.Matching.MS.model.request;
 
 public class JoinRequestBody {
     private String playerId;

@@ -1,3 +1,4 @@
+package csd.backend.Matching.MS.service;
 import csd.backend.Matching.MS.MatchmakingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

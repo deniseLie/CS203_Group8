@@ -1,7 +1,14 @@
 package csd.backend.Matching.MS.model.request;
 
-public class JoinRequestBody {
+/**
+ * Represents a request to join the matchmaking system with a specific player and champion.
+ */
+public class MatchmakingRequest {
+
+    // ID of the player requesting to join the matchmaking queue
     private String playerId;
+
+    // ID of the champion the player is using in the matchmaking request
     private String championId;
 
     // Getters and setters

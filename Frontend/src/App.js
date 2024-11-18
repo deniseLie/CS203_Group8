@@ -24,16 +24,16 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/register" element={<FindTournament />} />
+      <Route path="/register" element={<Register />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login login={login} />} />
       <Route path="/" element={isAuthenticated ? <FindTournament  /> : <Navigate to="/login" />} />
       <Route path="/profile" element={isAuthenticated ? <Profile  /> : <Navigate to="/login" />} />
       <Route path="/login-success" element={<LoginSuccess />} />
-      {/* <Route path="/postgame" element={isAuthenticated ? <PostGame  /> : <Navigate to="/login" />} /> */}
+      <Route path="/postgame" element={isAuthenticated ? <PostGame  /> : <Navigate to="/login" />} />
       <Route path="/history" element={isAuthenticated ? <History  /> : <Navigate to="/login" />} />
-      {/* <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket  /> : <Navigate to="/login" />} /> */}
-      <Route path="/tournamentBracket" element={<TournamentBracket/>} />
-      <Route path="/postgame" element={<PostGame/>} />
+      <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket  /> : <Navigate to="/login" />} />
+      {/* <Route path="/tournamentBracket" element={<TournamentBracket/>} /> */}
+      {/* <Route path="/postgame" element={<PostGame/>} /> */}
       <Route path="/leaderboard" element={isAuthenticated ? <Leaderboard  /> : <Navigate to="/login" />} />
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>

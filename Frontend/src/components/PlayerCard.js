@@ -21,8 +21,8 @@ const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status, onC
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         borderRadius: 1,
-        filter: status === "lose" ? "grayscale(100%)" : "none", // Apply grayscale filter if "lose"
-        opacity: status === "lose" ? 0.6 : 1, // Optional: lower opacity for a more subdued effect
+        filter: status === "lose" || status === "AFK" ? "grayscale(100%)" : "none", // Apply grayscale filter if "lose"
+        opacity: status === "lose" || status === "AFK" ? 0.6 : 1, // Optional: lower opacity for a more subdued effect
     };
 
     return (

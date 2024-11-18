@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Modal, Button, Select, MenuItem, Grid, Input } from "@mui/material";
+import { Box, Typography, Modal, Button, Select, MenuItem, Grid } from "@mui/material";
 import PlayerCard from "./PlayerCard";
 import diamondRank from '../assets/rankIcon/diamond.png';
 
@@ -8,7 +8,6 @@ const MatchUp = ({ leftPlayer, rightPlayer, updatePlayerStatus }) => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [selectedOption, setSelectedOption] = useState("lose");
   const [matchTime, setMatchTime] = useState("");
-  const [isCustomInput, setIsCustomInput] = useState(false);
 
   const handlePlayerClick = (clickedPlayer) => {
     setSelectedPlayer(clickedPlayer);
@@ -19,13 +18,14 @@ const MatchUp = ({ leftPlayer, rightPlayer, updatePlayerStatus }) => {
     setOpenModal(false);
     setSelectedOption("lose");
     setMatchTime("");
-    setIsCustomInput(false);
   };
 
   const handleSubmit = () => {
     if (selectedPlayer) {
-      const newStatus = selectedOption === "lose" ? `lose` : "AFK";
-      updatePlayerStatus(selectedPlayer.playerName, newStatus); // Update player's status
+      const newStatus = selectedOption === "afk" ? "AFK" : "lose";
+      const deathTime = newStatus === "lose" ? parseInt(matchTime, 10) : 0;
+
+      updatePlayerStatus(selectedPlayer.playerName, newStatus, deathTime);
     }
     handleCloseModal();
   };

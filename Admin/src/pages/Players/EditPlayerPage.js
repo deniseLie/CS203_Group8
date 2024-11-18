@@ -9,6 +9,7 @@ const EditPlayerPage = () => {
   const { playerId } = useParams(); // Get playerId from URL
   const [player, setPlayer] = useState(null); // State to hold player data
   const [openConfirmation, setOpenConfirmation] = useState(false); // For dialog open state
+  const [confirmationAction, setConfirmationAction] = useState(""); // Track whether confirming save or delete
 
   // Dummy player data for testing layout
   const dummyPlayer = {
@@ -48,12 +49,44 @@ const EditPlayerPage = () => {
   };
 
   const handleSave = () => {
+    setConfirmationAction("save"); // Set action type to save
+    setOpenConfirmation(true); // Open confirmation dialog
+  };
+
+  const handleDelete = () => {
+    setConfirmationAction("delete"); // Set action type to delete
     setOpenConfirmation(true); // Open confirmation dialog
   };
 
   const handleCloseConfirmation = () => setOpenConfirmation(false);
-  const handleConfirmSave = () => {
-    // Confirm save logic here
+
+  const handleConfirmAction = async () => {
+    if (confirmationAction === "save") {
+      // Save player changes logic here
+      try {
+        await fetch(`/api/players/${player.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(player),
+        });
+        console.log("Player saved successfully!");
+      } catch (error) {
+        console.error("Error saving player:", error);
+      }
+    } else if (confirmationAction === "delete") {
+      // Delete player logic here
+      try {
+        await fetch(`/api/players/${player.id}`, {
+          method: 'DELETE',
+        });
+        console.log("Player deleted successfully!");
+        // Optionally, redirect to another page after deletion
+      } catch (error) {
+        console.error("Error deleting player:", error);
+      }
+    }
     handleCloseConfirmation();
   };
 
@@ -81,18 +114,27 @@ const EditPlayerPage = () => {
                 <MenuItem value="GOOGLE">Google</MenuItem>
               </Select>
             </FormControl>
-            <Button variant="contained" color="primary" onClick={handleSave}>Save Player</Button>
+            <Stack direction="row" spacing={2}>
+              <Button variant="contained" color="primary" onClick={handleSave}>Save Player</Button>
+              <Button variant="outlined" color="secondary" onClick={handleDelete}>Delete User</Button>
+            </Stack>
           </Stack>
         </Box>
 
         <Dialog open={openConfirmation} onClose={handleCloseConfirmation}>
-          <DialogTitle>Confirm Changes</DialogTitle>
+          <DialogTitle>{confirmationAction === "delete" ? "Confirm Deletion" : "Confirm Changes"}</DialogTitle>
           <DialogContent>
-            <Typography>Are you sure you want to save changes to this player?</Typography>
+            <Typography>
+              {confirmationAction === "delete"
+                ? "Are you sure you want to delete this player?"
+                : "Are you sure you want to save changes to this player?"}
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseConfirmation} color="primary">Cancel</Button>
-            <Button onClick={handleConfirmSave} color="primary">Confirm</Button>
+            <Button onClick={handleConfirmAction} color="primary">
+              {confirmationAction === "delete" ? "Delete" : "Confirm"}
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>

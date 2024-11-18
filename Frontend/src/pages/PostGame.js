@@ -10,7 +10,7 @@ import rankCircle from '../assets/icons/ranked-frame.png';
 const PostGame = () => {
   const location = useLocation();
   const { rankings = [], currentPlayer } = location.state || {}; // rankings from the tournament bracket
-
+  console.log("hii ", JSON.stringify(currentPlayer), JSON.stringify(rankings))
   const leaderboardData = rankings;
 
   // State for showing the AFK modal
@@ -155,6 +155,39 @@ const PostGame = () => {
               </Typography>
             </Box>
           ))}
+        </Box>
+        {/* LP Section with Ranked Circle */}
+        <Box sx={{ flex: 1, textAlign: 'center', position: 'relative', alignContent: 'center'}}>
+          <Box
+            sx={{
+              position: 'relative',
+              width: '15vw',
+              height: '15vw',
+              backgroundImage: `url(${rankCircle})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {/* Overlay Text */}
+            <Box sx={{ position: 'absolute', top: '20%', textAlign: 'center' }}>
+              <Typography variant="subtitle2" color="#0AC1DC" className='headerPrimary'>
+                +170 LP
+              </Typography>
+            </Box>
+            <Box sx={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', textAlign: 'center' }}>
+              <Typography fontSize={'2.5em'} fontWeight="bold" color="#B68C34" className='headerPrimary'>
+                70 LP
+              </Typography>
+            </Box>
+            <Box sx={{ position: 'absolute', bottom: '20%', textAlign: 'center' }}>
+              <Typography variant="caption" className='headerPrimary'>
+                DIAMOND I
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
 

@@ -19,7 +19,7 @@ import { useAuth } from '../auth/AuthProvider';
 import axios from 'axios';
 import env from 'react-dotenv';
 import Cookies from 'js-cookie';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const FindTournament = ({ logout }) => {
   const [open, setOpen] = useState(false); 
@@ -33,7 +33,7 @@ const FindTournament = ({ logout }) => {
   const navigate = useNavigate();
   
   const { user } = useAuth();
-
+  const location = useLocation();
   // Data for the current user to be passed to TournamentBracket
   const userRank = "Diamond I"; // Replace with the actual rank if it's dynamic
   const userData = {
@@ -42,7 +42,9 @@ const FindTournament = ({ logout }) => {
     playerIcon: profileAvatar,
     champion: selectedChampion ? selectedChampion.name : "No Champion",
     championImg: selectedChampion ? selectedChampion.src : championSelected,
-    status: "pending",
+    status: "pending",  
+    isAfk: location.state?.userData?.isAfk || false, // Add AFK status
+    deathTime: location.state?.userData?.deathTime || 0, // Add death timer
   };
   const IS_LOW_PRIORITY = false;
   const SPEED_UP_SECONDS = 5;
@@ -320,7 +322,7 @@ const FindTournament = ({ logout }) => {
             Match Found!
           </Typography>
           <Typography variant="body1">
-            Redirecting to the tournament bracket in 5 seconds...
+            Redirecting to the tournament bracket...
           </Typography>
         </Box>
       </Modal>

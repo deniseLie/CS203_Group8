@@ -71,6 +71,34 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/{playerId}/profile-picture")
+    public ResponseEntity<Map<String, Object>> getPlayerProfilePicture(@PathVariable Long playerId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            // Retrieve player
+            Player player = playerService.getPlayerById(playerId);
+            if (player == null) {
+                response.put("error", "Player not found with ID: " + playerId);
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            // Get profile picture name
+            String profilePicture = player.getProfilePicture();
+            if (profilePicture == null || profilePicture.isEmpty()) {
+                response.put("message", "No profile picture found for this player");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            }
+
+            // Construct profile picture URL
+            String profilePictureUrl = "/path/to/images/" + profilePicture; // Adjust the URL path to where images are stored
+
+            response.put("profilePictureUrl", profilePictureUrl);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            response.put("error", "An error occurred while fetching the profile picture: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // Endpoint get top 3 played champions and player stats
     @GetMapping("/{playerId}/profile")
     public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId) {

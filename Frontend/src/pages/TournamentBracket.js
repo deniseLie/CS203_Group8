@@ -22,7 +22,15 @@ const getRandomSummonerIcon = () => {
 };
 
 // Static player data with randomized champions and summoner icons
-const staticPlayerData = [a
+const staticPlayerData = [
+  { playerName: "avexx", rank: "Diamond II", playerIcon: summonerIcons[0], ...getRandomChampion(), status: "pending" },
+  { playerName: "Rodan", rank: "Diamond I", playerIcon: summonerIcons[2], ...getRandomChampion(), status: "pending" },
+  { playerName: "xDivineSword", rank: "Diamond II", playerIcon: summonerIcons[4], ...getRandomChampion(), status: "pending" },
+  { playerName: "lilWanton", rank: "Diamond III", playerIcon: summonerIcons[6], ...getRandomChampion(), status: "pending" },
+  { playerName: "DarkStar", rank: "Diamond I", playerIcon: summonerIcons[7], ...getRandomChampion(), status: "pending" },
+  { playerName: "Nebula", rank: "Diamond III", playerIcon: summonerIcons[1], ...getRandomChampion(), status: "pending" },
+  { playerName: "VoidWalker", rank: "Diamond II", playerIcon: summonerIcons[3], ...getRandomChampion(), status: "pending" },
+  { playerName: "WindRider", rank: "Diamond IV", playerIcon: summonerIcons[5], ...getRandomChampion(), status: "pending" },
 ];
 
 const TournamentBracket = () => {
@@ -42,19 +50,21 @@ const TournamentBracket = () => {
   const [eliminatedPlayers, setEliminatedPlayers] = useState([]);
   const [temporaryEliminations, setTemporaryEliminations] = useState([]); // Track eliminations temporarily
 
-  const updatePlayerStatus = (playerName, newStatus) => {
+  const updatePlayerStatus = (playerName, newStatus, deathTime = 0) => {
     setPlayers((prevPlayers) =>
       prevPlayers.map((player) =>
-        player.playerName === playerName ? { ...player, status: newStatus } : player
+        player.playerName === playerName
+          ? { ...player, status: newStatus, deathTime } // Include deathTime in player data
+          : player
       )
     );
-
-    if (newStatus === "lose") {
+  
+    if (newStatus === "lose" || newStatus === "AFK") {
       const eliminatedPlayer = players.find((player) => player.playerName === playerName);
       setTemporaryEliminations((prev) => [eliminatedPlayer, ...prev]);
     }
   };
-
+  
   const matchups = [];
   for (let i = 0; i < players.length; i += 2) {
     matchups.push({
@@ -62,15 +72,18 @@ const TournamentBracket = () => {
       rightPlayer: players[i + 1],
     });
   }
-
   useEffect(() => {
     const allMatchesCompleted = matchups.every(
-      (match) => match.leftPlayer.status === "lose" || match.rightPlayer.status === "lose"
+      (match) =>
+        (match.leftPlayer.status === "lose" || match.leftPlayer.status === "AFK") ||
+        (match.rightPlayer.status === "lose" || match.rightPlayer.status === "AFK")
     );
-
+  
     if (allMatchesCompleted) {
-      const activePlayers = players.filter((player) => player.status !== "lose");
-
+      const activePlayers = players.filter(
+        (player) => player.status !== "lose" && player.status !== "AFK"
+      );
+  
       if (activePlayers.length === 1) {
         setFinalWinner(activePlayers[0]);
         setTemporaryEliminations((prev) => [...prev, activePlayers[0]]);
@@ -79,9 +92,10 @@ const TournamentBracket = () => {
       }
     }
   }, [players, matchups]);
+  
 
   const handleNextRound = () => {
-    const winners = players.filter((player) => player.status !== "lose");
+    const winners = players.filter((player) => player.status !== "lose" && player.status !== "AFK");
     setPlayers(winners.map((player) => ({ ...player, status: "pending" })));
     setRound(round + 1);
 
@@ -107,7 +121,10 @@ const TournamentBracket = () => {
         playerName: userData.playerName,
         playerIcon: userData.playerIcon,
         kd: "8/0", 
-        kda: "8.0 KDA"
+        kda: "8.0 KDA",
+        
+      isAfk: userData.status === 'AFK',
+      deathTime: userData.status === 'lose' ? userData.deathTime : 0
       };
       
       rankings.push(currentPlayerRanking);  
@@ -119,49 +136,54 @@ const TournamentBracket = () => {
   
 
   const generateFinalRankings = () => {
-    // Combine eliminated and temporary eliminations, ensuring no duplicates by playerName
-    const allEliminatedPlayers = [...eliminatedPlayers, ...temporaryEliminations];
-    
-    // Use a Set to track unique player names and filter duplicates
-    const uniqueEliminatedPlayers = [];
-    const seenPlayerNames = new Set();
-    
-    allEliminatedPlayers.reverse().forEach((player) => {
-      if (!seenPlayerNames.has(player.playerName)) {
-        seenPlayerNames.add(player.playerName);
-        uniqueEliminatedPlayers.push(player);
-      }
-    });
-    
-    // Ensure current player is included in the rankings, even if they weren't eliminated
-    const isCurrentPlayerInRankings = uniqueEliminatedPlayers.some(player => player.playerName === userData.playerName);
-    if (!isCurrentPlayerInRankings) {
-      uniqueEliminatedPlayers.push({
-        playerName: userData.playerName,
-        champion: userData.champion,
-        playerIcon: userData.playerIcon,
-        kd: "8/0",
-        kda: "8.0 KDA",
-      });
+  // Combine eliminated and temporary eliminations, ensuring no duplicates by playerName
+  const allEliminatedPlayers = [...eliminatedPlayers, ...temporaryEliminations];
+  
+  // Use a Set to track unique player names and filter duplicates
+  const uniqueEliminatedPlayers = [];
+  const seenPlayerNames = new Set();
+  
+  allEliminatedPlayers.reverse().forEach((player) => {
+    if (!seenPlayerNames.has(player.playerName)) {
+      seenPlayerNames.add(player.playerName);
+      uniqueEliminatedPlayers.push(player);
     }
+  });
   
-    // Generate the rankings based on unique eliminated players
-    const rankings = uniqueEliminatedPlayers.map((player, index) => {
-      const rankSuffix = ["ST", "ND", "RD", "TH"];
-      const standing = (index + 1) + (rankSuffix[index] || "TH");
-  
-      return {
-        standing,
-        champion: player.champion,
-        playerName: player.playerName,
-        playerIcon: player.playerIcon,
-        kd: player.kd || "8/0", // Placeholder K/D data
-        kda: player.kda || "8.0 KDA" // Placeholder KDA data
-      };
+  // Ensure current player is included in the rankings, even if they weren't eliminated
+  const isCurrentPlayerInRankings = uniqueEliminatedPlayers.some(player => player.playerName === userData.playerName);
+  if (!isCurrentPlayerInRankings) {
+    uniqueEliminatedPlayers.push({
+      playerName: userData.playerName,
+      champion: userData.champion,
+      playerIcon: userData.playerIcon,
+      kd: "8/0",
+      kda: "8.0 KDA",
+      isAfk: userData.status === 'AFK',
+      deathTime: userData.status === 'lose' ? userData.deathTime : 0
     });
-  
-    return rankings;
-  };
+  }
+
+  // Generate the rankings based on unique eliminated players
+  const rankings = uniqueEliminatedPlayers.map((player, index) => {
+    const rankSuffix = ["ST", "ND", "RD", "TH"];
+    const standing = (index + 1) + (rankSuffix[index] || "TH");
+
+    return {
+      standing,
+      champion: player.champion,
+      playerName: player.playerName,
+      playerIcon: player.playerIcon,
+      kd: player.kd || "8/0", // Placeholder K/D data
+      kda: player.kda || "8.0 KDA" ,// Placeholder KDA data
+      isAfk: userData.status === 'AFK',
+      deathTime: userData.status === 'lose' ? userData.deathTime : 0
+      
+    };
+  });
+
+  return rankings;
+};
   
   return (
     <Box
@@ -205,7 +227,7 @@ const TournamentBracket = () => {
           ))}
         </Box>
       </Box>
-
+      
       <Modal open={showNextRoundModal} onClose={() => setShowNextRoundModal(false)}>
         <Box sx={{
           position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",

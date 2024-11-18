@@ -30,7 +30,7 @@ const EditProfileModal = ({
   const {user} = useAuth();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const validateEmail = (email) => emailRegex.test(email);
-  const playerId = user.sub;
+  const playerId = user?  user.sub : 1;
   const canSaveChanges = isEditing &&
     username &&
     playerName &&

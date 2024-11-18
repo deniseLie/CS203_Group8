@@ -38,8 +38,8 @@ const FindTournament = ({ logout }) => {
   const SPEED_UP_SECONDS = 5;
 
   
-    // Function to start UI for queue
-    const startQueueUI = () => {
+  // Function to start UI for queue
+  const startQueueUI = () => {
       setInQueueState(true);
       setTimer(0); // reset timer to start counting
       if (IS_LOW_PRIORITY) setShowLowPriority(true);
@@ -53,9 +53,6 @@ const FindTournament = ({ logout }) => {
      
     try{
       const token = Cookies.get('jwtToken');
-    console.log(`Bearer ${token}`)
-      console.log("testttt "
-        +user.sub + " champ : " + selectedChampion.name);
       const response = await axios.post(
         `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
         {playerId: ""+user.sub, championId: selectedChampion.name},
@@ -90,12 +87,40 @@ const FindTournament = ({ logout }) => {
   };
 
   // Function: Cancel queue -> Reset timer, hide all modals, timer
-  const handleCancelQueue = () => {
-    setInQueueState(false);
-    setTimer(0);
-    setShowSpeedUpModal(false); 
-    setInSpeedUpQueue(false); 
-    setShowLowPriority(false); // Hide low priority queue box when exiting queue
+  const handleCancelQueue = async () => {
+    try {
+      // if in speedup queue leave speedup queue
+      if (inSpeedUpQueue){
+        const response2 = await axios.post(
+          `${env.MATCHMAKING_SERVER_URL}/matchmaking/speedup/leave`,
+          {playerId: ""+user.sub, championId: selectedChampion.name},
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+          }
+        )
+      }
+      // else leave normal queue
+      else {
+        const response = await axios.post(
+          `${env.MATCHMAKING_SERVER_URL}/matchmaking/leave`,
+          {playerId: ""+user.sub, championId: selectedChampion.name},
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+          }
+        );
+      }
+      setInQueueState(false);
+      setTimer(0);
+      setShowSpeedUpModal(false); 
+      setInSpeedUpQueue(false); 
+      setShowLowPriority(false); // Hide low priority queue box when exiting queue
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   // Function: Render timer text every second, and if timer > speed up seconds show speedup modal
@@ -127,8 +152,33 @@ const FindTournament = ({ logout }) => {
 
   // Function: When speed up, don't show speedup modal
   const handleSpeedUpQueue = () => {
-    setInSpeedUpQueue(true); 
-    setShowSpeedUpModal(false); 
+    try {
+      // leave normal queue before join speedup
+      const response = await axios.post(
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/leave`,
+        {playerId: ""+user.sub, championId: selectedChampion.name},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        }
+      )
+
+      const response2 = await axios.post(
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/speedup/join`,
+        {playerId: ""+user.sub, championId: selectedChampion.name},
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+        }
+      );
+      setInSpeedUpQueue(true); 
+      setShowSpeedUpModal(false); 
+    } catch (error) {
+      console.log(error)
+    }
+
   };
 
   return (
@@ -212,7 +262,7 @@ const FindTournament = ({ logout }) => {
           <Box display={'flex'} alignItems={'center'}>
             <Box component="img" src={diamondRank} alt="Rank" sx={{ width: '3vh', height: '3vh', marginRight: 1 }} />
             <Typography className="bodySecondary" fontSize={'1em'}>
-              Diamond I
+              {user ? user.rank : "Unranked"}
             </Typography>
           </Box>
 

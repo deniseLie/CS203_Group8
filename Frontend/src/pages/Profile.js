@@ -13,11 +13,13 @@ import getChampionImage from '../util/getChampionImage';
 import axios from 'axios';
 import env from 'react-dotenv';
 import Cookies from 'js-cookie';
+import { rankBannerIconsAssets, rankIconsAssets } from '../util/importAssets';
 
 const Profile = ({ logout }) => {
     const { user } = useAuth();
     const [profileData, setProfileData] = useState(null);
 
+    // Function: Fetch profile data
     useEffect(() => {
         const fetchProfileData = async () => {
             try {
@@ -38,6 +40,7 @@ const Profile = ({ logout }) => {
         }
     }, [user?.sub]);
 
+    // If profile data doesnt exist show loading
     if (!profileData) {
         return <Typography>Loading...</Typography>;
     }
@@ -48,6 +51,7 @@ const Profile = ({ logout }) => {
                 <Navbar logout={logout} />
             </Box>
 
+            {/* Background image is most played champ */}
             <Box
                 sx={{
                     backgroundImage: `url(${getChampionImage(profileData.topChampions[0].championName, "splash")})`,
@@ -69,14 +73,15 @@ const Profile = ({ logout }) => {
                         zIndex: 2,
                     }}
                 >
+                {/* Banner and rank */}
                     <Box sx={{ marginLeft: '5%', display: 'flex', alignItems: 'center', zIndex: 2 }}>
                         <ProfileBanner
-                            profile={{
-                                banner: diamondBanner,
+                            profile={{     
+                                banner: user ? rankBannerIconsAssets[user.rank.toLowerCase()] :  rankBannerIconsAssets.unranked,
                                 playerIcon: playerIcon,
                                 playerName: user?.playername || 'Player',
-                                rankSymbol: diamondRankIcon,
-                                rank: 'Diamond I',
+                                rankSymbol: user? rankIconsAssets[user.rank.toLowerCase()] :  rankIconsAssets.unranked,
+                                rank: user?.rank,
                             }}
                             displayType="player"
                         />
@@ -112,6 +117,7 @@ const Profile = ({ logout }) => {
                                     justifyItems: 'flex-start',
                                 }}
                             >
+                            {/* overall account stats */}
                                 <Typography className='headerPrimary' sx={{ mb: 2, fontSize: '1.2em', alignSelf: 'flex-start' }}>ARENA</Typography>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>

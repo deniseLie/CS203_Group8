@@ -4,54 +4,41 @@ import Navbar from '../components/Navbar';
 import GameCard from '../components/GameCard';
 import ProfileBanner from '../components/ProfileBanner';
 import backgroundImage from '../assets/backgrounds/srbackground.png';
-import avatarImage from '../assets/summonerIcon/1.jpg';
-import diamondRankImage from '../assets/ranks/diamond.png';
-import diamondBanner from '../assets/rank-banners/diamond.png';
 import { useAuth } from '../auth/AuthProvider';
 import axios from 'axios';
 import env from 'react-dotenv';
 import notFound from '../assets/icons/not-found.png'
 import Cookies from 'js-cookie';
+import { rankBannerIconsAssets, rankIconsAssets } from '../util/importAssets';
 
 function History() {
   const { user } = useAuth();
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const profile = {
-    avatar: avatarImage,
-    name: user ? user.playername : "",
-    rank: 'DIAMOND I',
-    elo: '70 LP',
-    banner: diamondBanner,
-    rankSymbol: diamondRankImage,
-  };
-
-  useEffect(() => {
-    const fetchMatchHistory = async () => {
-      try {
-          console.log("Trying fetch hisotry")
-        const token = Cookies.get('jwtToken');
-        const response = await axios.get(
-          `${env.ACCOUNT_SERVER_URL}/account/${user.sub}/match-history`,
-          {
-            playerId: user.sub
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
+  // fetch user's match history based on id
+  const fetchMatchHistory = async () => {
+    try {
+      const token = Cookies.get('jwtToken');
+      const response = await axios.get(
+        `${env.ACCOUNT_SERVER_URL}/account/${user.sub}/match-history`,
+        {
+          playerId: user.sub
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
-        );
-        console.log(response)
-        setLeaderboardData(response.data); // Assumes response data is in the same format as leaderboardData
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching match history:", error);
-        setLoading(false);
-      }
-    };
-
+        }
+      );
+      setLeaderboardData(response.data); // Assumes response data is in the same format as leaderboardData
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching match history:", error);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     if (user?.sub) {
       fetchMatchHistory();
     }
@@ -131,10 +118,10 @@ function History() {
         <Box sx={{ flex: 1, marginTop: -5 }}>
           <ProfileBanner
             profile={{
-              banner: profile.banner,
-              rankSymbol: profile.rankSymbol,
-              rank: profile.rank,
-              lp: profile.elo,
+              banner: user ? rankBannerIconsAssets[user.rank.toLowerCase()] :  rankBannerIconsAssets.unranked,
+              rankSymbol:  user ? rankIconsAssets[user.rank.toLowerCase()] :  rankIconsAssets.unranked,
+              rank: user ? user.rank : "Unranked",
+              lp: user ? user.elo : "-",
             }}
             displayType="rank"
           />

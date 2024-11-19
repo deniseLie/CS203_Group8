@@ -1,73 +1,135 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, MenuItem, Stack, FormControl, Select, InputLabel, TextField, Avatar, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import MatchesPopup from './MatchesPopup';
-import playerProfile from '../assets/playerpfp.jpg'; // Make sure this image path is correct
+import {
+  Box,
+  Typography,
+  Button,
+  MenuItem,
+  Stack,
+  FormControl,
+  Select,
+  InputLabel,
+  TextField,
+  Avatar,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import MatchesPopup from './MatchesPopup'; // Component to show and modify tournament matches
+import playerProfile from '../assets/playerpfp.jpg'; // Default player profile image
 
+/**
+ * TournamentTable Component
+ *
+ * This component displays a table of tournaments with filtering options and an option
+ * to view tournament matches in a popup. Users can filter tournaments by status, player name,
+ * or tournament ID.
+ *
+ * @param {object[]} data - The list of tournament data to display.
+ */
 const TournamentTable = ({ data }) => {
-  const [selectedTournament, setSelectedTournament] = useState(null);
-  const [showPopup, setShowPopup] = useState(false);
-  const [filteredData, setFilteredData] = useState(data);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [playerFilter, setPlayerFilter] = useState('');
-  const [tournamentIdFilter, setTournamentIdFilter] = useState('');
+  const [selectedTournament, setSelectedTournament] = useState(null); // Selected tournament for viewing matches
+  const [showPopup, setShowPopup] = useState(false); // Controls popup visibility
+  const [filteredData, setFilteredData] = useState(data); // State for filtered tournaments
+  const [statusFilter, setStatusFilter] = useState(''); // Status filter value
+  const [playerFilter, setPlayerFilter] = useState(''); // Player name filter value
+  const [tournamentIdFilter, setTournamentIdFilter] = useState(''); // Tournament ID filter value
 
-  // Handle status filter change
+  /**
+   * Handle changes to the status filter.
+   *
+   * @param {object} e - Event object from the Select component.
+   */
   const handleStatusChange = (e) => {
     setStatusFilter(e.target.value);
   };
 
-  // Handle player filter change
+  /**
+   * Handle changes to the player filter.
+   *
+   * @param {object} e - Event object from the TextField component.
+   */
   const handlePlayerChange = (e) => {
     setPlayerFilter(e.target.value);
   };
 
-  // Handle tournament ID filter change
+  /**
+   * Handle changes to the tournament ID filter.
+   *
+   * @param {object} e - Event object from the TextField component.
+   */
   const handleTournamentIdChange = (e) => {
     setTournamentIdFilter(e.target.value);
   };
 
-  // Filter the tournaments based on filter criteria
+  /**
+   * Filter the tournaments based on the current filter values.
+   */
   const handleFilter = () => {
     let filtered = data;
 
-    // Apply status filter
+    // Filter by status
     if (statusFilter) {
       filtered = filtered.filter((tournament) => tournament.status === statusFilter);
     }
 
-    // Apply player filter (filtering by player name in the players array)
+    // Filter by player name
     if (playerFilter) {
       filtered = filtered.filter((tournament) =>
-        tournament.players.some(player => player.toLowerCase().includes(playerFilter.toLowerCase()))
+        tournament.players.some((player) =>
+          player.toLowerCase().includes(playerFilter.toLowerCase())
+        )
       );
     }
 
-    // Apply tournament ID filter
+    // Filter by tournament ID
     if (tournamentIdFilter) {
       filtered = filtered.filter((tournament) => tournament.id.includes(tournamentIdFilter));
     }
 
-    setFilteredData(filtered); // Update filtered data
+    setFilteredData(filtered); // Update the filtered data
   };
 
+  /**
+   * Handle clicking on a tournament ID to open the matches popup.
+   *
+   * @param {object} tournament - The selected tournament.
+   */
   const handleTournamentClick = (tournament) => {
     setSelectedTournament(tournament); // Set the selected tournament
-    setShowPopup(true); // Show the popup
+    setShowPopup(true); // Show the matches popup
   };
 
+  /**
+   * Close the matches popup.
+   */
   const handleClosePopup = () => {
-    setShowPopup(false); // Close the popup
+    setShowPopup(false); // Hide the matches popup
   };
 
+  /**
+   * Placeholder function for modifying a match (stub for future implementation).
+   *
+   * @param {string} matchId - The ID of the match to modify.
+   */
   const handleModifyMatch = (matchId) => {
     console.log(`Modify match with ID: ${matchId}`);
-    // Logic for modifying match details can go here
+    // Add logic for modifying match details here
   };
 
   return (
-    <Box sx={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', p: 2 }}>
+    <Box
+      sx={{
+        backgroundColor: '#ffffff', // White background
+        borderRadius: '8px', // Rounded corners
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+        p: 2, // Padding around the content
+      }}
+    >
       {/* Filter Bar */}
       <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        {/* Status Filter */}
         <FormControl size="small">
           <InputLabel>Status</InputLabel>
           <Select value={statusFilter} onChange={handleStatusChange}>
@@ -77,6 +139,7 @@ const TournamentTable = ({ data }) => {
           </Select>
         </FormControl>
 
+        {/* Player Name Filter */}
         <TextField
           label="Search Player"
           variant="outlined"
@@ -85,6 +148,7 @@ const TournamentTable = ({ data }) => {
           onChange={handlePlayerChange}
         />
 
+        {/* Tournament ID Filter */}
         <TextField
           label="Search Tournament Id"
           variant="outlined"
@@ -93,13 +157,20 @@ const TournamentTable = ({ data }) => {
           onChange={handleTournamentIdChange}
         />
 
-        <Button variant="text" sx={{ color: '#d32f2f', textTransform: 'none' }} onClick={handleFilter}>
+        {/* Apply Filters Button */}
+        <Button
+          variant="text"
+          sx={{ color: '#d32f2f', textTransform: 'none' }}
+          onClick={handleFilter}
+        >
           Filter
         </Button>
       </Stack>
 
       {/* Tournament Table */}
-      <Typography variant="h6" sx={{ mb: 2 }}>Most Recent Tournaments</Typography>
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Most Recent Tournaments
+      </Typography>
       <Table>
         <TableHead>
           <TableRow>
@@ -121,7 +192,11 @@ const TournamentTable = ({ data }) => {
               <TableCell>{tournament.round}</TableCell>
               <TableCell>{tournament.matchesCompleted}</TableCell>
               <TableCell>
-                <Button size="small" variant="contained" color={tournament.status === "Ongoing" ? "warning" : "success"}>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color={tournament.status === 'Ongoing' ? 'warning' : 'success'}
+                >
                   {tournament.status}
                 </Button>
               </TableCell>

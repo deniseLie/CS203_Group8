@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, TextField, Button, Box, Typography, IconButton, InputAdornment } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { summonerIcons } from '../util/importAssets'; // Import the centralized icons object
 import axios from 'axios';
 import { useAuth } from '../auth/AuthProvider';

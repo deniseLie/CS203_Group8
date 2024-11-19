@@ -18,7 +18,7 @@ const TournamentBracket = () => {
   useEffect(() => {
     const fetchTournamentDetails = async () => {
       try {
-        const response = await axios.get(`/admin/tournaments/${tournamentId}`);
+        const response = await axios.get(`${env.LOGIN_SERVER_URL}/admin/tournaments/${tournamentId}`);
         const data = response.data;
         setTournamentData(data);
         setPlayers(data.players); // Set players from the API response
@@ -46,7 +46,7 @@ const TournamentBracket = () => {
   // Update player statuses and proceed to the next round
   const handleNextRound = async () => {
     try {
-      const response = await axios.get(`/admin/tournaments/${tournamentId}`);
+      const response = await axios.get(`${env.LOGIN_SERVER_URL}/admin/tournaments/${tournamentId}`);
       const updatedData = response.data;
 
       setTournamentData(updatedData);

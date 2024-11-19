@@ -5,7 +5,6 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,25 +29,6 @@ public class PlayerService {
         this.dynamoDbClient = dynamoDbClient;
     }
 
-    // Helper method to execute update requests for player attributes
-    private void updatePlayerAttribute(Long playerId, Map<String, AttributeValueUpdate> updates) {
-        UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
-                .tableName(PLAYERS_TABLE)
-                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build())) 
-                .attributeUpdates(updates)
-                .build();
-
-        try {
-
-            // Execute the update request
-            dynamoDbClient.updateItem(updateItemRequest);  
-            logger.info("Successfully updated player {} in DynamoDB.", playerId);
-        } catch (Exception e) {
-            logger.error("Error updating player {} in DynamoDB", playerId, e);  
-            throw new PlayerUpdateException(playerId);
-        }
-    }
-
     // Get player by playerId from the database
     public Map<String, AttributeValue> getPlayerById(Long playerId) {
         GetItemRequest getItemRequest = GetItemRequest.builder()
@@ -59,11 +39,25 @@ public class PlayerService {
         GetItemResponse getItemResponse = dynamoDbClient.getItem(getItemRequest);
         Map<String, AttributeValue> player = getItemResponse.item();
 
-        // Check player exist
-        if (player == null) {
+        // Check player exists (handle null or empty map)
+        if (player == null || player.isEmpty()) {
             throw new PlayerNotFoundException("Player with ID " + playerId + " was not found in the database.");
         }
         return player;
+    }
+
+    // Get the rankId of the player
+    public Long getPlayerRankId(Long playerId) {
+        Map<String, AttributeValue> playerData = getPlayerById(playerId);
+
+        // Extract rankId from the player's data (assuming rankId is stored as an integer)
+        if (playerData != null && playerData.containsKey("rankId")) {
+            return Long.parseLong(playerData.get("rankId").n());
+            
+        // Handle the case when rankId is not found
+        } else {
+            throw new PlayerNotFoundException(playerId);
+        }
     }
 
     // Check player status and remaining ban time
@@ -131,20 +125,6 @@ public class PlayerService {
         return scanResponse.items();  // Return the list of players
     }
 
-    // Get the rankId of the player
-    public Long getPlayerRankId(Long playerId) {
-        Map<String, AttributeValue> playerData = getPlayerById(playerId);
-
-        // Extract rankId from the player's data (assuming rankId is stored as an integer)
-        if (playerData != null && playerData.containsKey("rankId")) {
-            return Long.parseLong(playerData.get("rankId").n());
-            
-        // Handle the case when rankId is not found
-        } else {
-            throw new PlayerNotFoundException(playerId);
-        }
-    }
-
     // Add a player to the matchmaking pool with their status and rank
     public void addPlayerToPool(Long playerId, String queueStatus, int rankId) {
         Map<String, AttributeValue> item = new HashMap<>();
@@ -169,6 +149,9 @@ public class PlayerService {
 
     // Update player's rankId in the database
     public void updatePlayerRank(Long playerId, Long rankId) {
+        if (playerId == null) throw new IllegalArgumentException("Player ID cannot be null");
+        if (rankId == null) throw new IllegalArgumentException("Rank ID cannot be null");
+    
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
         updates.put("rankId", AttributeValueUpdate.builder().value(AttributeValue.builder().n(String.valueOf(rankId)).build()).action(AttributeAction.PUT).build());
         updatePlayerAttribute(playerId, updates);  // Update the player's rankId
@@ -182,16 +165,20 @@ public class PlayerService {
     }
 
     // Update player's champion in the database
-    public void updatePlayerChampion(Long playerId, String championId) {
+    public void updatePlayerChampion(Long playerId, Long championId) {
+        if (championId == null) {
+            throw new IllegalArgumentException("Champion ID cannot be null");
+        }
+
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
-        updates.put("championId", AttributeValueUpdate.builder().value(AttributeValue.builder().s(championId).build()).action(AttributeAction.PUT).build());
+        updates.put("championId", AttributeValueUpdate.builder().value(AttributeValue.builder().n(String.valueOf(championId)).build()).action(AttributeAction.PUT).build());
         updatePlayerAttribute(playerId, updates);  // Update the player's champion ID
     }
 
     // Remove player's championId from the database
     public void removePlayerChampion(Long playerId) {
         Map<String, AttributeValueUpdate> updates = new HashMap<>();
-        updates.put("championId", AttributeValueUpdate.builder().value(AttributeValue.builder().s("").build()).action(AttributeAction.PUT).build());
+        updates.put("championId", AttributeValueUpdate.builder().value(AttributeValue.builder().n("").build()).action(AttributeAction.PUT).build());
         updatePlayerAttribute(playerId, updates);  // Remove the championId (set it to empty)
     }
 
@@ -219,6 +206,25 @@ public class PlayerService {
             logger.info("Successfully deleted player {} from the database.", playerId);
         } catch (Exception e) {
             logger.error("Error deleting player {} from the database.", playerId, e); 
+            throw new PlayerUpdateException(playerId);
+        }
+    }
+    
+    // Helper method to execute update requests for player attributes
+    private void updatePlayerAttribute(Long playerId, Map<String, AttributeValueUpdate> updates) {
+        UpdateItemRequest updateItemRequest = UpdateItemRequest.builder()
+                .tableName(PLAYERS_TABLE)
+                .key(Map.of("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build())) 
+                .attributeUpdates(updates)
+                .build();
+
+        try {
+
+            // Execute the update request
+            dynamoDbClient.updateItem(updateItemRequest);  
+            logger.info("Successfully updated player {} in DynamoDB.", playerId);
+        } catch (Exception e) {
+            logger.error("Error updating player {} in DynamoDB", playerId, e);  
             throw new PlayerUpdateException(playerId);
         }
     }

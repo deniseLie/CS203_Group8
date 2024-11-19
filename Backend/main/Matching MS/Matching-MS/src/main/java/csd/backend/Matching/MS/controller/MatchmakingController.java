@@ -47,7 +47,7 @@ public class MatchmakingController {
     @PostMapping("/join")
     public ResponseEntity<Map<String, Object>> joinMatchmaking(@RequestBody @Valid MatchmakingRequest joinRequestBody) {
         Long playerId = joinRequestBody.getPlayerId();
-        String championId = joinRequestBody.getChampionId();
+        Long championId = joinRequestBody.getChampionId();
         boolean isSpeedUp = joinRequestBody.getIsSpeedUp();
 
         logger.info("Player {} joined matchmaking with champion {}", playerId, championId);
@@ -58,5 +58,4 @@ public class MatchmakingController {
     public ResponseEntity<Map<String, Object>> unqueuePlayer(@RequestBody PlayerIdRequest request, @PathVariable String queueType) {
         return matchmakingService.unqueuePlayerFromQueue(request.getPlayerId(), queueType);
     }
-
 }

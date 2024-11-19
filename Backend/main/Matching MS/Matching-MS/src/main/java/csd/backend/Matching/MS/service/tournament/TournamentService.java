@@ -32,10 +32,13 @@ public class TournamentService {
     }
 
     // Creates a new match with the players that were selected.
-    public void createTournament(List<Map<String, AttributeValue>> players) {
+    public Long createTournament(List<Map<String, AttributeValue>> players) {
         Map<String, AttributeValue> matchItem = prepareMatchItem(players);
         saveMatchToDatabase(matchItem);
         triggerMatchmaking(matchItem);
+
+        // Extract matchId and return it as a String
+        return Long.parseLong(matchItem.get("matchId").n()); 
     }
     
     // Prepare match item data and generate a sequential match ID
@@ -67,12 +70,12 @@ public class TournamentService {
         // Loop through players
         for (Map<String, AttributeValue> player : players) {
             Long playerId = Long.parseLong(player.get("playerId").n());
-            String championId = player.get("championId").s();
+            Long championId = Long.parseLong(player.get("playerId").n());
 
             // Creating player data in the format { playerId: playerId, championId: championId }
             Map<String, AttributeValue> playerData = new HashMap<>();
             playerData.put("playerId", AttributeValue.builder().n(String.valueOf(playerId)).build());
-            playerData.put("championId", AttributeValue.builder().s(championId).build());
+            playerData.put("championId", AttributeValue.builder().n(String.valueOf(championId)).build());
 
             playerList.add(AttributeValue.builder().m(playerData).build());
         }
@@ -133,7 +136,7 @@ public class TournamentService {
             Map<String, AttributeValue> playerMap = player.m();
 
             playerData.put("playerId", playerMap.get("playerId").n());
-            playerData.put("championId", playerMap.get("championId").s());
+            playerData.put("championId", playerMap.get("championId").n());
             playerList.add(playerData);
         }
         

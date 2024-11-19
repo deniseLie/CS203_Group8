@@ -13,7 +13,7 @@ public class MatchmakingRequest {
 
     // ID of the champion the player is using in the matchmaking request
     @NotNull(message = "Champion ID is required")
-    private String championId;
+    private Long championId;
 
     // Speed Up queue flag (true or false)
     private boolean isSpeedUp;
@@ -27,11 +27,11 @@ public class MatchmakingRequest {
         this.playerId = playerId;
     }
 
-    public String getChampionId() {
+    public Long getChampionId() {
         return championId;
     }
 
-    public void setChampionId(String championId) {
+    public void setChampionId(Long championId) {
         this.championId = championId;
     }
 

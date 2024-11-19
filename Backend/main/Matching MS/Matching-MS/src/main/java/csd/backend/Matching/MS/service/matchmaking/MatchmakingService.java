@@ -31,13 +31,13 @@ public class MatchmakingService {
     private static final int CHECK_INTERVAL = 5000; // in milliseconds
 
     // Constructor to inject required services
-    public MatchmakingService(TournamentService tournamentService, PlayerService playerService) {
+    public MatchmakingService(PlayerService playerService, TournamentService tournamentService) {
         this.playerService = playerService;
         this.tournamentService = tournamentService;
     }
 
     // Handle the matchmaking logic for a player joining a queue.
-    public ResponseEntity<Map<String, Object>> joinMatchmaking(Long playerId, String championId, boolean isSpeedUp) {
+    public ResponseEntity<Map<String, Object>> joinMatchmaking(Long playerId, Long championId, boolean isSpeedUp) {
 
         // Check if the player is banned
         ResponseEntity<Map<String, Object>> banResponse = playerService.checkAndHandlePlayerBan(playerId);
@@ -65,13 +65,14 @@ public class MatchmakingService {
     }    
 
     // Helper method for retrying matchmaking attempts.
-    private ResponseEntity<Map<String, Object>> attemptMatchmaking(Long rankId, boolean speedUpQueue) {
- 
+    public ResponseEntity<Map<String, Object>> attemptMatchmaking(Long rankId, boolean speedUpQueue) {
+
         // Start looping
         for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
             // Check if enough players are available for the match
-            if (checkForMatch(rankId, speedUpQueue)) {
-                return ResponseUtil.createSuccessResponse("Match created successfully.");
+            Long matchId = checkForMatch(rankId, speedUpQueue);
+            if (matchId != null) {
+                return ResponseUtil.createSuccessResponse("" + matchId);
             }
 
             // Log and wait before the next check
@@ -86,6 +87,7 @@ public class MatchmakingService {
         // If maxAttempts is reached without finding a match, return a timeout message
         return ResponseUtil.createRequestTimeoutResponse("Timeout: Unable to find enough players to start a match.");
     }
+
 
     // Unqueue a player from the matchmaking queue (either normal or speed-up queue)
     private ResponseEntity<Map<String, Object>> unqueuePlayerHelper(Long playerId, String newStatus) {
@@ -129,7 +131,7 @@ public class MatchmakingService {
 
 
     // Checks if enough players are available in the queue to create a match.
-    public boolean checkForMatch(Long rankId, boolean isSpeedUp) {
+    public Long checkForMatch(Long rankId, boolean isSpeedUp) {
         int maxPlayers = TournamentSize.getTournamentSize();  // Maximum players needed for a match
 
         // Get players in the queue with the same rankId
@@ -141,9 +143,9 @@ public class MatchmakingService {
         if (players.size() >= maxPlayers) {
             // Create a match with the first MAX_PLAYERS players
             List<Map<String, AttributeValue>> playersToMatch = players.subList(0, maxPlayers);
-            tournamentService.createTournament(playersToMatch);
-            return true;
+            Long matchId = tournamentService.createTournament(playersToMatch);
+            return matchId;
         }
-        return false;
+        return null;
     }
 }

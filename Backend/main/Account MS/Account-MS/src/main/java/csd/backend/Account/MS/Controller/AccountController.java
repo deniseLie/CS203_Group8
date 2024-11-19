@@ -83,38 +83,33 @@ public class AccountController {
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     // Endpoint get top 3 played champions and player stats
     @GetMapping("/{playerId}/profile")
     public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId) {
         Map<String, Object> response = new HashMap<>();
-
         try {
-            // Get formatted top 3 played champions
             List<Map<String, Object>> topChampions = playerService.getFormattedTopChampions(playerId);
-            if (topChampions == null) {
+            Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
+
+            if (topChampions == null || topChampions.isEmpty()) {
                 topChampions = Collections.emptyList();
             }
 
-            // Get player stats
-            Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
-            if (playerStats == null) {
+            if (playerStats == null || playerStats.isEmpty()) {
                 response.put("message", "No player stats found for playerId " + playerId);
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
 
-            if (!topChampions.isEmpty() && !playerStats.isEmpty()) {
-                // Combine the results into a response map
-                playerStats.put("topChampions", topChampions);
-                response.putAll(playerStats);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                response.put("message", "No data found for the player");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
+            playerStats.put("topChampions", topChampions);
+            response.putAll(playerStats);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (PlayerNotFoundException e) {
             response.put("error", "Player not found: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            System.err.println("Error occurred: " + e.getMessage());
+            e.printStackTrace();
             response.put("error", "An error occurred: " + e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }

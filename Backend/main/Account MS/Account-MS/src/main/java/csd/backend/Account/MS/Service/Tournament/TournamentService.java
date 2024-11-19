@@ -140,7 +140,7 @@ public class TournamentService {
                 for (TournamentPlayerStats stats : statsForTournament) {
                     Map<String, Object> playerData = new HashMap<>();
                     playerData.put("standing", stats.getFinalPlacement());
-                    playerData.put("champion", championService.getChampionById(stats.getChampionPlayedId()).getChampionName());
+                    playerData.put("champion", championService.getChampionById(stats.getChampionPlayedId()));
                     playerData.put("playerName", stats.getPlayer().getUsername());
                     playerData.put("kd", stats.getKillCount() + "/" + stats.getDeathCount());
                     playerData.put("kda", (stats.getDeathCount() == 0) ? "Infinity" : String.format("%.2f KDA", (float) stats.getKillCount() / stats.getDeathCount()));

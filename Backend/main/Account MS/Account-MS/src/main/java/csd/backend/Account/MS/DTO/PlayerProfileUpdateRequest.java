@@ -8,6 +8,19 @@ public class PlayerProfileUpdateRequest {
     private String password;
     private String profilePicture; 
     
+    // Constructors
+    public PlayerProfileUpdateRequest() {
+    }
+
+    public PlayerProfileUpdateRequest(Long playerId, String username, String playerName, String email, String password, String profilePicture) {
+        this.playerId = playerId;
+        this.username = username;
+        this.playerName = playerName;
+        this.email = email;
+        this.password = password;
+        this.profilePicture = profilePicture;
+    }
+    
     // Getters and setters
     public Long getPlayerId() {
         return playerId;

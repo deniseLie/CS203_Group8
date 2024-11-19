@@ -33,6 +33,25 @@ public class TournamentPlayerStats {
     private int deathCount;
     private boolean isAFK;
 
+    // Constructor
+    public TournamentPlayerStats() {}
+    
+    public TournamentPlayerStats(Long tournamentPlayerId, Tournament tournament, Player player,
+            int rankIdAfterTournament, int pointObtain, Long championPlayedId, int finalPlacement,
+            LocalDateTime timeEndPerPlayer, int killCount, int deathCount, boolean isAFK) {
+        this.tournamentPlayerId = tournamentPlayerId;
+        this.tournament = tournament;
+        this.player = player;
+        this.rankIdAfterTournament = rankIdAfterTournament;
+        this.pointObtain = pointObtain;
+        this.championPlayedId = championPlayedId;
+        this.finalPlacement = finalPlacement;
+        this.timeEndPerPlayer = timeEndPerPlayer;
+        this.killCount = killCount;
+        this.deathCount = deathCount;
+        this.isAFK = isAFK;
+    }
+
     // Getters and setters
     public Long getTournamentPlayerId() {
         return tournamentPlayerId;

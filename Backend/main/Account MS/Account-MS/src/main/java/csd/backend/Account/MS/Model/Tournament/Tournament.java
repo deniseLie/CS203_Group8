@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.model.Tournament;
+package csd.backend.Account.MS.model.tournament;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

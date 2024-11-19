@@ -7,11 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
-import csd.backend.Account.MS.model.Player.Player;
-import csd.backend.Account.MS.model.Tournament.*;
+import csd.backend.Account.MS.model.player.Player;
+import csd.backend.Account.MS.model.tournament.*;
 import csd.backend.Account.MS.service.SqsService;
-import csd.backend.Account.MS.service.Player.*;
-import csd.backend.Account.MS.service.Tournament.*;
+import csd.backend.Account.MS.service.player.*;
+import csd.backend.Account.MS.service.tournament.*;
 
 import java.time.LocalDateTime;
 import java.util.*;

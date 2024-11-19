@@ -1,8 +1,8 @@
-package csd.backend.Account.MS.service.Rank;
+package csd.backend.Account.MS.service.rank;
 
 import csd.backend.Account.MS.exception.*;
-import csd.backend.Account.MS.model.Rank.Rank;
-import csd.backend.Account.MS.repository.Rank.RankRepository;
+import csd.backend.Account.MS.model.rank.Rank;
+import csd.backend.Account.MS.repository.rank.RankRepository;
 
 import org.springframework.stereotype.Service;
 

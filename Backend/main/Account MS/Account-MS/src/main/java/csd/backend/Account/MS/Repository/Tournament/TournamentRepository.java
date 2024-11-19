@@ -1,8 +1,8 @@
-package csd.backend.Account.MS.repository.Tournament;
+package csd.backend.Account.MS.repository.tournament;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import csd.backend.Account.MS.model.Tournament.*;
+import csd.backend.Account.MS.model.tournament.*;
 
 import java.util.*;
 

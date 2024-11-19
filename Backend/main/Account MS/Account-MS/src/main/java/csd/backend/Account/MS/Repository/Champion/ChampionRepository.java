@@ -1,8 +1,8 @@
-package csd.backend.Account.MS.repository.Champion;
+package csd.backend.Account.MS.repository.champion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import csd.backend.Account.MS.model.Champion.Champion;
+import csd.backend.Account.MS.model.champion.Champion;
 
 import java.util.*;
 

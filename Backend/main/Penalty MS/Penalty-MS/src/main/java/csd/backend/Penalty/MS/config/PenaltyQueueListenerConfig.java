@@ -1,10 +1,10 @@
-package csd.backend.config;
+package csd.backend.Penalty.MS.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import csd.backend.Penalty.MS.PenaltyQueueListener;
+import csd.backend.Penalty.MS.controller.PenaltyQueueListener;
 
 @Configuration
 public class PenaltyQueueListenerConfig {

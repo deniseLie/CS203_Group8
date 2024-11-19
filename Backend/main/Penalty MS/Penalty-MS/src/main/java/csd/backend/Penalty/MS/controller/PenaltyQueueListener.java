@@ -1,9 +1,12 @@
-package csd.backend.Penalty.MS;
+package csd.backend.Penalty.MS.controller;
 
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.sqs.model.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import csd.backend.Penalty.MS.service.PenaltyService;
+import csd.backend.Penalty.MS.service.SqsService;
 
 import java.util.*;
 

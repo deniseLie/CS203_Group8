@@ -1,4 +1,4 @@
-package csd.backend.Penalty.MS;
+package csd.backend.Penalty.MS.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package csd.backend.config;
+package csd.backend.Penalty.MS.config;
 
 // import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Value;

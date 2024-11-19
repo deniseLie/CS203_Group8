@@ -1,4 +1,4 @@
-package csd.backend.Penalty.MS;
+package csd.backend.Penalty.MS.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

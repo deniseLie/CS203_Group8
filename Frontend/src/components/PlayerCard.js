@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import PlayerIcon from "./PlayerIcon";
 import { useState } from "react";
 
+// For tournamentBracket
 const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status, onClick }) => {
     // Local state to handle hover
     const [isHovering, setIsHovering] = useState(false);
@@ -13,28 +14,31 @@ const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status, onC
     else if (status === "lose") borderColor = "#7B0C21";
     else borderColor = "transparent"; // No border for pending
 
+    // Grayscale filter for "lose" status
+    const imageStyle = {
+        width: '100%',
+        height: '100%',
+        backgroundImage: `url(${championImg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderRadius: 1,
+        filter: status === "lose" || status === "AFK" ? "grayscale(100%)" : "none", // Apply grayscale filter if "lose"
+        opacity: status === "lose" || status === "AFK" ? 0.6 : 1, // Optional: lower opacity for a more subdued effect
+    };
+
     return (
       <Box 
         display="flex" 
         alignItems="center" 
-        spacing={1} 
         onClick={onClick}
         onMouseEnter={() => status === "pending" && setIsHovering(true)} // Set hover effect if status is pending
         onMouseLeave={() => setIsHovering(false)} // Revert hover effect
         sx={{ cursor: 'pointer' }}
       >
         {/* Square Champion Image with Player Icon overlay */}
-        <Box sx={{ position: 'relative', width: 75, height: 75, border: `2px solid ${borderColor}` }}>
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              backgroundImage: `url(${championImg})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              borderRadius: 1,
-            }}
-          />
+        <Box sx={{ position: 'relative', width: 75, height: 75, border: `2px solid ${borderColor}`, borderRadius: 1 }}>
+          <Box sx={imageStyle} />
+
           {/* Overlayed Player Icon */}
           <Box sx={{ position: 'absolute', bottom: -10, right: -10 }}>
             <PlayerIcon src={playerIcon} width={-3.5} height={-3.5} clickable={false} />

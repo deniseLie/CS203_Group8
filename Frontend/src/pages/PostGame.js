@@ -1,46 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Dialog, DialogContent, DialogActions } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import playAgain from '../assets/buttons/play-again-button.png';
-import playerIcon from '../assets/summonerIcon/1.jpg';
 import background from '../assets/backgrounds/srbackground.png';
 import arenaIcon from '../assets/icons/arena-icon.png';
 import rankCircle from '../assets/icons/ranked-frame.png';
-
-// Sample data with an AFK flag for demonstration
-// TO DO: Replace leaderboard data and current player dummy data  
-const leaderboardData = [
-  { standing: '1ST', champion: 'Ahri', playerName: 'ARAMLOVER', kd: '8/0', kda: '8.0 KDA' },
-  { standing: '2ND', champion: 'Sett', playerName: 'Rodan', kd: '8/0', kda: '8.0 KDA' },
-  { standing: '3RD', champion: 'Bel\'Veth', playerName: 'xDivineSword', kd: '8/0', kda: '8.0 KDA' },
-  { standing: '4TH', champion: 'Miss Fortune', playerName: 'lilWanton', kd: '8/0', kda: '8.0 KDA' },
-  { standing: '5TH', champion: 'Galio', playerName: 'GodanRoose', kd: '8/0', kda: '8.0 KDA' },
-  { standing: '6TH', champion: 'Zac', playerName: 'Radon', kd: '8/0', kda: '8.0 KDA' },
-  { standing: '7TH', champion: 'Jinx', playerName: 'LikeFromArcane', kd: '1/1', kda: '1.0 KDA' },
-  { standing: '8TH', champion: 'Vi', playerName: 'hide on bush', kd: '0/1', kda: '0.0 KDA' },
-];
-
-const currentPlayer = 'hide on bush';
+import { useAuth } from '../auth/AuthProvider';
 
 const PostGame = () => {
-  // Find the current player's standing
-  const currentPlayerData = leaderboardData.find(entry => entry.playerName === currentPlayer);
-  const currentPlayerStanding = currentPlayerData ? currentPlayerData.standing : null;
+  const location = useLocation();
+  const { results = [] } = location.state || {}; // Tournament results from the backend
+  const {user} = useAuth();
+  const currentPlayer = results.find((player) => player.playerName === user.playername); // Replace with actual player identifier
 
   // State for showing the AFK modal
-  const [isAFKModalOpen, setAFKModalOpen] = useState(false);
+  const [isAFKModalOpen, setAFKModalOpen] = useState(player?.status ==="AFK");
 
-  // Check if the current player is marked as AFK
   useEffect(() => {
-    if (currentPlayerData?.isAFK) {
+    if (currentPlayer?.isAFK) {
       setAFKModalOpen(true);
     }
-  }, [currentPlayerData]);
+  }, [currentPlayer]);
 
-  // Function: Close AFK Modal
-  const handleAgree = () => {
-    setAFKModalOpen(false); // Close the modal on clicking "I AGREE"
-  };
+  // Close AFK modal
+  const handleAgree = () => setAFKModalOpen(false);
+
   return (
     <Box
       sx={{
@@ -56,7 +40,7 @@ const PostGame = () => {
         justifyContent: 'space-between',
       }}
     >
-      {/* Full-width Border Section */}
+      {/* Title Section */}
       <Box
         sx={{
           width: '100%',
@@ -64,7 +48,6 @@ const PostGame = () => {
           borderBottomColor: '#464F4D',
         }}
       >
-        {/* Title Section */}
         <Box
           sx={{
             display: 'flex',
@@ -75,12 +58,12 @@ const PostGame = () => {
             margin: '0 auto',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1}}>
+          <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
             <Box component="img" src={arenaIcon} sx={{ width: 40, height: 40, mr: 1 }} />
             <Box>
-              {currentPlayerStanding && (
+              {currentPlayer?.standing && (
                 <Typography className='headerPrimary' fontWeight="bold">
-                  {currentPlayerStanding} PLACE
+                  {currentPlayer.standing} PLACE
                 </Typography>
               )}
               <Typography variant="subtitle2" color="#949083">
@@ -95,17 +78,17 @@ const PostGame = () => {
       <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', maxWidth: '90%', mt: 1 }}>
         {/* Standing and Champion */}
         <Box sx={{ flex: 1 }}>
-          <Typography sx={{ color: '#949083', mb: 1}} className='headerSecondary'>
+          <Typography sx={{ color: '#949083', mb: 1 }} className='headerSecondary'>
             STANDING
           </Typography>
-          {leaderboardData.map((entry, index) => (
+          {results.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" sx={{ height: '50px' }}>
               <Typography
                 variant="body2"
                 sx={{
                   width: '50px',
                   fontWeight: 'bold',
-                  color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2',
+                  color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2',
                   fontSize: '1.2rem'
                 }}
                 className='headerPrimary'
@@ -120,13 +103,13 @@ const PostGame = () => {
                   backgroundImage: `url(${require(`../assets/champions/${entry.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  borderLeft: entry.playerName === currentPlayer ? '5px solid #D8A13A' : 'none',
+                  borderLeft: entry.playerName === currentPlayer?.playerName ? '5px solid #D8A13A' : 'none',
                 }}
               />
               <Typography
                 className='headerPrimary'
                 variant="body2"
-                sx={{ color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2' }}
+                sx={{ color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2' }}
               >
                 {entry.champion}
               </Typography>
@@ -139,13 +122,15 @@ const PostGame = () => {
           <Typography variant="subtitle2" className='headerSecondary' sx={{ color: '#949083', textAlign: 'left', mb: 1 }}>
             PLAYER
           </Typography>
-          {leaderboardData.map((entry, index) => (
+          {results.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" justifyContent="flex-start" sx={{ height: '50px' }}>
-              <Box component="img" src={playerIcon} sx={{ width: 30, height: 30, mr: 1 }} />
               <Typography
                 variant="body2"
                 className='headerPrimary'
-                sx={{ color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2', fontWeight: entry.playerName === currentPlayer ? 'bold' : 'normal' }}
+                sx={{
+                  color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2',
+                  fontWeight: entry.playerName === currentPlayer?.playerName ? 'bold' : 'normal',
+                }}
               >
                 {entry.playerName}
               </Typography>
@@ -155,14 +140,14 @@ const PostGame = () => {
 
         {/* K/D and KDA */}
         <Box sx={{ flex: 1, textAlign: 'center' }}>
-          <Typography variant="subtitle2" className='headerSecondary' sx={{ color: '#949083', mb:1}}>
+          <Typography variant="subtitle2" className='headerSecondary' sx={{ color: '#949083', mb: 1 }}>
             K/D
           </Typography>
-          {leaderboardData.map((entry, index) => (
+          {results.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" flexDirection="column" sx={{ height: '50px' }}>
               <Typography
                 variant="body2"
-                sx={{ color: entry.playerName === currentPlayer ? '#D8A13A' : '#F0E6D2' }}
+                sx={{ color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2' }}
                 className='headerPrimary'
               >
                 {entry.kd}
@@ -173,7 +158,7 @@ const PostGame = () => {
             </Box>
           ))}
         </Box>
-
+    
         {/* LP Section with Ranked Circle */}
         <Box sx={{ flex: 1, textAlign: 'center', position: 'relative', alignContent: 'center'}}>
           <Box
@@ -238,7 +223,7 @@ const PostGame = () => {
         </Button>
       </Box>
 
-            {/* AFK Warning Modal (inform user of applied penalty if they afk) */}
+      {/* AFK Warning Modal (if user status is AFK) */}
       <Dialog
         open={isAFKModalOpen}
         onClose={handleAgree}

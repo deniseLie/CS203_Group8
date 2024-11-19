@@ -8,6 +8,7 @@ import logo from "../assets/icons/riot_logo.png";
 import env from "react-dotenv";
 
 function Login({ login }) {
+  // initialise constants
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -15,12 +16,15 @@ function Login({ login }) {
   const isFormFilled = username.length > 0 && password.length > 0;
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
+  // redirect to google oauth2
   const handleGoogleLogin = () => {
     window.location.href = `${env.LOGIN_SERVER_URL}/oauth2/authorization/google`;
   };
   
+  // Login Button 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    // if all username,pw fields are filled allow login
     if (isFormFilled) {
       try {
         const response = await axios.post(`${env.LOGIN_SERVER_URL}/auth/login`, {
@@ -28,6 +32,7 @@ function Login({ login }) {
           password: password
         });
         
+        // jwt token returned and put into cookies
         const token = response.data.jwt;
         login(token);
       } catch (error) {

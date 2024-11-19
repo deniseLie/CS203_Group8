@@ -11,7 +11,6 @@ const getChampionImage = (name, type) => {
         );
     
     if (type == "icon"){
-        console.log(formattedName)
         return championsAssets[formattedName] || championsAssets.noChampion;
     }
     

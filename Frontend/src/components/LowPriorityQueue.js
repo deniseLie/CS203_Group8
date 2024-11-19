@@ -3,6 +3,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import redWarning from '../assets/icons/red-warning.png'; // Adjust the path if needed
 
+// For FindTournament page
 const LowPriorityQueue = () => {
   return (
     <Box

@@ -70,10 +70,18 @@ import bronzeIcon from '../assets/rankIcon/bronze.png';
 import diamondIcon from '../assets/rankIcon/diamond.png';
 import emeraldIcon from '../assets/rankIcon/emerald.png';
 import goldIcon from '../assets/rankIcon/gold.png';
-import ironIcon from '../assets/rankIcon/iron.png';
 import platinumIcon from '../assets/rankIcon/platinum.png';
 import silverIcon from '../assets/rankIcon/silver.png';
 import unrankedIcon from '../assets/rankIcon/unranked.png';
+
+// Rank Banners
+import bronzeBanner from '../assets/rank-banners/bronze.png'
+import diamondBanner from '../assets/rank-banners/diamond.png'
+import emeraldBanner from '../assets/rank-banners/emerald.png'
+import goldBanner from '../assets/rank-banners/gold.png'
+import platinumBanner from '../assets/rank-banners/platinum.png'
+import silverBanner from '../assets/rank-banners/silver.png'
+import unrankedBanner from '../assets/rank-banners/unranked.png'
 
 // Summoner Icons Collection
 export const summonerIcons = [
@@ -156,8 +164,18 @@ export const rankIconsAssets = {
   diamond: diamondIcon,
   emerald: emeraldIcon,
   gold: goldIcon,
-  iron: ironIcon,
   platinum: platinumIcon,
   silver: silverIcon,
   unranked: unrankedIcon,
+};
+
+// Rank Banner Icon Collection
+export const rankBannerIconsAssets = {
+  bronze: bronzeBanner,
+  diamond: diamondBanner,
+  emerald: emeraldBanner,
+  gold: goldBanner,
+  platinum: platinumBanner,
+  silver: silverBanner,
+  unranked: unrankedBanner,
 };

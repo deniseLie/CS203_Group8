@@ -12,17 +12,11 @@ import Cookies from 'js-cookie';
 const EditProfileModal = ({
   open,
   handleClose,
-  handleSaveChanges // callback after successful save
 }) => {
   const [username, setUsername] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [avatar, setAvatar] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [avatarNum, setAvatarNumber] = useState(1);
@@ -30,13 +24,12 @@ const EditProfileModal = ({
   const {user} = useAuth();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const validateEmail = (email) => emailRegex.test(email);
-  const playerId = user.sub;
+  const playerId = user?  user.sub : 1;
   const canSaveChanges = isEditing &&
     username &&
     playerName &&
     email &&
-    validateEmail(email) &&
-    password === confirmPassword;
+    validateEmail(email)
 
   const canUpdateProfilePicture = avatarChanged;
 
@@ -77,31 +70,25 @@ const EditProfileModal = ({
         username,
         playerName,
         email,
-        password,
         profilePicture: avatarNum + ".jpg", // Send the filename instead of the full path
       };
+      // update user profile details
+      try {
+        const response = await fetch(`/account/${playerId}/profile`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(profileData),
+        });
 
-      console.log(profileData);
-
-      // Uncomment for actual request
-      // try {
-      //   const response = await fetch(`/account/${playerId}/profile`, {
-      //     method: 'PUT',
-      //     headers: { 'Content-Type': 'application/json' },
-      //     body: JSON.stringify(profileData),
-      //   });
-
-      //   if (response.ok) {
-      //     console.log("Profile updated successfully");
-      //     handleSaveChanges();
-      //   } else {
-      //     console.error("Failed to update profile");
-      //   }
-      // } catch (error) {
-      //   console.error("Error updating profile:", error);
-      // }
+        if (response.ok) {
+          console.log("Profile updated successfully");
+        } else {
+          console.error("Failed to update profile");
+        }
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
     }
-
     setIsEditing(false);
     setAvatarChanged(false); // Reset avatar changed state after saving
   };
@@ -109,6 +96,7 @@ const EditProfileModal = ({
   return (
     <Dialog fullWidth maxWidth="md" open={open} onClose={handleClose}>
       <DialogContent sx={{ background: '#010A13', border: 2, borderColor: "#775A27", display: 'flex', padding: '16px 32px', flexDirection: 'column' }}>
+        {/* close button */}
         <Box display={'flex'} justifyContent={'flex-end'}>
           <IconButton onClick={handleClose} sx={{ color: '#f0e6d2' }}>
             <CloseIcon />
@@ -117,6 +105,7 @@ const EditProfileModal = ({
         <Box sx={{ display: 'flex' }}>
           <Box sx={{ width: '50%', paddingRight: 2, borderRight: 1.5, borderRightColor: '#464F4D' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              {/* player's pfp */}
               <Box
                 sx={{
                   width: '5vw',
@@ -137,10 +126,12 @@ const EditProfileModal = ({
                   }}
                 />
               </Box>
+              {/* button to allow edit  */}
               <Button onClick={() => setIsEditing(!isEditing)} sx={{ color: '#B68C34', borderColor: '#B68C34' }}>
                 <Typography className='headerPrimary'>{isEditing ? "Cancel Edit Profile" : "Edit Profile"}</Typography>
               </Button>
               
+              {/* all the fields to be editted */}
               <TextField label="Player Name" fullWidth value={playerName} onChange={(e) => setPlayerName(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} />
               <TextField label="Username" fullWidth value={username} onChange={(e) => setUsername(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} />
               <TextField 
@@ -156,12 +147,11 @@ const EditProfileModal = ({
                 error={isEditing && !!emailError}
                 helperText={isEditing ? emailError : ""}
               />
-              {/* <TextField label="Password" type={showPassword ? "text" : "password"} fullWidth value={password} onChange={(e) => setPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: '#949083' }}>{showPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} />
-              <TextField label="Confirm Password" type={showConfirmPassword ? "text" : "password"} fullWidth value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={!isEditing} sx={{ mb: 1, background: '#0F171D', borderRadius: 1, label: { color: '#949083' }, input: { color: 'white' }, "& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "gray" } }} InputProps={{ endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: '#949083' }}>{showConfirmPassword ? <VisibilityOff /> : <Visibility />}</IconButton></InputAdornment>) }} error={isEditing && !!passwordError} helperText={isEditing ? passwordError : ""} */}
               />
             </Box>
           </Box>
 
+          {/* allow user to change pfp */}
           <Box sx={{ width: '50%', paddingLeft: 3 }}>
             <Typography sx={{ mb: 1, color: '#f0e6d2' }} className="headerPrimary">ACQUIRED 2024</Typography>
             <Box display="flex" flexWrap="wrap">
@@ -196,6 +186,8 @@ const EditProfileModal = ({
             </Box>
           </Box>
         </Box>
+
+        {/* save button */}
         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 3 }}>
           <Button 
             className="headerPrimary" 

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../auth/AuthProvider';
-// For google oauth
+// this page is for google oauth
 const LoginSuccess = () => {
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const LoginSuccess = () => {
       // Call the login function from AuthProvider to set the user state
       login(token);
 
-      // Redirect to the main app or dashboard
+      // Redirect to the find tournament page
       navigate('/');
     } else {
       // If no token is found, redirect to login or display an error

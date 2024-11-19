@@ -4,6 +4,7 @@ import speedupQueueIcon from '../assets/icons/speedQueue.png'; // Import the ico
 import checkMark from '../assets/icons/icon-checkmark.png'; // Import the checkmark icon
 import cancelIcon from '../assets/icons/cancel.png'; // Import cancel icon
 
+// for FindTournament
 const SpeedUpModal = ({ show, onClose, onJoinQueue, onLeaveQueue }) => {
   const [inSpeedUpQueue, setInSpeedUpQueue] = useState(false);
 

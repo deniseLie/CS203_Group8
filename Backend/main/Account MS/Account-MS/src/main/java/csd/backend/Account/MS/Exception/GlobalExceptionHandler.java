@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Exception;
+package csd.backend.Account.MS.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

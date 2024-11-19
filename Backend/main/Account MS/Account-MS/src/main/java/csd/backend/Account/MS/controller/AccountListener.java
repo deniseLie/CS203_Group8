@@ -1,4 +1,4 @@
-package csd.backend.Account.MS;
+package csd.backend.Account.MS.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -7,11 +7,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
-import csd.backend.Account.MS.Model.Player.Player;
-import csd.backend.Account.MS.Model.Tournament.*;
-import csd.backend.Account.MS.Service.SqsService;
-import csd.backend.Account.MS.Service.Player.*;
-import csd.backend.Account.MS.Service.Tournament.*;
+import csd.backend.Account.MS.model.Player.Player;
+import csd.backend.Account.MS.model.Tournament.*;
+import csd.backend.Account.MS.service.SqsService;
+import csd.backend.Account.MS.service.Player.*;
+import csd.backend.Account.MS.service.Tournament.*;
 
 import java.time.LocalDateTime;
 import java.util.*;

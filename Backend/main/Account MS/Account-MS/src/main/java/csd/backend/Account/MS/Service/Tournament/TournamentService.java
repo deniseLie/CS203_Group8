@@ -1,11 +1,12 @@
-package csd.backend.Account.MS.Service.Tournament;
+package csd.backend.Account.MS.service.Tournament;
 
-import csd.backend.Account.MS.Exception.*;
-import csd.backend.Account.MS.Model.Player.*;
-import csd.backend.Account.MS.Model.Tournament.*;
-import csd.backend.Account.MS.Repository.Player.*;
-import csd.backend.Account.MS.Repository.Tournament.*;
-import csd.backend.Account.MS.Service.Champion.*;
+import csd.backend.Account.MS.exception.*;
+import csd.backend.Account.MS.model.Player.*;
+import csd.backend.Account.MS.model.Tournament.*;
+import csd.backend.Account.MS.repository.Player.*;
+import csd.backend.Account.MS.repository.Tournament.*;
+import csd.backend.Account.MS.service.Champion.*;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

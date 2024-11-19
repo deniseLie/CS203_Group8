@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Security;
+package csd.backend.Account.MS.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import csd.backend.Account.MS.Security.JwtRequestFilter;
+import csd.backend.Account.MS.security.JwtRequestFilter;
 
 // import jakarta.servlet.http.HttpServletResponse;
 

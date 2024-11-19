@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Exception;
+package csd.backend.Account.MS.exception;
 
 public class PlayerRegisterExisted extends RuntimeException {
     public PlayerRegisterExisted(String username) {

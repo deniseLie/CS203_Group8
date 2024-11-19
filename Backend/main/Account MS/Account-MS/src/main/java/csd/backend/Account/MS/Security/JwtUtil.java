@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Security;
+package csd.backend.Account.MS.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

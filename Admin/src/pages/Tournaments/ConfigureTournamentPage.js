@@ -10,69 +10,62 @@ const ConfigureTournamentPage = () => {
   const [success, setSuccess] = useState(''); // State for success message
   const [hasInteracted, setHasInteracted] = useState(false); // Track if the user has interacted with the input
 
-  // Mock the fetchTournamentSize API call
+  // Fetch the current tournament configuration
   const fetchTournamentSize = async () => {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const mockResponse = { message: '8' }; // Simulate the API returning 8 players
-        resolve(mockResponse);
-        // To simulate an error, uncomment the line below:
-        // reject('Failed to load tournament size.');
-      }, 10); // Simulate a delay
-    });
+    try {
+      const response = await fetch('/admin/tournaments/configure');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setMaxPlayers(data.maxPlayers); // Update state with the fetched data
+    } catch (error) {
+      console.error('Error fetching tournament size:', error);
+      setError('Failed to load tournament size.');
+    }
   };
 
-  // Mock the updateTournamentSize API call
+  // Update the tournament configuration
   const updateTournamentSize = async (newSize) => {
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (newSize % 2 === 0) {
-          resolve({ status: 200 });
-        } else {
-          reject('Failed to update tournament size. Please enter an even number.');
-        }
-      }, 1000); // Simulate a delay
-    });
+    try {
+      const response = await fetch('/admin/tournaments/configure', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ maxPlayers: newSize }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update tournament size.');
+      }
+
+      setSuccess('Tournament configuration updated successfully!');
+    } catch (error) {
+      setError('Error updating tournament size. Try again later.');
+      console.error('Error updating tournament size:', error);
+    }
   };
 
   // Fetch current tournament size when component mounts
   useEffect(() => {
-    const fetchTournamentSizeData = async () => {
-      try {
-        const response = await fetchTournamentSize();
-        setMaxPlayers(response.message); // Set maxPlayers from API response, ensure it's a string
-      } catch (error) {
-        console.error('Error fetching tournament size:', error);
-        setError('Failed to load tournament size.');
-      }
-    };
-
-    fetchTournamentSizeData();
+    fetchTournamentSize();
   }, []);
 
   const handleSave = () => {
     const value = Number(maxPlayers);
-    if (isNaN(value) || value % 2 !== 0) {
-      setError('Please enter a valid even number.');
+    if (isNaN(value) || value % 2 !== 0 || value <= 0) {
+      setError('Please enter a valid even number greater than 0.');
       return;
     }
     setOpenConfirmation(true); // Open confirmation dialog
   };
 
   const handleConfirmSave = async () => {
-    try {
-      const response = await updateTournamentSize(maxPlayers);
-      if (response.status === 200) {
-        setSuccess('Tournament configuration updated successfully!');
-      }
-    } catch (error) {
-      setError(error);
-      console.error('Error updating tournament size:', error);
-    } finally {
-      setOpenConfirmation(false); // Close the dialog after saving
-    }
+    setError(''); // Clear existing errors
+    await updateTournamentSize(Number(maxPlayers));
+    setOpenConfirmation(false); // Close the dialog after saving
   };
 
   const handleCloseConfirmation = () => {

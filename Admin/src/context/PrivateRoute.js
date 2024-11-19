@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';  // Import the useAuth hook
+import { useAuth } from './AuthContext';  // Import the useAuth hook
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();  // Get the auth status from the context

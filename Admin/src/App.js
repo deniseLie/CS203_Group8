@@ -5,9 +5,9 @@ import PrivateRoute from './context/PrivateRoute';  // Import the PrivateRoute
 
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
-import TournamentsPage from './pages/Tournaments/TournamentsPage'
+import TournamentsPage from './pages/Tournaments/TournamentDatasetPage'
 import ConfigureTournamentPage from './pages/Tournaments/ConfigureTournamentPage';
-import PlayerDatasetPage from './pages/Players/Dataset';
+import PlayerDatasetPage from './pages/Players/PlayerDatasetPage';
 import CreatePlayerPage from './pages/Players/CreatePlayerPage';
 import NotFoundPage from './pages/NotFound/NotFoundPage';
 import EditPlayerPage from './pages/Players/EditPlayerPage';

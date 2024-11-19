@@ -43,15 +43,14 @@ const Login = () => {
       } else {
         setError('An error occurred. Please try again.');
 
-        const token = 'skidibi';
+        // Uncomment the bottom block of code for reviewing the website
 
-        // Save the token (e.g., in localStorage)
-        localStorage.setItem('authToken', token);
-
-        // Update your authentication context
-        login(token);
-
-        navigate('/dashboard');
+        // const token = 'randomsetofcharacters';
+        // // Save the token (e.g., in localStorage)
+        // localStorage.setItem('authToken', token);
+        // // Update your authentication context
+        // login(token);
+        // navigate('/dashboard');
       }
     }
   };

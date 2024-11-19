@@ -1,4 +1,4 @@
 csd\backend\Account\MS\service\champion\ChampionServiceTest.class
 csd\backend\Account\MS\service\player\PlayerServiceTest.class
 csd\backend\Account\MS\service\tournament\TournamentServiceTest.class
-csd\backend\Account\MS\controller\AccountControllerTest.class
+csd\backend\Account\MS\integrationTesting\AccountIntegrationTesting.class

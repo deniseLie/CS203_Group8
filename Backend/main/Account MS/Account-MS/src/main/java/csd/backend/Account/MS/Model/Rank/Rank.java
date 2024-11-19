@@ -17,6 +17,17 @@ public class Rank {
     private String rankName; 
     private int pointsRequired; 
 
+    // Constructor
+    public Rank() {
+        // Default constructor
+    }
+
+    public Rank(Long rankId, String rankName, int pointsRequired) {
+        this.rankId = rankId;
+        this.rankName = rankName;
+        this.pointsRequired = pointsRequired;
+    }
+
     // Getters and setters
     public Long getRankId() {
         return rankId;

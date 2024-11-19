@@ -7,6 +7,7 @@ csd\backend\Account\MS\exception\PlayerStatsNotFoundException.class
 csd\backend\Account\MS\security\SecurityConfig$1.class
 csd\backend\Account\MS\repository\player\PlayerOverallStatsRepository.class
 csd\backend\Account\MS\application\AccountMsApplication.class
+csd\backend\Account\MS\utils\ResponseUtil.class
 csd\backend\Account\MS\exception\GlobalExceptionHandler.class
 csd\backend\Account\MS\controller\HealthCheckController.class
 csd\backend\Account\MS\repository\tournament\TournamentPlayerStatsRepository.class

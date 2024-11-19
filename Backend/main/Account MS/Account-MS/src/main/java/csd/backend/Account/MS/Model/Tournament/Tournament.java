@@ -15,6 +15,14 @@ public class Tournament {
     private int tournamentSize;
     private LocalDateTime timestampStart;
 
+    // Constructor
+    public Tournament() {}
+    
+    public Tournament(Long tournamentId, int tournamentSize, LocalDateTime timestampStart) {
+        this.tournamentId = tournamentId;
+        this.tournamentSize = tournamentSize;
+        this.timestampStart = timestampStart;
+    }
     // Getters and setters
     public Long getTournamentId() {
         return tournamentId;

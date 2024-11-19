@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Exception;
+package csd.backend.Account.MS.exception;
 
 public class ChampionNotFoundException extends RuntimeException {
     public ChampionNotFoundException(Long championId) {

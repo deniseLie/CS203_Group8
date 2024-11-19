@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Player;
+package csd.backend.Account.MS.model.Player;
 
 import jakarta.persistence.*;
 

@@ -1,8 +1,8 @@
-package csd.backend.Account.MS.Model.Tournament;
+package csd.backend.Account.MS.model.Tournament;
 
 import java.time.LocalDateTime;
 
-import csd.backend.Account.MS.Model.Player.Player;
+import csd.backend.Account.MS.model.Player.Player;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

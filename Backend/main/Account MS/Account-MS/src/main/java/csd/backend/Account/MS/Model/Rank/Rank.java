@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Rank;
+package csd.backend.Account.MS.model.Rank;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

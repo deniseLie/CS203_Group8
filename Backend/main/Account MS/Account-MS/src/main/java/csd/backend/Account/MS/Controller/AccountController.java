@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Controller;
+package csd.backend.Account.MS.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
-import csd.backend.Account.MS.Exception.PlayerNotFoundException;
-import csd.backend.Account.MS.Model.Player.*;
-import csd.backend.Account.MS.Service.Tournament.*;
-import csd.backend.Account.MS.Service.Player.*;
+import csd.backend.Account.MS.exception.PlayerNotFoundException;
+import csd.backend.Account.MS.model.Player.*;
+import csd.backend.Account.MS.service.Player.*;
+import csd.backend.Account.MS.service.Tournament.*;
 
 import java.util.*;
 

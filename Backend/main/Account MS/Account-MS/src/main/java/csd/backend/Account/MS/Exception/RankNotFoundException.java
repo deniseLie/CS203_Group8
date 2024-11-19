@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Exception;
+package csd.backend.Account.MS.exception;
 
 public class RankNotFoundException extends RuntimeException {
     public RankNotFoundException(Long rankId) {

@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Exception;
+package csd.backend.Account.MS.exception;
 
 public class PlayerStatsNotFoundException extends RuntimeException {
     public PlayerStatsNotFoundException(Long playerId) {

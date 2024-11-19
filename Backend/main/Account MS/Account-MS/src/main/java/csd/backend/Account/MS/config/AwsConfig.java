@@ -1,3 +1,4 @@
+package csd.backend.Account.MS.config;
 // package csd.backend.config;
 
 // import org.springframework.beans.factory.annotation.Value;

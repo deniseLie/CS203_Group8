@@ -5,6 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import csd.backend.Account.MS.exception.player.PlayerChampionStatsNotFoundException;
+import csd.backend.Account.MS.exception.player.PlayerNotFoundException;
+import csd.backend.Account.MS.exception.player.PlayerRegisterExisted;
+import csd.backend.Account.MS.exception.player.PlayerStatsNotFoundException;
+import csd.backend.Account.MS.exception.rank.RankNotFoundException;
+import csd.backend.Account.MS.exception.rank.RankPointNotFoundException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     

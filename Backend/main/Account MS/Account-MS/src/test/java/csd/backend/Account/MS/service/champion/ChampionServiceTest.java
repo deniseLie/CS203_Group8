@@ -1,6 +1,6 @@
 package csd.backend.Account.MS.service.champion;
 
-import csd.backend.Account.MS.exception.ChampionNotFoundException;
+import csd.backend.Account.MS.exception.champion.ChampionNotFoundException;
 import csd.backend.Account.MS.model.champion.Champion;
 import csd.backend.Account.MS.repository.champion.ChampionRepository;
 

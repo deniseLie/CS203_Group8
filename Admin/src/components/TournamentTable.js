@@ -6,7 +6,7 @@ import playerProfile from '../assets/playerpfp.jpg'; // Make sure this image pat
 const TournamentTable = ({ data }) => {
   const [selectedTournament, setSelectedTournament] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [filteredData, setFilteredData] = useState(data); // State to store filtered data
+  const [filteredData, setFilteredData] = useState(data);
   const [statusFilter, setStatusFilter] = useState('');
   const [playerFilter, setPlayerFilter] = useState('');
   const [tournamentIdFilter, setTournamentIdFilter] = useState('');

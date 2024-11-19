@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Avatar, Stack, List } from '@mui/material';
-import { Dashboard, SportsEsports, People, Settings } from '@mui/icons-material';
+import { Dashboard, SportsEsports, People } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import SidebarItem from './SidebarItem';
 import logo from '../assets/logo.png';
@@ -13,18 +13,12 @@ const Sidebar = () => {
   // Effect to set active page based on the current location
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('tournaments/ongoing')) {
-      setActivePage('Ongoing');
-    } else if (path.includes('tournaments/completed')) {
-      setActivePage('Completed');
+    if (path.includes('tournaments')) {
+      setActivePage('Tournament Dataset');
     } else if (path.includes('tournaments/configure')) {
-        setActivePage('Configure');
-    } else if (path.includes('tournaments/add')) {
-        setActivePage('Add');
+      setActivePage('Configure');
     } else if (path.includes('players/dataset')) {
-      setActivePage('Dataset');
-    } else if (path.includes('players/leaderboards')) {
-      setActivePage('Leaderboards');
+      setActivePage('Player Dataset');
     } else if (path.includes('players/create')) {
       setActivePage('Create');
     } else if (path.includes('settings')) {
@@ -56,7 +50,7 @@ const Sidebar = () => {
         <SidebarItem
           text="Tournaments"
           icon={<SportsEsports />}
-          subItems={['Ongoing', 'Completed', 'Configure']}
+          subItems={['Dataset', 'Configure']}
           isOpen={openMenus['Tournaments']}
           onToggle={() => handleToggle('Tournaments')}
           onClick={(subPage) => {
@@ -65,18 +59,6 @@ const Sidebar = () => {
           }}
           activePage={activePage}
         />
-        {/* <SidebarItem
-          text="Matches"
-          icon={<SportsEsports />}
-          subItems={['Ongoing', 'Completed']}
-          isOpen={openMenus['Matches']}
-          onToggle={() => handleToggle('Matches')}
-          onClick={(subPage) => {
-            setActivePage(`Matches ${subPage}`);
-            // handle navigation logic here based on subPage
-          }}
-          activePage={activePage}
-        /> */}
         <SidebarItem
           text="Players"
           icon={<People />}
@@ -89,18 +71,6 @@ const Sidebar = () => {
           }}
           activePage={activePage}
         />
-        {/* <SidebarItem
-          text="Settings"
-          icon={<Settings />}
-          subItems={['Login Attempts', 'Admin Registration', 'Activity Logs', 'Profile']}
-          isOpen={openMenus['Settings']}
-          onToggle={() => handleToggle('Settings')}
-          onClick={(subPage) => {
-            setActivePage(subPage);
-            // handle navigation logic here based on subPage
-          }}
-          activePage={activePage}
-        /> */}
       </List>
     </Box>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Box, Typography, TextField, Button, Stack, Dialog, DialogActions, DialogContent, DialogTitle,
-  Avatar, Grid
+  Avatar
 } from '@mui/material';
 import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
@@ -28,8 +28,8 @@ const predefinedProfilePictures = [
   { src: profile7, name: '7.jpg' },
   { src: profile8, name: '8.jpg' },
 ];
-
 const CreatePlayerPage = () => {
+  // State hooks
   const [username, setUsername] = useState('');
   const [playername, setPlayername] = useState('');
   const [password, setPassword] = useState('');
@@ -48,9 +48,10 @@ const CreatePlayerPage = () => {
     const userData = {
       username,
       password,
-      role: 'USER', // Fixed role as USER
+      role: 'USER',
       playerName: playername,
       profilePicture,
+      email,
     };
 
     try {
@@ -58,9 +59,22 @@ const CreatePlayerPage = () => {
       if (response.status === 201) {
         setSuccess('User created successfully!');
         resetForm();
+      } else {
+        setError('Failed to create user. Please check the input data.');
       }
     } catch (error) {
-      setError('Failed to create user. Please try again.');
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          setError(data.message || 'Validation error. Please check the input.');
+        } else if (status === 409) {
+          setError(data.message || 'User already exists.');
+        } else {
+          setError(data.message || 'An error occurred. Please try again.');
+        }
+      } else {
+        setError('Network error. Please check your connection.');
+      }
       console.error('Error creating user:', error);
     } finally {
       setOpenConfirmation(false);
@@ -92,20 +106,12 @@ const CreatePlayerPage = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Main Content */}
       <Box sx={{ flex: 1, p: 3, backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
-        {/* Top Bar */}
         <TopBar />
-
-        {/* Page Title */}
         <Typography variant="h4" sx={{ mb: 2 }}>
           Create User
         </Typography>
-
-        {/* User Details Form */}
         <Box sx={{ backgroundColor: '#ffffff', p: 3, borderRadius: 2, boxShadow: 1 }}>
           <Stack spacing={2}>
             <TextField
@@ -131,28 +137,32 @@ const CreatePlayerPage = () => {
               required
             />
             <TextField
+              label="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
               label="Profile Picture"
               value={profilePicture}
-              onClick={handleProfilePictureClick} // Open profile picture dialog on click
+              onClick={handleProfilePictureClick}
               fullWidth
               placeholder="Select a profile picture"
               InputProps={{
                 readOnly: true,
               }}
             />
-
             {error && (
               <Typography color="error" sx={{ mt: 1 }}>
                 {error}
               </Typography>
             )}
-
             {success && (
               <Typography color="primary" sx={{ mt: 1 }}>
                 {success}
               </Typography>
             )}
-
             <Button variant="contained" color="primary" onClick={handleSave}>
               Save User
             </Button>
@@ -163,19 +173,30 @@ const CreatePlayerPage = () => {
         <Dialog open={openPictureDialog} onClose={() => setOpenPictureDialog(false)}>
           <DialogTitle>Select Profile Picture</DialogTitle>
           <DialogContent>
-            <Grid container spacing={2}>
+            <Stack direction="row" spacing={2} flexWrap="wrap" justifyContent="center">
               {predefinedProfilePictures.map((picture) => (
-                <Grid item xs={4} key={picture.name}>
+                <Box
+                  key={picture.name}
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    margin: '8px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleSelectProfilePicture(picture.name)}
+                >
                   <Avatar
-                    src={picture.src} // Use imported image
+                    src={picture.src}
                     alt={picture.name}
-                    sx={{ width: 80, height: 80, cursor: 'pointer' }}
-                    onClick={() => handleSelectProfilePicture(picture.name)}
+                    sx={{ width: 80, height: 80 }}
                   />
-                  <Typography variant="body2" align="center">{picture.name}</Typography>
-                </Grid>
+                  <Typography variant="body2" align="center">
+                    {picture.name}
+                  </Typography>
+                </Box>
               ))}
-            </Grid>
+            </Stack>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenPictureDialog(false)} color="primary">
@@ -184,13 +205,12 @@ const CreatePlayerPage = () => {
           </DialogActions>
         </Dialog>
 
+
         {/* Confirmation Dialog */}
         <Dialog open={openConfirmation} onClose={handleCloseConfirmation}>
           <DialogTitle>Confirm User Creation</DialogTitle>
           <DialogContent>
-            <Typography>
-              Are you sure you want to create this user?
-            </Typography>
+            <Typography>Are you sure you want to create this user?</Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseConfirmation} color="primary">

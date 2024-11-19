@@ -1,16 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';  // Import the AuthProvider
-import PrivateRoute from './components/PrivateRoute';  // Import the PrivateRoute
+import PrivateRoute from './context/PrivateRoute';  // Import the PrivateRoute
 
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
-import OngoingTournamentsPage from './pages/Tournaments/OngoingTournamentsPage'
-import CompletedTournamentsPage from './pages/Tournaments/CompletedTournamentsPage';
+import TournamentsPage from './pages/Tournaments/TournamentDatasetPage'
 import ConfigureTournamentPage from './pages/Tournaments/ConfigureTournamentPage';
-import AddTournamentPage from './pages/Tournaments/AddTournamentPage';
-import PlayerDatasetPage from './pages/Players/Dataset';
-import LeaderboardsPage from './pages/Players/Leaderboards';
+import PlayerDatasetPage from './pages/Players/PlayerDatasetPage';
 import CreatePlayerPage from './pages/Players/CreatePlayerPage';
 import NotFoundPage from './pages/NotFound/NotFoundPage';
 import EditPlayerPage from './pages/Players/EditPlayerPage';
@@ -30,18 +27,10 @@ function App() {
             }
           />
           <Route 
-            path="/tournaments/ongoing" 
+            path="/tournaments/dataset" 
             element={
               <PrivateRoute>
-                <OngoingTournamentsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route 
-            path="/tournaments/completed" 
-            element={
-              <PrivateRoute>
-                <CompletedTournamentsPage />
+                <TournamentsPage />
               </PrivateRoute>
             }
           />
@@ -54,26 +43,10 @@ function App() {
             }
           />
           <Route 
-            path="/tournaments/add" 
-            element={
-              <PrivateRoute>
-                <AddTournamentPage />
-              </PrivateRoute>
-            }
-          />
-          <Route 
             path="/players/dataset" 
             element={
               <PrivateRoute>
                 <PlayerDatasetPage />
-              </PrivateRoute>
-            }
-          />
-          <Route 
-            path="/players/leaderboards" 
-            element={
-              <PrivateRoute>
-                <LeaderboardsPage />
               </PrivateRoute>
             }
           />

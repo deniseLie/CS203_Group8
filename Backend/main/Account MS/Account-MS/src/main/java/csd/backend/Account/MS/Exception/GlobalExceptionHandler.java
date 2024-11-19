@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import csd.backend.Account.MS.exception.player.*;
+import csd.backend.Account.MS.exception.rank.*;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     

@@ -1,6 +1,6 @@
 package csd.backend.Account.MS.service.champion;
 
-import csd.backend.Account.MS.exception.*;
+import csd.backend.Account.MS.exception.champion.*;
 import csd.backend.Account.MS.model.champion.*;
 import csd.backend.Account.MS.repository.champion.*;
 

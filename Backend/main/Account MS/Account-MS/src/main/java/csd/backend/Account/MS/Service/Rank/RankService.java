@@ -1,6 +1,6 @@
 package csd.backend.Account.MS.service.rank;
 
-import csd.backend.Account.MS.exception.*;
+import csd.backend.Account.MS.exception.rank.*;
 import csd.backend.Account.MS.model.rank.Rank;
 import csd.backend.Account.MS.repository.rank.RankRepository;
 

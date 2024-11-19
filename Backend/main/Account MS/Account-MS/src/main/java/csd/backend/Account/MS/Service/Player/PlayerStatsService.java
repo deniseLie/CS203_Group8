@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import csd.backend.Account.MS.exception.PlayerNotFoundException;
+import csd.backend.Account.MS.exception.player.PlayerNotFoundException;
 import csd.backend.Account.MS.model.player.*;
 import csd.backend.Account.MS.repository.player.*;
 import csd.backend.Account.MS.service.SqsService;

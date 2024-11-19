@@ -1,6 +1,6 @@
 package csd.backend.Account.MS.service.tournament;
 
-import csd.backend.Account.MS.exception.*;
+import csd.backend.Account.MS.exception.player.*;
 import csd.backend.Account.MS.model.player.*;
 import csd.backend.Account.MS.model.tournament.*;
 import csd.backend.Account.MS.repository.player.*;

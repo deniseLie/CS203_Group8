@@ -113,7 +113,7 @@ public class MatchmakingQueueListener {
             String queueStatus = playerData.getOrDefault("queueStatus", "available");
             int rankId = Integer.parseInt(playerData.getOrDefault("rankId", "1")); 
 
-            matchmakingService.addPlayerToPool(playerId, queueStatus, rankId);
+            playerService.addPlayerToPool(playerId, queueStatus, rankId);
             System.out.println("Player added to pool: " + playerId);
         }
     }
@@ -136,7 +136,7 @@ public class MatchmakingQueueListener {
                 long banEndTime = banUntil.getTime();
                 
                 // Use the matchmakingService to update the player's ban status in the database
-                matchmakingService.updatePlayerBanStatus(playerId, "banned", banEndTime);
+                playerService.updatePlayerBanStatus(playerId, "banned", banEndTime);
 
             } catch (Exception e) {
                 System.err.println("Failed to process ban end time: " + e.getMessage());

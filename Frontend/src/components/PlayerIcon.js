@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Avatar, Popover, Box, Typography } from '@mui/material'; 
 import { Link } from 'react-router-dom'; 
 
+// Display Player Icon with border
 const PlayerIcon = ({
   alt = "Player Avatar", 
   src, 
@@ -31,6 +32,7 @@ const PlayerIcon = ({
 
   return (
     <div className={`avatarWithGradientBorder ${className}`} style={outerStyle}>
+      {/* for navbar */}
       {clickable ? (
         <>
           {/* Avatar that triggers the popover */}

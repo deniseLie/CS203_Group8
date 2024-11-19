@@ -8,7 +8,6 @@ import playerIcon from '../assets/summonerIcon/1.jpg';
 import diamondRankIcon from '../assets/rankIcon/diamond.png';
 // Other assets
 import arenaIcon from "../assets/icons/arena_big.png";
-import editButton from "../assets/buttons/button-edit.png";
 import crownIcon from "../assets/icons/win.png";
 import swordIcon from "../assets/icons/sword.png";
 import ProfileBanner from '../components/ProfileBanner';
@@ -56,7 +55,6 @@ const Profile = ({ logout }) => {
                 <Navbar logout={logout} />
             </Box>
 
-            {/* Background image is most played champ */}
             <Box
                 sx={{
                     backgroundImage: `url(${championSplashAssets.kayn})`, // Set Kayn's splash art as background
@@ -78,16 +76,8 @@ const Profile = ({ logout }) => {
                         zIndex: 2, // Ensure content is above the gradient
                     }}
                 >
-                {/* Banner and rank */}
                     <Box sx={{ marginLeft: '5%', display: 'flex', alignItems: 'center', zIndex: 2 }}>
                         <ProfileBanner
-                            profile={{     
-                                banner: user ? rankBannerIconsAssets[user.rank.toLowerCase()] :  rankBannerIconsAssets.unranked,
-                                playerIcon: playerIcon,
-                                playerName: user?.playername || 'Player',
-                                rankSymbol: user? rankIconsAssets[user.rank.toLowerCase()] :  rankIconsAssets.unranked,
-                                rank: user?.rank,
-                            }}
                             displayType="player"
                         />
                     </Box>
@@ -125,7 +115,6 @@ const Profile = ({ logout }) => {
                                     justifyItems:'flex-start'
                                 }}
                             >
-                            {/* overall account stats */}
                                 <Typography className='headerPrimary' sx={{ mb: 2, fontSize: '1.2em', alignSelf: 'flex-start' }}>ARENA</Typography>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                                     <Box sx={{ textAlign: 'center', width: '33%' }}>

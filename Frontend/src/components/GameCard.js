@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { Box, Typography, Collapse, List, ListItem, ListItemText, Avatar, Divider } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayerIcon from './PlayerIcon';
-import profilePic from '../assets/summonerIcon/1.jpg'
+import { useAuth } from '../auth/AuthProvider';
+
+// For match history page
 function GameCard({ players, currentPlayer }) {
   const [open, setOpen] = useState(false); // State to control dropdown visibility
 
+  const {user} = useAuth();
   // Get current player's data
   const currentPlayerData = players.find(player => player.playerName === currentPlayer);
-
   return (
     <Box 
       display="flex" 
@@ -72,14 +74,9 @@ function GameCard({ players, currentPlayer }) {
 
     {/* match time */}
     <Typography className="bodySecondary" minWidth={'5vw'} sx={{ color: currentPlayerData && currentPlayerData.kd ? '#fff' : '#dc3545', fontWeight: 'bold', marginLeft:2 }}>
-      31:25
+      {currentPlayerData.time}
     </Typography>
 
-    
-    {/* date */}
-    <Typography className="bodySecondary" minWidth={'8vw'} sx={{ color: currentPlayerData && currentPlayerData.kd ? '#fff' : '#dc3545', fontWeight: 'bold', marginLeft:2 }}>
-      8/11/2024
-    </Typography>
   </Box>
   <ExpandMoreIcon
           sx={{
@@ -89,77 +86,76 @@ function GameCard({ players, currentPlayer }) {
             transform: open ? 'rotate(-180deg)' : 'rotate(0deg)',
           }}
         />
-</Box>
+  </Box>
 
       {/* Dropdown Player List */}
       <Collapse in={open} timeout="auto" unmountOnExit>
         <Box sx={{ marginTop:3, marginLeft:2, borderRadius: 1, borderTop:1 , borderTopColor:'#464F4D'}}>
         <List>
-  {players.map((player, index) => (
-    <ListItem key={index} sx={{ padding: 0, display: 'flex', alignItems: 'center' }}>
-      
-      {/* Standing */}
-      <Typography
-        className='headerPrimary'
-        sx={{ width: '40px', marginRight: 2, color: player.playerName === currentPlayer ? '#FFD700' : '#fff' }}
-      >
-        {player.standing}
-      </Typography>
-      
-      {/* Champion Icon */}
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          mr: 2,
-          backgroundImage: `url(${require(`../assets/champions/${player.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          borderLeft: player.playerName === currentPlayer ? '5px solid #D8A13A' : 'none',
-        }}
-      />
-      {/* Player Name */}
-      <Typography
-        className='headerPrimary'
-        sx={{
-          minWidth: '120px', // Adjust this width as needed
-          color: player.playerName === currentPlayer ? '#FFD700' : '#fff',
-          marginRight: 5,
-          marginLeft:2,
-          minWidth:'15vw'
-        }}
-      >
-        {player.champion}
-      </Typography>
-      <PlayerIcon src={profilePic} height={-4} width={-4}/>
+          {players.map((player, index) => (
+            <ListItem key={index} sx={{ padding: 0, display: 'flex', alignItems: 'center' }}>
+              
+              {/* Standing */}
+              <Typography
+                className='headerPrimary'
+                sx={{ width: '40px', marginRight: 2, color: player.playerName === currentPlayer ? '#FFD700' : '#fff' }}
+              >
+                {player.standing}
+              </Typography>
+              
+              {/* Champion Icon */}
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  mr: 2,
+                  backgroundImage: `url(${require(`../assets/champions/${player.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  borderLeft: player.playerName === currentPlayer ? '5px solid #D8A13A' : 'none',
+                }}
+              />
+              {/* Player Name */}
+              <Typography
+                className='headerPrimary'
+                sx={{
+                  minWidth: '120px', // Adjust this width as needed
+                  color: player.playerName === currentPlayer ? '#FFD700' : '#fff',
+                  marginRight: 5,
+                  marginLeft:2,
+                  minWidth:'15vw'
+                }}
+              >
+                {player.champion}
+              </Typography>
+              <PlayerIcon src={user?.profilePic} height={-4} width={-4}/>
 
-      {/* Player Name */}
-      <Typography
-        className='headerPrimary'
-        sx={{
-          minWidth: '120px', // Adjust this width as needed
-          color: player.playerName === currentPlayer ? '#FFD700' : '#fff',
-          marginRight: 5,
-          marginLeft:2,
-          minWidth:'15vw'
-        }}
-      >
-        {player.playerName}
-      </Typography>
+              {/* Player Name */}
+              <Typography
+                className='headerPrimary'
+                sx={{
+                  minWidth: '120px', // Adjust this width as needed
+                  color: player.playerName === currentPlayer ? '#FFD700' : '#fff',
+                  marginRight: 5,
+                  marginLeft:2,
+                  minWidth:'15vw'
+                }}
+              >
+                {player.playerName}
+              </Typography>
 
-      {/* KDA Alignment Container */}
-      <Box display="flex" alignSelf={'center'} flexDirection={'column'} justifyContent={'center'} sx={{ minWidth: '100px', textAlign: 'right' }}>
-        <Typography className='headerPrimary' sx={{ width: '40px', textAlign: 'right', color: player.playerName === currentPlayer ? '#FFD700' : '#fff' }}>
-          {player.kd}
-        </Typography>
-        <Typography className='headerPrimary' sx={{ width: '60px', textAlign: 'center', fontSize: '0.8em' }}>
-          {player.kda}
-        </Typography>
-      </Box>
-    </ListItem>
-  ))}
-</List>
-
+              {/* KDA Alignment Container */}
+              <Box display="flex" alignSelf={'center'} flexDirection={'column'} justifyContent={'center'} sx={{ minWidth: '100px', textAlign: 'right' }}>
+                <Typography className='headerPrimary' sx={{ width: '40px', textAlign: 'right', color: player.playerName === currentPlayer ? '#FFD700' : '#fff' }}>
+                  {player.kd}
+                </Typography>
+                <Typography className='headerPrimary' sx={{ width: '60px', textAlign: 'center', fontSize: '0.8em' }}>
+                  {player.kda}
+                </Typography>
+              </Box>
+            </ListItem>
+          ))}
+        </List>
         </Box>
       </Collapse>
     </Box>

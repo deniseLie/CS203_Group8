@@ -70,7 +70,6 @@ import bronzeIcon from '../assets/rankIcon/bronze.png';
 import diamondIcon from '../assets/rankIcon/diamond.png';
 import emeraldIcon from '../assets/rankIcon/emerald.png';
 import goldIcon from '../assets/rankIcon/gold.png';
-import ironIcon from '../assets/rankIcon/iron.png';
 import platinumIcon from '../assets/rankIcon/platinum.png';
 import silverIcon from '../assets/rankIcon/silver.png';
 import unrankedIcon from '../assets/rankIcon/unranked.png';

@@ -1,86 +1,74 @@
 import React, { useState } from 'react';
 import { Box, Typography, Modal, IconButton, Select, MenuItem, InputBase, InputAdornment } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close'
-import SearchIcon from '@mui/icons-material/Search'
-import { championsAssets, roleIconsAssets } from '../util/importAssets';
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
+import getChampionImage from '../util/getChampionImage';
 
-//========= ASSIGNMENT: all the role and champion icons =========
 const roleIcons = [
-  { src: roleIconsAssets.assassin, alt: 'Assassin' },
-  { src: roleIconsAssets.fighter, alt: 'Fighter' },
-  { src: roleIconsAssets.mage, alt: 'Mage' },
-  { src: roleIconsAssets.marksman, alt: 'Marksman' },
-  { src: roleIconsAssets.support, alt: 'Support' },
-  { src: roleIconsAssets.tank, alt: 'Tank' },
+  { src: 'assassin.png', alt: 'Assassin' },
+  { src: 'fighter.png', alt: 'Fighter' },
+  { src: 'mage.png', alt: 'Mage' },
+  { src: 'marksman.png', alt: 'Marksman' },
+  { src: 'support.png', alt: 'Support' },
+  { src: 'tank.png', alt: 'Tank' },
 ];
 
 const champions = [
-  { src: championsAssets.kaiSa, alt: 'Kai\'Sa', name: 'Kai\'Sa', role: ['marksman', 'assassin'] },
-  { src: championsAssets.zac, alt: 'Zac', name: 'Zac', role: ['tank', 'fighter'] },
-  { src: championsAssets.yasuo, alt: 'Yasuo', name: 'Yasuo', role: ['fighter', 'assassin'] },
-  { src: championsAssets.belVeth, alt: 'Bel\'Veth', name: 'Bel\'Veth', role: ['fighter', 'assassin'] },
-  { src: championsAssets.jinx, alt: 'Jinx', name: 'Jinx', role: ['marksman'] },
-  { src: championsAssets.senna, alt: 'Senna', name: 'Senna', role: ['marksman', 'support'] },
-  { src: championsAssets.zed, alt: 'Zed', name: 'Zed', role: ['assassin'] },
-  { src: championsAssets.vi, alt: 'Vi', name: 'Vi', role: ['fighter'] },
-  { src: championsAssets.nami, alt: 'Nami', name: 'Nami', role: ['support', 'mage'] },
-  { src: championsAssets.sett, alt: 'Sett', name: 'Sett', role: ['fighter', 'tank'] },
-  { src: championsAssets.annie, alt: 'Annie', name: 'Annie', role: ['mage'] },
-  { src: championsAssets.galio, alt: 'Galio', name: 'Galio', role: ['tank', 'mage'] },
-  { src: championsAssets.leBlanc, alt: 'LeBlanc', name: 'LeBlanc', role: ['assassin', 'mage'] },
-  { src: championsAssets.masterYi, alt: 'Master Yi', name: 'Master Yi', role: ['assassin', 'fighter'] },
-  { src: championsAssets.soraka, alt: 'Soraka', name: 'Soraka', role: ['support'] },
-  { src: championsAssets.teemo, alt: 'Teemo', name: 'Teemo', role: ['marksman', 'assassin'] },
-  { src: championsAssets.tristana, alt: 'Tristana', name: 'Tristana', role: ['marksman', 'assassin'] },
-  { src: championsAssets.missFortune, alt: 'Miss Fortune', name: 'Miss Fortune', role: ['marksman'] },
-  { src: championsAssets.singed, alt: 'Singed', name: 'Singed', role: ['fighter', 'tank'] },
-  { src: championsAssets.sona, alt: 'Sona', name: 'Sona', role: ['support', 'mage'] },
-  { src: championsAssets.ahri, alt: 'Ahri', name: 'Ahri', role: ['mage', 'assassin'] },
-  { src: championsAssets.kayn, alt: 'Kayn', name: 'Kayn', role: ['assassin', 'fighter'] }
+  { name: "Kai'Sa", role: ['marksman', 'assassin'] },
+  { name: 'Zac', role: ['tank', 'fighter'] },
+  { name: 'Yasuo', role: ['fighter', 'assassin'] },
+  { name: "Bel'Veth", role: ['fighter', 'assassin'] },
+  { name: 'Jinx', role: ['marksman'] },
+  { name: 'Senna', role: ['marksman', 'support'] },
+  { name: 'Zed', role: ['assassin'] },
+  { name: 'Vi', role: ['fighter'] },
+  { name: 'Nami', role: ['support', 'mage'] },
+  { name: 'Sett', role: ['fighter', 'tank'] },
+  { name: 'Annie', role: ['mage'] },
+  { name: 'Galio', role: ['tank', 'mage'] },
+  { name: 'LeBlanc', role: ['assassin', 'mage'] },
+  { name: 'Master Yi', role: ['assassin', 'fighter'] },
+  { name: 'Soraka', role: ['support'] },
+  { name: 'Teemo', role: ['marksman', 'assassin'] },
+  { name: 'Tristana', role: ['marksman', 'assassin'] },
+  { name: 'Miss Fortune', role: ['marksman'] },
+  { name: 'Singed', role: ['fighter', 'tank'] },
+  { name: 'Sona', role: ['support', 'mage'] },
+  { name: 'Ahri', role: ['mage', 'assassin'] },
+  { name: 'Kayn', role: ['assassin', 'fighter'] },
 ];
 
-// ========= END OF ASSIGNMENT =========
-
 const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
-  // State to track the selected role, sorting option, and search query
   const [selectedRole, setSelectedRole] = useState(null);
   const [sortOption, setSortOption] = useState('latest');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Handler to select/unselect a role
   const handleRoleClick = (role) => {
-    setSelectedRole(role === selectedRole ? null : role); // Deselect if clicked again
+    setSelectedRole(role === selectedRole ? null : role);
   };
 
-  // Handler for sort selection
   const handleSortChange = (event) => {
-    setSortOption(event.target.value); // Set the selected sort option
+    setSortOption(event.target.value);
   };
 
-  // Handler for search input change
   const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value.toLowerCase()); // Update search query and convert to lowercase for case-insensitive matching
+    setSearchQuery(event.target.value.toLowerCase());
   };
 
-  // Filter champions based on selected role
   let filteredChampions = selectedRole
-    ? champions.filter((champion) => champion.role && champion.role.includes(selectedRole))
+    ? champions.filter((champion) => champion.role.includes(selectedRole))
     : champions;
 
-  // Apply search filtering
   if (searchQuery) {
     filteredChampions = filteredChampions.filter((champion) =>
       champion.name.toLowerCase().includes(searchQuery)
     );
   }
 
-  // Sort champions based on the sort option
   if (sortOption === 'name') {
-    // Sort alphabetically by name
-    filteredChampions = filteredChampions.sort((a, b) => a.name.localeCompare(b.name));
+    filteredChampions.sort((a, b) => a.name.localeCompare(b.name));
   } else if (sortOption === 'latest') {
-    // Randomize the order of champions for "latest"
-    filteredChampions = filteredChampions.sort(() => Math.random() - 0.5);
+    filteredChampions.sort(() => Math.random() - 0.5);
   }
 
   return (
@@ -103,10 +91,9 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
           boxShadow: 24,
           display: 'flex',
           flexDirection: 'column',
-          p: 4
+          p: 4,
         }}
       >
-        {/* Fixed Header: Title, Role Icons, and Filters */}
         <Box
           sx={{
             position: 'sticky',
@@ -117,13 +104,12 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
             borderBottom: '2px solid #775A27',
           }}
         >
-          {/* Flex container for title and close button */}
           <Box
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              marginTop: '-15px'
+              marginTop: '-15px',
             }}
           >
             <Typography id="champion-modal-title" className="headerPrimary" component="h2">
@@ -139,7 +125,6 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
             </IconButton>
           </Box>
 
-          {/* Role icons and filters container */}
           <Box
             sx={{
               display: 'flex',
@@ -149,20 +134,14 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
               marginTop: 2,
             }}
           >
-            {/* Role icons */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-              }}
-            >
+            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
               {roleIcons.map((icon, index) => (
                 <Box
                   key={index}
                   component="img"
                   src={icon.src}
                   alt={icon.alt}
-                  onClick={() => handleRoleClick(icon.alt.toLowerCase())} // Filter champions on click
+                  onClick={() => handleRoleClick(icon.alt.toLowerCase())}
                   sx={{
                     width: '4vh',
                     height: '4vh',
@@ -178,19 +157,10 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
               ))}
             </Box>
 
-            {/* Filters */}
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 2,
-              }}
-            >
-              {/* Sort Dropdown */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
               <Select
                 value={sortOption}
-                onChange={handleSortChange} // Handle sort option change
+                onChange={handleSortChange}
                 sx={{
                   color: '#F0E6D2',
                   fontSize: '10px',
@@ -198,18 +168,16 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
                   border: '1px solid #775A27',
                   height: '3vh',
                   width: '120px',
-                  paddingRight: '0px',
                   '& .MuiSelect-icon': {
                     color: '#F0E6D2',
                     fontSize: '18px',
-                  }
+                  },
                 }}
               >
                 <MenuItem value="latest">Sort by Latest</MenuItem>
                 <MenuItem value="name">Sort by Name</MenuItem>
               </Select>
 
-              {/* Search Input */}
               <Box
                 sx={{
                   display: 'flex',
@@ -224,33 +192,32 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
               >
                 <InputBase
                   placeholder="Search"
-                  value={searchQuery} // Set the input value to searchQuery
-                  onChange={handleSearchChange} // Handle search input changes
+                  value={searchQuery}
+                  onChange={handleSearchChange}
                   sx={{
                     color: '#F0E6D2',
                     width: '80px',
                     fontSize: '10px',
                   }}
-                  startAdornment={(
+                  startAdornment={
                     <InputAdornment position="start">
                       <SearchIcon sx={{ color: '#F0E6D2', fontSize: '12px' }} />
                     </InputAdornment>
-                  )}
+                  }
                 />
               </Box>
             </Box>
           </Box>
         </Box>
 
-        {/* Scrollable Champion List */}
         <Box
           sx={{
-            flex: 1, // Take up remaining space
+            flex: 1,
             paddingTop: 2,
             overflowY: 'auto',
-            '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar
+            '&::-webkit-scrollbar': { display: 'none' },
             msOverflowStyle: 'none',
-            scrollbarWidth: 'none'
+            scrollbarWidth: 'none',
           }}
         >
           <Box
@@ -267,14 +234,14 @@ const SelectChampionModal = ({ open, handleClose, onChampionSelect }) => {
                 sx={{
                   width: '18%',
                   maxWidth: '80px',
-                  textAlign: 'center'
+                  textAlign: 'center',
                 }}
-                onClick={() => onChampionSelect(champion)} // Call onChampionSelect when clicked
+                onClick={() => onChampionSelect(champion)}
               >
                 <Box
                   component="img"
-                  src={champion.src}
-                  alt={champion.alt}
+                  src={getChampionImage(champion.name, 'icon')}
+                  alt={champion.name}
                   sx={{
                     width: '12vh',
                     height: '12vh',

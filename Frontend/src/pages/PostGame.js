@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Dialog, DialogContent, DialogActions } from '@mui/material';
 import { Link, useLocation } from 'react-router-dom';
 import playAgain from '../assets/buttons/play-again-button.png';
-import playerIcon from '../assets/summonerIcon/1.jpg';
 import background from '../assets/backgrounds/srbackground.png';
 import arenaIcon from '../assets/icons/arena-icon.png';
 import rankCircle from '../assets/icons/ranked-frame.png';
+import { useAuth } from '../auth/AuthProvider';
 
 const PostGame = () => {
   const location = useLocation();
-  const { rankings = [], currentPlayer } = location.state || {}; // rankings from the tournament bracket
-  console.log("hii ", JSON.stringify(currentPlayer), JSON.stringify(rankings))
-  const leaderboardData = rankings;
+  const { results = [] } = location.state || {}; // Tournament results from the backend
+  const {user} = useAuth();
+  const currentPlayer = results.find((player) => player.playerName === user.playername); // Replace with actual player identifier
 
   // State for showing the AFK modal
-  const [isAFKModalOpen, setAFKModalOpen] = useState(false);
+  const [isAFKModalOpen, setAFKModalOpen] = useState(player?.status ==="AFK");
 
   useEffect(() => {
     if (currentPlayer?.isAFK) {
@@ -61,7 +61,7 @@ const PostGame = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
             <Box component="img" src={arenaIcon} sx={{ width: 40, height: 40, mr: 1 }} />
             <Box>
-              {currentPlayer.standing && (
+              {currentPlayer?.standing && (
                 <Typography className='headerPrimary' fontWeight="bold">
                   {currentPlayer.standing} PLACE
                 </Typography>
@@ -81,14 +81,14 @@ const PostGame = () => {
           <Typography sx={{ color: '#949083', mb: 1 }} className='headerSecondary'>
             STANDING
           </Typography>
-          {leaderboardData.map((entry, index) => (
+          {results.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" sx={{ height: '50px' }}>
               <Typography
                 variant="body2"
                 sx={{
                   width: '50px',
                   fontWeight: 'bold',
-                  color: entry.playerName === currentPlayer.playerName ? '#D8A13A' : '#F0E6D2',
+                  color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2',
                   fontSize: '1.2rem'
                 }}
                 className='headerPrimary'
@@ -103,13 +103,13 @@ const PostGame = () => {
                   backgroundImage: `url(${require(`../assets/champions/${entry.champion.toLowerCase().replace(/[\s']/g, '')}.png`)})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  borderLeft: entry.playerName === currentPlayer.playerName ? '5px solid #D8A13A' : 'none',
+                  borderLeft: entry.playerName === currentPlayer?.playerName ? '5px solid #D8A13A' : 'none',
                 }}
               />
               <Typography
                 className='headerPrimary'
                 variant="body2"
-                sx={{ color: entry.playerName === currentPlayer.playerName ? '#D8A13A' : '#F0E6D2' }}
+                sx={{ color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2' }}
               >
                 {entry.champion}
               </Typography>
@@ -122,13 +122,15 @@ const PostGame = () => {
           <Typography variant="subtitle2" className='headerSecondary' sx={{ color: '#949083', textAlign: 'left', mb: 1 }}>
             PLAYER
           </Typography>
-          {leaderboardData.map((entry, index) => (
+          {results.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" justifyContent="flex-start" sx={{ height: '50px' }}>
-              <Box component="img" src={playerIcon} sx={{ width: 30, height: 30, mr: 1 }} />
               <Typography
                 variant="body2"
                 className='headerPrimary'
-                sx={{ color: entry.playerName === currentPlayer.playerName ? '#D8A13A' : '#F0E6D2', fontWeight: entry.playerName === currentPlayer.playerName ? 'bold' : 'normal' }}
+                sx={{
+                  color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2',
+                  fontWeight: entry.playerName === currentPlayer?.playerName ? 'bold' : 'normal',
+                }}
               >
                 {entry.playerName}
               </Typography>
@@ -138,14 +140,14 @@ const PostGame = () => {
 
         {/* K/D and KDA */}
         <Box sx={{ flex: 1, textAlign: 'center' }}>
-          <Typography variant="subtitle2" className='headerSecondary' sx={{ color: '#949083', mb:1}}>
+          <Typography variant="subtitle2" className='headerSecondary' sx={{ color: '#949083', mb: 1 }}>
             K/D
           </Typography>
-          {leaderboardData.map((entry, index) => (
+          {results.map((entry, index) => (
             <Box key={index} display="flex" alignItems="center" flexDirection="column" sx={{ height: '50px' }}>
               <Typography
                 variant="body2"
-                sx={{ color: entry.playerName === currentPlayer.playerName ? '#D8A13A' : '#F0E6D2' }}
+                sx={{ color: entry.playerName === currentPlayer?.playerName ? '#D8A13A' : '#F0E6D2' }}
                 className='headerPrimary'
               >
                 {entry.kd}
@@ -156,6 +158,7 @@ const PostGame = () => {
             </Box>
           ))}
         </Box>
+    
         {/* LP Section with Ranked Circle */}
         <Box sx={{ flex: 1, textAlign: 'center', position: 'relative', alignContent: 'center'}}>
           <Box
@@ -220,7 +223,7 @@ const PostGame = () => {
         </Button>
       </Box>
 
-      {/* AFK Warning Modal */}
+      {/* AFK Warning Modal (if user status is AFK) */}
       <Dialog
         open={isAFKModalOpen}
         onClose={handleAgree}

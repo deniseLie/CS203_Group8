@@ -31,7 +31,7 @@ function AppRoutes() {
       <Route path="/login-success" element={<LoginSuccess />} />
       <Route path="/postgame" element={isAuthenticated ? <PostGame  /> : <Navigate to="/login" />} />
       <Route path="/history" element={isAuthenticated ? <History  /> : <Navigate to="/login" />} />
-      <Route path="/tournamentBracket" element={isAuthenticated ? <TournamentBracket  /> : <Navigate to="/login" />} />
+      <Route path="/tournamentBracket/:tournamentId" element={isAuthenticated ? <TournamentBracket  /> : <Navigate to="/login" />} />
       {/* <Route path="/tournamentBracket" element={<TournamentBracket/>} /> */}
       {/* <Route path="/postgame" element={<PostGame/>} /> */}
       <Route path="/leaderboard" element={isAuthenticated ? <Leaderboard  /> : <Navigate to="/login" />} />

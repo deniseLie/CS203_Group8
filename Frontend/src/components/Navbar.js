@@ -7,9 +7,8 @@ import profileAvatar from '../assets/summonerIcon/1.jpg';
 import PlayerIcon from './PlayerIcon';
 import { useAuth } from '../auth/AuthProvider';
 
-function Navbar({  activePage }) {
+function Navbar({ activePage }) {
   const [anchorEl, setAnchorEl] = useState(null);
-
 
   const { user, logout } = useAuth();
 
@@ -63,7 +62,6 @@ function Navbar({  activePage }) {
         >
           HISTORY
         </Typography>
-
       </Box>
 
       {/* Right side: Profile Avatar, Name, and Rank */}

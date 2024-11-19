@@ -2,10 +2,11 @@ import { Box, Typography } from "@mui/material";
 import PlayerIcon from "./PlayerIcon";
 import { useState } from "react";
 
+// For tournamentBracket
 const PlayerCard = ({ name, rankIcon, playerIcon, championImg, rank, status, onClick }) => {
     // Local state to handle hover
     const [isHovering, setIsHovering] = useState(false);
-  console.log("hi "+name+ " "+status)
+
     // Determine the border color based on win/lose/pending status
     let borderColor;
     if (isHovering && status === "pending") borderColor = "#7B0C21"; // Preview "lose" color on hover if status is pending

@@ -130,12 +130,6 @@ function History() {
         {/* Profile Summary */}
         <Box sx={{ flex: 1, marginTop: -5 }}>
           <ProfileBanner
-            profile={{
-              banner: user ? rankBannerIconsAssets[user.rank.toLowerCase()] :  rankBannerIconsAssets.unranked,
-              rankSymbol:  user ? rankIconsAssets[user.rank.toLowerCase()] :  rankIconsAssets.unranked,
-              rank: user ? user.rank : "Unranked",
-              lp: user ? user.elo : "-",
-            }}
             displayType="rank"
           />
         </Box>

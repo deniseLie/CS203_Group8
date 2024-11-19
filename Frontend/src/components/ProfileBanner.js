@@ -4,16 +4,9 @@ import PlayerIcon from '../components/PlayerIcon'; // Ensure this path is correc
 import editIcon from '../assets/buttons/button-edit.png'; // Adjust the path to your edit icon
 import EditProfileModal from './EditProfileModal'; // Import the modal component
 
-function ProfileBanner({ profile, displayType }) {
+function ProfileBanner({ displayType }) {
   const [hover, setHover] = useState(false);
   const [openModal, setOpenModal] = useState(false); // State to manage the modal visibility
-
-  // State for form fields
-  const [username, setUsername] = useState(profile.username);
-  const [playerName,setPlayerName] = useState(profile.playerName);
-  const [email, setEmail] = useState(profile.email);
-  const [password, setPassword] = useState('');
-  const [avatar, setAvatar] = useState(profile.playerIcon);
 
   // Open and close modal functions
   const handleOpenModal = () => setOpenModal(true);
@@ -140,18 +133,6 @@ function ProfileBanner({ profile, displayType }) {
       <EditProfileModal
         open={openModal}
         handleClose={handleCloseModal}
-        username={username}
-        setUsername={setUsername}
-        playerName = {playerName}
-        setPlayername = {setPlayerName}
-        email={email}
-        setEmail={setEmail}
-        password={password}
-        setPassword={setPassword}
-        avatar={avatar}
-        setAvatar={setAvatar}
-        avatars={profile.avatars} // Assuming profile.avatars contains a list of avatar images
-        handleSaveChanges={handleSaveChanges}
       />
     </Box>
   );

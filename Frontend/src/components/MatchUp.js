@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import { Box, Typography, Modal, Button, Select, MenuItem, Grid } from "@mui/material";
 import PlayerCard from "./PlayerCard";
+import axios from 'axios'; // Ensure axios is imported
 import diamondRank from '../assets/rankIcon/diamond.png';
 
-const MatchUp = ({ leftPlayer, rightPlayer, updatePlayerStatus }) => {
+const MatchUp = ({ 
+  leftPlayer, 
+  rightPlayer, 
+  updatePlayerStatus, 
+  tournamentId, 
+  roundNumber 
+}) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [selectedOption, setSelectedOption] = useState("lose");
@@ -20,12 +27,33 @@ const MatchUp = ({ leftPlayer, rightPlayer, updatePlayerStatus }) => {
     setMatchTime("");
   };
 
-  const handleSubmit = () => {
+  // determine who win or lose
+  const handleSubmit = async () => {
     if (selectedPlayer) {
+      const isLeftPlayer = selectedPlayer.playerName === leftPlayer.playerName;
+      const winnerPlayer = isLeftPlayer ? rightPlayer : leftPlayer;
+      const loserPlayer = isLeftPlayer ? leftPlayer : rightPlayer;
+
       const newStatus = selectedOption === "afk" ? "AFK" : "lose";
       const deathTime = newStatus === "lose" ? parseInt(matchTime, 10) : 0;
 
-      updatePlayerStatus(selectedPlayer.playerName, newStatus, deathTime);
+      // Update local state
+      updatePlayerStatus(loserPlayer.playerName, newStatus, deathTime);
+
+      // Call the API
+      try {
+        await axios.post('/admin/tournaments/round', {
+          tournamentId,
+          firstPlayerId: leftPlayer.playerId, // Replace with actual IDs
+          secondPlayerId: rightPlayer.playerId, // Replace with actual IDs
+          winnerPlayerId: winnerPlayer.playerId, // Replace with actual ID
+          roundNumber,
+          status: newStatus,
+          deathTime,
+        });
+      } catch (error) {
+        console.error("Failed to submit match result:", error);
+      }
     }
     handleCloseModal();
   };

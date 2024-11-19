@@ -9,7 +9,7 @@ import findMatchDisabled from '../assets/buttons/button-accept-disabled.png';
 import findMatch from '../assets/buttons/button-accept-default.png';
 import inQueue from '../assets/buttons/button-accept-in-queue.png';
 import championSelected from '../assets/champions/0.png';
-import SelectChampionModal from './SelectChampionModal';
+import SelectChampionModal from '../components/SelectChampionModal';
 import diamondRank from '../assets/rankIcon/diamond.png';
 import Navbar from '../components/Navbar';
 import SpeedUpModal from '../components/SpeedupModal';

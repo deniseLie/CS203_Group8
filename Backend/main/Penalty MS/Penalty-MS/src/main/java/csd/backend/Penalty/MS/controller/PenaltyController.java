@@ -21,34 +21,37 @@ public class PenaltyController {
     @Autowired
     private PenaltyService penaltyService;
 
-    // API endpoint to ban a player for a specified duration
+    /**
+     * API endpoint to ban a player for a specified duration based on their previous ban count.
+     * 
+     * @param playerId - The ID of the player to be banned.
+     * @return ResponseEntity - Contains a message indicating whether the player was banned successfully
+     *         or if there was an error (e.g., 500 Internal Server Error).
+     * 
+     * Logic:
+     * - This method calls the banPlayer method of PenaltyService to perform the banning action.
+     * - If the operation is successful, a success message is returned with a 200 OK status.
+     * - In case of failure (e.g., unexpected error during banning), an error message is returned with a 500 Internal Server Error.
+     */
     @PostMapping("/ban")
-    public ResponseEntity<Map<String, Object>> banPlayer(@RequestParam String playerId) {
-        
-        Map<String, Object> response = new HashMap<>();
-        try {
-            penaltyService.banPlayer(playerId);
-            response.put("message", "Player banned successfully.");
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("Error occurred while banning player: {}", playerId, e);
-            response.put("message", "Error banning player.");
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Map<String, Object>> banPlayer(@RequestParam Long playerId) {
+        return penaltyService.banPlayer(playerId);
     }
 
-    // API endpoint to check the status of a player
+    /**
+     * API endpoint to check the current ban status of a player.
+     * 
+     * @param playerId - The ID of the player whose ban status is to be checked.
+     * @return ResponseEntity - Contains the player's ban status information (playerId, queueStatus, remainingTime) 
+     *         or an error message if the player is not found (404 Not Found).
+     * 
+     * Logic:
+     * - This method calls the checkPlayerBanStatus method of PenaltyService to fetch the player's ban status.
+     * - If the player is found, their ban status (playerId, queueStatus, and remainingTime) is returned with a 200 OK status.
+     * - If the player is not found (e.g., invalid playerId), a 404 Not Found status with an appropriate error message is returned.
+     */
     @GetMapping("/check-status")
-    public ResponseEntity<Map<String, Object>> checkPlayerStatus(@RequestParam String playerId) {
-        logger.info("Checking status for player: {}", playerId);
-        Map<String, Object> playerStatus = penaltyService.checkPlayerStatus(playerId);
-
-        if (playerStatus != null) {
-            return new ResponseEntity<>(playerStatus, HttpStatus.OK);
-        } else {
-            Map<String, Object> response = new HashMap<>();
-            response.put("message", "Player not found.");
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<Map<String, Object>> checkPlayerBanStatus(@RequestParam Long playerId) {
+        return penaltyService.checkPlayerBanStatus(playerId);
     }
 }

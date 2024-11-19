@@ -105,7 +105,7 @@ public class PenaltyService {
     // Helper method to prepare the response with player details
     private void prepareResponse(Map<String, Object> response, Map<String, AttributeValue> player, long remainingTime) {
         response.put("playerId", player.get("playerId").n());
-        response.put("queueStatus", player.get("queueStatus").n());
+        response.put("queueStatus", player.get("queueStatus").s());
         response.put("remainingTime", remainingTime);
     }
 
@@ -114,7 +114,7 @@ public class PenaltyService {
         String messageBody = playerId + ", until: " + new Date(banEndTime);
         Map<String, MessageAttributeValue> messageAttributes = new HashMap<>();
         messageAttributes.put("actionType", MessageAttributeValue.builder()
-                .stringValue("ban")
+                .stringValue("banned")
                 .dataType("String")
                 .build());
 

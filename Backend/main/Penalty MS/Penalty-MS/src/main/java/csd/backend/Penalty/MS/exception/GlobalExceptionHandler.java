@@ -1,4 +1,4 @@
-package csd.backend.Matching.MS.exception;
+package csd.backend.Penalty.MS.exception;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;

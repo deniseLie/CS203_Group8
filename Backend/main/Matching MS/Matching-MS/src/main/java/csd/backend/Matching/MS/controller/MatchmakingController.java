@@ -40,22 +40,38 @@ public class MatchmakingController {
     }
 
     /**
-     * Endpoint for a player to join the matchmaking queue.
-     * @param joinRequestBody contains player ID and champion ID
-     * @return ResponseEntity with the result of the matchmaking process
+     * Endpoint for a player to join the matchmaking queue. This method handles both normal and speed-up join requests.
+     * @param joinRequestBody contains player ID, champion ID, and whether it's a speed-up request.
+     * @param isSpeedUp flag indicating whether the player is opting for a speed-up queue.
+     * @return ResponseEntity with the result of the matchmaking process.
      */
-    @PostMapping("/join")
-    public ResponseEntity<Map<String, Object>> joinMatchmaking(@RequestBody @Valid MatchmakingRequest joinRequestBody) {
+    @PostMapping("/{queueType}/join")
+    public ResponseEntity<Map<String, Object>> joinMatchmaking(
+        @RequestBody @Valid MatchmakingRequest joinRequestBody, 
+        @PathVariable String queueType) {
+        
         Long playerId = joinRequestBody.getPlayerId();
         Long championId = joinRequestBody.getChampionId();
-        boolean isSpeedUp = joinRequestBody.getIsSpeedUp();
+        boolean isSpeedUp = "speedup".equalsIgnoreCase(queueType);  // Determine if the queue is speed-up
 
-        logger.info("Player {} joined matchmaking with champion {}", playerId, championId);
+        logger.info("Player {} joined {} matchmaking with champion {}", playerId, queueType, championId);
         return matchmakingService.joinMatchmaking(playerId, championId, isSpeedUp);
     }
 
-    @PostMapping("/unqueue/{queueType}")
-    public ResponseEntity<Map<String, Object>> unqueuePlayer(@RequestBody PlayerIdRequest request, @PathVariable String queueType) {
-        return matchmakingService.unqueuePlayerFromQueue(request.getPlayerId(), queueType);
+    /**
+     * Endpoint for a player to leave the matchmaking queue. Handles both normal and speed-up leave actions.
+     * @param request contains player ID.
+     * @param queueType type of the queue the player is leaving (e.g., normal, speedup).
+     * @return ResponseEntity with the result of the unqueue operation.
+     */
+    @PostMapping("/{queueType}/leave")
+    public ResponseEntity<Map<String, Object>> leaveMatchmaking(
+        @RequestBody PlayerIdRequest request, 
+        @PathVariable String queueType) {
+        
+        Long playerId = request.getPlayerId();
+
+        logger.info("Player {} is attempting to leave {} queue.", playerId, queueType);
+        return matchmakingService.unqueuePlayerFromQueue(playerId, queueType);
     }
 }

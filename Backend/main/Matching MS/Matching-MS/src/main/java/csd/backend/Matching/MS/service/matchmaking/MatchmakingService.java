@@ -107,6 +107,7 @@ public class MatchmakingService {
         }
     }
 
+    // Unqueue Public function
     public ResponseEntity<Map<String, Object>> unqueuePlayerFromQueue(Long playerId, String queueType) {
         if (!QueueType.isValid(queueType)) {
             return ResponseUtil.createBadRequestResponse("Invalid queue type");

@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.model.Player;
+package csd.backend.Account.MS.model.player;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

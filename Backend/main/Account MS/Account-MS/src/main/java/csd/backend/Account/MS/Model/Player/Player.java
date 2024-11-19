@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.model.Player;
+package csd.backend.Account.MS.model.player;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

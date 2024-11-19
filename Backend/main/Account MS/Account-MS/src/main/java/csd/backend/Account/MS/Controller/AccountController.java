@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
 import csd.backend.Account.MS.exception.PlayerNotFoundException;
-import csd.backend.Account.MS.model.Player.*;
-import csd.backend.Account.MS.service.Player.*;
-import csd.backend.Account.MS.service.Tournament.*;
+import csd.backend.Account.MS.model.player.*;
+import csd.backend.Account.MS.service.player.*;
+import csd.backend.Account.MS.service.tournament.*;
 
 import java.util.*;
 

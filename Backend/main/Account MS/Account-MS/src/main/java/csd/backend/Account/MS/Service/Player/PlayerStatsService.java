@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.service.Player;
+package csd.backend.Account.MS.service.player;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import csd.backend.Account.MS.exception.PlayerNotFoundException;
-import csd.backend.Account.MS.model.Player.*;
-import csd.backend.Account.MS.repository.Player.*;
+import csd.backend.Account.MS.model.player.*;
+import csd.backend.Account.MS.repository.player.*;
 import csd.backend.Account.MS.service.SqsService;
-import csd.backend.Account.MS.service.Rank.RankService;
+import csd.backend.Account.MS.service.rank.RankService;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 import java.util.*;
 

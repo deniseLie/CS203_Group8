@@ -66,7 +66,7 @@ const FindTournament = ({ logout }) => {
     try{
       const token = Cookies.get('jwtToken');
       const response = await axios.post(
-        `${env.MATCHMAKING_SERVER_URL}/matchmaking/join`,
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/normal/join`,
         {playerId: ""+user.sub, championId: selectedChampion.name},
         {
           headers: {
@@ -115,7 +115,7 @@ const FindTournament = ({ logout }) => {
       // else leave normal queue
       else {
         const response = await axios.post(
-          `${env.MATCHMAKING_SERVER_URL}/matchmaking/leave`,
+          `${env.MATCHMAKING_SERVER_URL}/matchmaking/normal/leave`,
           {playerId: ""+user.sub, championId: selectedChampion.name},
           {
             headers: {
@@ -163,7 +163,7 @@ const FindTournament = ({ logout }) => {
     try {
       // leave normal queue before join speedup
       const response = await axios.post(
-        `${env.MATCHMAKING_SERVER_URL}/matchmaking/leave`,
+        `${env.MATCHMAKING_SERVER_URL}/matchmaking/normal/leave`,
         {playerId: ""+user.sub, championId: selectedChampion.name},
         {
           headers: {

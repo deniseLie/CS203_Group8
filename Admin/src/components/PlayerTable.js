@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import defaultProfilePicture from '../assets/summonerIcon/1.jpg';
 
 /**
  * PlayerTable Component
@@ -31,7 +32,7 @@ import EditIcon from '@mui/icons-material/Edit';
  * @param {function} onEdit - Callback to handle editing a player.
  * @param {object} profileImages - Object mapping profile picture names to image paths.
  */
-const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
+const PlayerTable = ({ data, onDelete }) => {
   // State to manage the delete confirmation dialog
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // Dialog visibility
   const [selectedPlayerId, setSelectedPlayerId] = useState(null); // ID of the player to delete
@@ -94,12 +95,14 @@ const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
           {data.map((player) => (
             <TableRow key={player.id}>
               {/* User ID */}
-              <TableCell>{player.userId}</TableCell>
+              <TableCell>{player.id}</TableCell>
 
               {/* Profile Picture */}
               <TableCell>
                 <img
-                  src={profileImages[`player${player.profilePicture}`]} // Dynamic profile picture
+                  src={
+                    player.profilePicture || defaultProfilePicture // Fallback to default picture
+                  }
                   alt={player.username} // Alternative text for the image
                   width="50" // Set width for the image
                   height="50" // Set height for the image
@@ -118,11 +121,6 @@ const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
 
               {/* Actions (Edit/Delete) */}
               <TableCell>
-                {/* Edit Button */}
-                <IconButton color="primary" onClick={() => onEdit(player)}>
-                  <EditIcon />
-                </IconButton>
-
                 {/* Delete Button */}
                 <IconButton color="error" onClick={() => handleOpenDeleteDialog(player.id)}>
                   <DeleteIcon />

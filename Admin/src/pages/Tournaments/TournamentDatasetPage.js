@@ -41,6 +41,17 @@ const TournamentsPage = () => {
     setTimeout(() => {
       setLoading(false);
 
+      const playersFromDataset = [
+        { playerName: "avexx", playerId: 101 },
+        { playerName: "Rodan", playerId: 102 },
+        { playerName: "xDivineSword", playerId: 103 },
+        { playerName: "lilWanton", playerId: 104 },
+        { playerName: "DarkStar", playerId: 105 },
+        { playerName: "Nebula", playerId: 106 },
+        { playerName: "VoidWalker", playerId: 107 },
+        { playerName: "WindRider", playerId: 108 },
+      ];
+
       // Dummy data to replace API response
       const dummyTournaments = [
         {
@@ -50,59 +61,67 @@ const TournamentsPage = () => {
           timestampEnd: null,
           totalRounds: 4,
           currentRound: 2,
-          players: [
-            { playerId: 101, playerName: 'Alice', avatar: '' },
-            { playerId: 102, playerName: 'Bob', avatar: '' },
-            { playerId: 103, playerName: 'Charlie', avatar: '' },
-          ],
+          players: playersFromDataset.slice(0, 4), // Use first 4 players
           rounds: [
             {
               roundNumber: 1,
               matches: [
-                { id: 1, player1: 'Alice', player2: 'Bob', winner: 'Alice' },
-                { id: 2, player1: 'Charlie', player2: 'David', winner: 'Charlie' },
+                { id: 1, player1: playersFromDataset[0].playerName, player2: playersFromDataset[1].playerName, winner: playersFromDataset[0].playerName },
+                { id: 2, player1: playersFromDataset[2].playerName, player2: playersFromDataset[3].playerName, winner: playersFromDataset[2].playerName },
               ],
             },
             {
               roundNumber: 2,
               matches: [
-                { id: 3, player1: 'Alice', player2: 'Charlie', winner: null },
+                { id: 3, player1: playersFromDataset[0].playerName, player2: playersFromDataset[2].playerName, winner: null },
               ],
             },
           ],
         },
-        {
-          tournamentId: 2,
+        ...Array.from({ length: 9 }).map((_, index) => ({
+          tournamentId: index + 2,
           status: 'Completed',
-          timestampStart: '2024-10-15T10:00:00Z',
-          timestampEnd: '2024-10-20T18:00:00Z',
+          timestampStart: `2024-10-${String(index + 1).padStart(2, '0')}T10:00:00Z`,
+          timestampEnd: `2024-10-${String(index + 5).padStart(2, '0')}T18:00:00Z`,
           totalRounds: 3,
           currentRound: 3,
-          players: [
-            { playerId: 201, playerName: 'Eve', avatar: '' },
-            { playerId: 202, playerName: 'Frank', avatar: '' },
-          ],
+          players: playersFromDataset.slice(index % playersFromDataset.length, (index % playersFromDataset.length) + 2), // Rotate players
           rounds: [
             {
               roundNumber: 1,
               matches: [
-                { id: 4, player1: 'Eve', player2: 'Frank', winner: 'Eve' },
+                {
+                  id: index * 10 + 1,
+                  player1: playersFromDataset[index % playersFromDataset.length].playerName,
+                  player2: playersFromDataset[(index + 1) % playersFromDataset.length].playerName,
+                  winner: playersFromDataset[index % playersFromDataset.length].playerName,
+                },
               ],
             },
             {
               roundNumber: 2,
               matches: [
-                { id: 5, player1: 'Eve', player2: 'Grace', winner: 'Eve' },
+                {
+                  id: index * 10 + 2,
+                  player1: playersFromDataset[index % playersFromDataset.length].playerName,
+                  player2: playersFromDataset[(index + 2) % playersFromDataset.length].playerName,
+                  winner: playersFromDataset[index % playersFromDataset.length].playerName,
+                },
               ],
             },
             {
               roundNumber: 3,
               matches: [
-                { id: 6, player1: 'Eve', player2: 'Hank', winner: 'Eve' },
+                {
+                  id: index * 10 + 3,
+                  player1: playersFromDataset[index % playersFromDataset.length].playerName,
+                  player2: playersFromDataset[(index + 3) % playersFromDataset.length].playerName,
+                  winner: playersFromDataset[index % playersFromDataset.length].playerName,
+                },
               ],
             },
           ],
-        },
+        })),
       ];
 
       setTournaments(dummyTournaments);

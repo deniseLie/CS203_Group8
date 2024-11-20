@@ -6,8 +6,20 @@ import PlayerTable from '../../components/PlayerTable'; // Table component to di
 import { useNavigate } from 'react-router-dom'; // Hook for programmatic navigation
 import api from '../../services/api'; // API service for HTTP requests
 
-// Import profile pictures dynamically
-import * as profileImages from '../../assets/summonerIcon/1.jpg'; // Assuming all images are in this directory
+/**
+ * Dynamically imports all profile pictures from the assets directory.
+ */
+const importAllImages = (requireContext) => {
+  const images = {};
+  requireContext.keys().forEach((key) => {
+    const fileName = key.replace('./', ''); // Remove './' from the file name
+    images[fileName] = requireContext(key);
+  });
+  return images;
+};
+
+// Import all images from the specified directory
+const profileImages = importAllImages(require.context('../../assets/summonerIcon', false, /\.(png|jpe?g|svg)$/));
 
 /**
  * PlayerDatasetPage Component
@@ -27,15 +39,51 @@ const PlayerDatasetPage = () => {
   /**
    * Fetch player data from the API.
    */
+  // const fetchPlayerData = async () => {
+  //   setLoading(true); // Set loading to true while fetching data
+  //   try {
+  //     const response = await api.get('/admin/users'); // Fetch all users from the API
+  //     const players = response.data.map((player) => ({
+  //       ...player,
+  //       profilePicture: profileImages[player.profilePicture || 'default.jpg'], // Map the profile picture
+  //     }));
+  //     setPlayerData(players); // Set the full player data
+  //     setFilteredData(players); // Initialize the filtered data to include all players
+  //   } catch (error) {
+  //     setError('Failed to fetch player data. Please try again later.'); // Handle API errors
+  //     console.error('Error fetching player data:', error);
+  //   } finally {
+  //     setLoading(false); // Stop loading spinner
+  //   }
+  // };
+
+  /**
+   * Fetch player data (replaced with dummy data).
+   */
   const fetchPlayerData = async () => {
     setLoading(true); // Set loading to true while fetching data
     try {
-      const response = await api.get('/admin/users'); // Fetch all users from the API
-      const players = response.data; // Assuming the response contains player data
-      setPlayerData(players); // Set the full player data
-      setFilteredData(players); // Initialize the filtered data to include all players
+      // Dummy data for players
+      const players = [
+        { id: 1, username: 'avexx', playername: 'avexx', email: 'avexx@example.com', profilePicture: '1.jpg' },
+        { id: 2, username: 'Rodan', playername: 'Rodan', email: 'rodan@example.com', profilePicture: '2.jpg' },
+        { id: 3, username: 'xDivineSword', playername: 'xDivineSword', email: 'xdivinesword@example.com', profilePicture: '3.jpg' },
+        { id: 4, username: 'lilWanton', playername: 'lilWanton', email: 'lilwanton@example.com', profilePicture: '4.jpg' },
+        { id: 5, username: 'DarkStar', playername: 'DarkStar', email: 'darkstar@example.com', profilePicture: '5.jpg' },
+        { id: 6, username: 'Nebula', playername: 'Nebula', email: 'nebula@example.com', profilePicture: '6.jpg' },
+        { id: 7, username: 'VoidWalker', playername: 'VoidWalker', email: 'voidwalker@example.com', profilePicture: '7.jpg' },
+        { id: 8, username: 'WindRider', playername: 'WindRider', email: 'windrider@example.com', profilePicture: '8.jpg' },
+      ];
+
+      // Map players to include profile picture paths
+      const mappedPlayers = players.map((player) => ({
+        ...player,
+        profilePicture: profileImages[player.profilePicture || 'default.jpg'], // Map the profile picture
+      }));
+
+      setPlayerData(mappedPlayers); // Set the full player data
+      setFilteredData(mappedPlayers); // Initialize the filtered data to include all players
     } catch (error) {
-      setError('Failed to fetch player data. Please try again later.'); // Handle API errors
       console.error('Error fetching player data:', error);
     } finally {
       setLoading(false); // Stop loading spinner
@@ -43,27 +91,23 @@ const PlayerDatasetPage = () => {
   };
 
   /**
-   * Delete a player by ID.
+   * Delete a player by ID using the backend API.
    * 
    * @param {string} playerId - The ID of the player to delete.
    */
   const handleDeletePlayer = async (playerId) => {
     try {
-      // Simulate API call to delete the player
+      setLoading(true); // Set loading to true during delete
+      await api.delete(`/admin/users/deleteUser/${playerId}`); // DELETE request to API
+      // Remove the deleted player from state
       setPlayerData((prevData) => prevData.filter((player) => player.id !== playerId));
       setFilteredData((prevData) => prevData.filter((player) => player.id !== playerId)); // Update filtered data as well
     } catch (error) {
       setError('Failed to delete player. Please try again.');
+      console.error('Error deleting player:', error);
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
-  };
-
-  /**
-   * Navigate to the edit player page.
-   * 
-   * @param {object} player - The player object to edit.
-   */
-  const handleEditPlayer = (player) => {
-    navigate(`/players/edit`, { state: { player } }); // Pass the player data to the edit page
   };
 
   /**
@@ -131,8 +175,6 @@ const PlayerDatasetPage = () => {
           <PlayerTable
             data={filteredData} // Pass filtered data to the table
             onDelete={handleDeletePlayer} // Pass delete handler
-            onEdit={handleEditPlayer} // Pass edit handler
-            profileImages={profileImages} // Pass profile images
           />
         )}
       </Box>

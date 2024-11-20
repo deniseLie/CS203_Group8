@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   Button,
-  Avatar,
   Stack,
 } from '@mui/material';
 
@@ -47,12 +46,12 @@ const TournamentTable = ({ data, onViewDetails }) => {
               <TableCell>{tournament.tournamentId}</TableCell>
               <TableCell>{tournament.status}</TableCell>
               <TableCell>
-                <Stack direction="row" spacing={1}>
+                <Stack direction="column" spacing={0.5}>
                   {tournament.players.slice(0, 3).map((player, index) => (
-                    <Avatar key={index} src={player.avatar || ''} alt={player.name} />
+                    <Typography key={index}>{player.playerName}</Typography>
                   ))}
                   {tournament.players.length > 3 && (
-                    <Typography>+{tournament.players.length - 3}</Typography>
+                    <Typography>+{tournament.players.length - 3} more</Typography>
                   )}
                 </Stack>
               </TableCell>

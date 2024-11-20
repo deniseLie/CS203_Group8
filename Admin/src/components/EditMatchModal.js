@@ -1,75 +1,134 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Select, MenuItem } from '@mui/material';
+import { Box, Typography, Button, Select, MenuItem, CircularProgress, Alert } from '@mui/material';
 
 /**
  * EditMatchModal Component
  *
- * This component represents a modal used for editing a match. It allows the user
- * to select a winner for a specific match and save the updated information.
+ * Simulates editing a match by selecting a winner and saving the updated information.
  *
  * @param {object} props - Component props.
  * @param {object} props.match - The match object containing details about the match.
  * @param {function} props.onClose - Callback function to close the modal.
- * @param {function} props.onSave - Callback function to save the updated match.
+ * @param {function} props.onSave - Callback function to refresh parent state with the updated match.
  */
 const EditMatchModal = ({ match, onClose, onSave }) => {
-    // State to store the selected winner
-    const [selectedWinner, setSelectedWinner] = useState(match.winner || '');
+  // Initialize selectedWinner with the match's winner name
+  const [selectedWinner, setSelectedWinner] = useState(match.winner || '');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    /**
-     * Handles saving the updated match information.
-     */
-    const handleSave = () => {
-        const updatedMatch = { ...match, winner: selectedWinner }; // Create a copy of the match with the updated winner
-        onSave(updatedMatch); // Invoke the onSave callback with the updated match
-    };
+  /**
+   * Handles saving the updated match information.
+   */
+  // const handleSave = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   try {
+  //     // API call to create or update a round
+  //     const response = await fetch('/admin/tournaments/round', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         tournamentId: match.tournamentId,
+  //         firstPlayerId: match.player1Id,
+  //         secondPlayerId: match.player2Id,
+  //         winnerPlayerId: selectedWinner,
+  //         roundNumber: match.roundNumber,
+  //       }),
+  //     });
 
-    return (
-        <Box
-            sx={{
-                backgroundColor: '#ffffff', // Modal background color
-                borderRadius: '8px', // Rounded corners for aesthetics
-                padding: '20px', // Padding around the modal content
-                width: '400px', // Fixed width for the modal
-                boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow for depth
-            }}
-        >
-            {/* Modal Title */}
-            <Typography variant="h6" sx={{ mb: 2 }}>
-                Edit Match
-            </Typography>
+  //     if (!response.ok) {
+  //       throw new Error('Failed to update match.');
+  //     }
 
-            {/* Label for the winner selection */}
-            <Typography variant="body1">Select Winner:</Typography>
+  //     const result = await response.json();
+  //     console.log('Match updated:', result.message);
 
-            {/* Dropdown to select the winner */}
-            <Select
-                value={selectedWinner} // Controlled component for the selected winner
-                onChange={(e) => setSelectedWinner(e.target.value)} // Update state when selection changes
-                fullWidth
-                sx={{ mb: 2 }}
-            >
-                {/* Options for selecting Player 1 or Player 2 as the winner */}
-                <MenuItem value={match.player1}>{match.player1}</MenuItem>
-                <MenuItem value={match.player2}>{match.player2}</MenuItem>
-            </Select>
+  //     // Notify parent to refresh state with updated match
+  //     const updatedMatch = { ...match, winner: selectedWinner };
+  //     onSave(updatedMatch);
+  //   } catch (err) {
+  //     setError(err.message || 'An unexpected error occurred.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-            {/* Save and Cancel Buttons */}
-            <Button
-                variant="contained"
-                onClick={handleSave} // Handle save action
-                sx={{ mr: 1 }} // Add margin to the right for spacing
-            >
-                Save
-            </Button>
-            <Button
-                variant="outlined"
-                onClick={onClose} // Handle cancel action
-            >
-                Cancel
-            </Button>
-        </Box>
-    );
+  /**
+   * Simulates saving the updated match information.
+   */
+  const handleSave = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+        // Simulate an API call with a delay
+        setTimeout(() => {
+        // Simulated API response
+        const simulatedResponse = {
+          message: 'Match updated successfully.',
+        };
+
+        console.log('Match updated:', simulatedResponse.message);
+
+        // Notify parent with updated match
+        const updatedMatch = { ...match, winner: selectedWinner };
+        onSave(updatedMatch);
+        setLoading(false);
+        }, 1000);
+    } catch (err) {
+        setError('An unexpected error occurred.');
+        setLoading(false);
+    }
+  };
+
+  
+  return (
+    <Box
+      sx={{
+        backgroundColor: '#ffffff',
+        borderRadius: '8px',
+        padding: '20px',
+        width: '400px',
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
+      }}
+    >
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Edit Match
+      </Typography>
+
+      <Typography variant="body1">Select Winner:</Typography>
+      <Select
+        value={selectedWinner}
+        onChange={(e) => setSelectedWinner(e.target.value)}
+        fullWidth
+        sx={{ mb: 2 }}
+      >
+        <MenuItem value={match.player1}>{match.player1}</MenuItem>
+        <MenuItem value={match.player2}>{match.player2}</MenuItem>
+      </Select>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      <Button
+        variant="contained"
+        onClick={handleSave}
+        sx={{ mr: 1 }}
+        disabled={loading || !selectedWinner}
+      >
+        {loading ? <CircularProgress size={24} /> : 'Save'}
+      </Button>
+      <Button variant="outlined" onClick={onClose}>
+        Cancel
+      </Button>
+    </Box>
+  );
 };
 
 export default EditMatchModal;

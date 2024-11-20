@@ -1,188 +1,176 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Tabs, Tab, CircularProgress, Alert } from '@mui/material';
-import Sidebar from '../../components/Sidebar'; // Sidebar component for navigation
-import TopBar from '../../components/TopBar'; // Top bar component for page title and actions
-import TournamentTable from '../../components/TournamentTable'; // Component to display the tournament list
-import EditMatchModal from '../../components/EditMatchModal'; // Modal component for editing match details
+import Sidebar from '../../components/Sidebar';
+import TopBar from '../../components/TopBar';
+import TournamentTable from '../../components/TournamentTable';
+import MatchesPopup from '../../components/MatchesPopup';
 
 /**
  * TournamentsPage Component
  *
- * This component displays a list of tournaments with options to filter by status (Ongoing or Completed),
- * edit matches within a tournament, and manage tournament data using API calls.
+ * Displays a list of tournaments, matches, and player rankings.
  */
 const TournamentsPage = () => {
-  const [tournaments, setTournaments] = useState([]); // List of all tournaments
-  const [selectedStatus, setSelectedStatus] = useState('Ongoing'); // Current status filter
-  const [loading, setLoading] = useState(true); // Indicates whether the data is being fetched
-  const [error, setError] = useState(null); // Stores error messages, if any
-  const [selectedMatch, setSelectedMatch] = useState(null); // Match being edited
-  const [editingTournament, setEditingTournament] = useState(null); // Tournament being edited
+  const [tournaments, setTournaments] = useState([]); // All tournaments
+  const [selectedStatus, setSelectedStatus] = useState('Ongoing'); // Filter for status
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+  const [selectedTournament, setSelectedTournament] = useState(null); // Tournament for details popup
 
-  /**
-   * Fetch tournament data from the API on component mount.
-   */
+  // Fetch tournament data from the API
+  // useEffect(() => {
+  //   const fetchTournaments = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await fetch('/admin/tournaments/getAllTournaments');
+  //       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+  //       const data = await response.json();
+  //       setTournaments(data);
+  //     } catch (err) {
+  //       setError('Failed to fetch tournaments. Please try again.');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchTournaments();
+  // }, []);
+
+  // Use dummy data instead of fetching from API
   useEffect(() => {
-    const fetchTournaments = async () => {
-      try {
-        setLoading(true); // Start loading indicator
-        setError(null); // Clear any previous errors
-        const response = await fetch('/admin/tournaments/getAllTournaments'); // API endpoint to fetch tournaments
+    // Simulate fetching data with a timeout
+    setTimeout(() => {
+      setLoading(false);
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.statusText}`);
-        }
+      // Dummy data to replace API response
+      const dummyTournaments = [
+        {
+          tournamentId: 1,
+          status: 'Ongoing',
+          timestampStart: '2024-11-01T10:00:00Z',
+          timestampEnd: null,
+          totalRounds: 4,
+          currentRound: 2,
+          players: [
+            { playerId: 101, playerName: 'Alice', avatar: '' },
+            { playerId: 102, playerName: 'Bob', avatar: '' },
+            { playerId: 103, playerName: 'Charlie', avatar: '' },
+          ],
+          rounds: [
+            {
+              roundNumber: 1,
+              matches: [
+                { id: 1, player1: 'Alice', player2: 'Bob', winner: 'Alice' },
+                { id: 2, player1: 'Charlie', player2: 'David', winner: 'Charlie' },
+              ],
+            },
+            {
+              roundNumber: 2,
+              matches: [
+                { id: 3, player1: 'Alice', player2: 'Charlie', winner: null },
+              ],
+            },
+          ],
+        },
+        {
+          tournamentId: 2,
+          status: 'Completed',
+          timestampStart: '2024-10-15T10:00:00Z',
+          timestampEnd: '2024-10-20T18:00:00Z',
+          totalRounds: 3,
+          currentRound: 3,
+          players: [
+            { playerId: 201, playerName: 'Eve', avatar: '' },
+            { playerId: 202, playerName: 'Frank', avatar: '' },
+          ],
+          rounds: [
+            {
+              roundNumber: 1,
+              matches: [
+                { id: 4, player1: 'Eve', player2: 'Frank', winner: 'Eve' },
+              ],
+            },
+            {
+              roundNumber: 2,
+              matches: [
+                { id: 5, player1: 'Eve', player2: 'Grace', winner: 'Eve' },
+              ],
+            },
+            {
+              roundNumber: 3,
+              matches: [
+                { id: 6, player1: 'Eve', player2: 'Hank', winner: 'Eve' },
+              ],
+            },
+          ],
+        },
+      ];
 
-        const data = await response.json(); // Parse the JSON response
-        setTournaments(data); // Store fetched tournaments in state
-      } catch (error) {
-        setError('Failed to fetch tournament data. Please try again later.');
-        console.error('Error fetching tournament data:', error);
-      } finally {
-        setLoading(false); // Stop loading indicator
-      }
-    };
-
-    fetchTournaments(); // Fetch tournaments on component mount
+      setTournaments(dummyTournaments);
+    }, 1000);
   }, []);
 
-  /**
-   * Filter tournaments based on the selected status.
-   */
+  // Filter tournaments based on status
   const filteredTournaments = tournaments.filter(
     (tournament) => tournament.status === selectedStatus
   );
 
   /**
-   * Handle the edit match action.
+   * Handle updating a tournament when a match is modified.
    *
-   * @param {object} tournament - The tournament object.
-   * @param {object} match - The match object to edit.
+   * @param {object} updatedTournament - The updated tournament object.
    */
-  const handleEditMatch = (tournament, match) => {
-    setEditingTournament(tournament); // Set the tournament being edited
-    setSelectedMatch(match); // Set the match to be edited
-  };
-
-  /**
-   * Save the updated match details.
-   *
-   * @param {object} updatedMatch - The updated match details.
-   */
-  const handleSaveMatch = async (updatedMatch) => {
-    try {
-      // Send a POST request to save the match details
-      const response = await fetch('/admin/tournaments/round', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tournamentId: editingTournament.tournamentId,
-          firstPlayerId: updatedMatch.firstPlayerId,
-          secondPlayerId: updatedMatch.secondPlayerId,
-          winnerPlayerId: updatedMatch.winnerPlayerId,
-          roundNumber: updatedMatch.roundNumber,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update match.');
-      }
-
-      const result = await response.json();
-      console.log('Match updated:', result.message);
-
-      // Update the local tournament state with the updated match details
-      setTournaments((prev) =>
-        prev.map((tournament) =>
-          tournament.tournamentId === editingTournament.tournamentId
-            ? {
-                ...tournament,
-                rounds: tournament.rounds.map((round) =>
-                  round.roundNumber === updatedMatch.roundNumber
-                    ? {
-                        ...round,
-                        matches: round.matches.map((match) =>
-                          match.id === updatedMatch.id ? updatedMatch : match
-                        ),
-                      }
-                    : round
-                ),
-              }
-            : tournament
-        )
-      );
-
-      setEditingTournament(null); // Reset the tournament being edited
-      setSelectedMatch(null); // Reset the match being edited
-    } catch (error) {
-      console.error('Error saving match:', error);
-      setError('Failed to save match details. Please try again.');
-    }
-  };
-
-  /**
-   * Close the match editing modal.
-   */
-  const handleCloseModal = () => {
-    setEditingTournament(null);
-    setSelectedMatch(null);
+  const handleModifyTournament = (updatedTournament) => {
+    setTournaments((prevTournaments) =>
+      prevTournaments.map((tournament) =>
+        tournament.tournamentId === updatedTournament.tournamentId
+          ? updatedTournament
+          : tournament
+      )
+    );
+    setSelectedTournament(updatedTournament); // Keep the popup updated
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
-      {/* Sidebar for navigation */}
       <Sidebar />
-
-      {/* Main Content */}
       <Box sx={{ flex: 1, p: 3, backgroundColor: '#f4f5f7', minHeight: '100vh' }}>
-        {/* Top Bar */}
         <TopBar />
-
-        {/* Page Title */}
         <Typography variant="h4" sx={{ mb: 3 }}>
           Tournaments
         </Typography>
-
-        {/* Filter Tabs */}
         <Tabs
-          value={selectedStatus} // Controlled value for the selected tab
-          onChange={(e, newValue) => setSelectedStatus(newValue)} // Handle tab change
+          value={selectedStatus}
+          onChange={(e, newValue) => setSelectedStatus(newValue)}
           sx={{ mb: 3 }}
         >
-          <Tab label="Ongoing" value="Ongoing" /> {/* Tab for Ongoing tournaments */}
-          <Tab label="Completed" value="Completed" /> {/* Tab for Completed tournaments */}
+          <Tab label="Ongoing" value="Ongoing" />
+          <Tab label="Completed" value="Completed" />
         </Tabs>
 
-        {/* Loading State */}
         {loading && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-            <CircularProgress /> {/* Loading spinner */}
+            <CircularProgress />
           </Box>
         )}
 
-        {/* Error State */}
         {error && (
           <Box sx={{ mt: 3 }}>
-            <Alert severity="error">{error}</Alert> {/* Display error message */}
+            <Alert severity="error">{error}</Alert>
           </Box>
         )}
 
-        {/* Tournament Table */}
         {!loading && !error && (
           <TournamentTable
-            data={filteredTournaments} // Pass filtered tournaments to the table
-            onEditMatch={handleEditMatch} // Pass the edit match handler
+            data={filteredTournaments}
+            onViewDetails={setSelectedTournament} // Show details popup
           />
         )}
 
-        {/* Edit Match Modal */}
-        {selectedMatch && editingTournament && (
-          <EditMatchModal
-            match={selectedMatch} // Pass the match to edit
-            onClose={handleCloseModal} // Close the modal
-            onSave={handleSaveMatch} // Save the updated match
+        {selectedTournament && (
+          <MatchesPopup
+            tournament={selectedTournament}
+            onClose={() => setSelectedTournament(null)}
+            onModify={handleModifyTournament}
           />
         )}
       </Box>

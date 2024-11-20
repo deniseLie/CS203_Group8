@@ -1,7 +1,10 @@
 package csd.backend.Admin.Service;
 
 import org.springframework.stereotype.Service;
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.*;
 import java.util.*;
@@ -23,8 +26,8 @@ public class SqsService {
     @Value("${login.queue.url}")
     private String loginQueueUrl;
 
-    public SqsService() {
-        this.sqsClient = SqsClient.builder().build();
+    public SqsService(SqsClient sqsClient) {
+        this.sqsClient = sqsClient;
     }
 
     // Method to get the SqsClient instance

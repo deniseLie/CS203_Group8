@@ -28,4 +28,5 @@ csd\backend\Admin\Model\Rank\Rank.class
 csd\backend\Admin\Model\User\Player.class
 csd\backend\Admin\Service\SqsService.class
 csd\backend\Admin\Service\TournamentPlayerService.class
+csd\backend\config\SqsConfig.class
 csd\backend\Admin\Model\RequestBody\CreateUserRequest.class

@@ -39,51 +39,18 @@ const PlayerDatasetPage = () => {
   /**
    * Fetch player data from the API.
    */
-  // const fetchPlayerData = async () => {
-  //   setLoading(true); // Set loading to true while fetching data
-  //   try {
-  //     const response = await api.get('/admin/users'); // Fetch all users from the API
-  //     const players = response.data.map((player) => ({
-  //       ...player,
-  //       profilePicture: profileImages[player.profilePicture || 'default.jpg'], // Map the profile picture
-  //     }));
-  //     setPlayerData(players); // Set the full player data
-  //     setFilteredData(players); // Initialize the filtered data to include all players
-  //   } catch (error) {
-  //     setError('Failed to fetch player data. Please try again later.'); // Handle API errors
-  //     console.error('Error fetching player data:', error);
-  //   } finally {
-  //     setLoading(false); // Stop loading spinner
-  //   }
-  // };
-
-  /**
-   * Fetch player data (replaced with dummy data).
-   */
   const fetchPlayerData = async () => {
     setLoading(true); // Set loading to true while fetching data
     try {
-      // Dummy data for players
-      const players = [
-        { id: 1, username: 'avexx', playername: 'avexx', email: 'avexx@example.com', profilePicture: '1.jpg' },
-        { id: 2, username: 'Rodan', playername: 'Rodan', email: 'rodan@example.com', profilePicture: '2.jpg' },
-        { id: 3, username: 'xDivineSword', playername: 'xDivineSword', email: 'xdivinesword@example.com', profilePicture: '3.jpg' },
-        { id: 4, username: 'lilWanton', playername: 'lilWanton', email: 'lilwanton@example.com', profilePicture: '4.jpg' },
-        { id: 5, username: 'DarkStar', playername: 'DarkStar', email: 'darkstar@example.com', profilePicture: '5.jpg' },
-        { id: 6, username: 'Nebula', playername: 'Nebula', email: 'nebula@example.com', profilePicture: '6.jpg' },
-        { id: 7, username: 'VoidWalker', playername: 'VoidWalker', email: 'voidwalker@example.com', profilePicture: '7.jpg' },
-        { id: 8, username: 'WindRider', playername: 'WindRider', email: 'windrider@example.com', profilePicture: '8.jpg' },
-      ];
-
-      // Map players to include profile picture paths
-      const mappedPlayers = players.map((player) => ({
+      const response = await api.get('/admin/users/getAllUsers'); // Fetch all users from the API
+      const players = response.data.map((player) => ({
         ...player,
         profilePicture: profileImages[player.profilePicture || 'default.jpg'], // Map the profile picture
       }));
-
-      setPlayerData(mappedPlayers); // Set the full player data
-      setFilteredData(mappedPlayers); // Initialize the filtered data to include all players
+      setPlayerData(players); // Set the full player data
+      setFilteredData(players); // Initialize the filtered data to include all players
     } catch (error) {
+      setError('Failed to fetch player data. Please try again later.'); // Handle API errors
       console.error('Error fetching player data:', error);
     } finally {
       setLoading(false); // Stop loading spinner

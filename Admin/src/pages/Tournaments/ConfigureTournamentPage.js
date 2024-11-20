@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField, Stack, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import Sidebar from '../../components/Sidebar'; // Sidebar component for navigation
 import TopBar from '../../components/TopBar'; // Top bar for page title or actions
+import api from '../../services/api';
 
 /**
  * ConfigureTournamentPage Component
@@ -22,7 +23,7 @@ const ConfigureTournamentPage = () => {
    */
   const fetchTournamentSize = async () => {
     try {
-      const response = await fetch('/admin/tournaments/getTournamentSize'); // API call to fetch configuration
+      const response = await api.get('/admin/tournaments/getTournamentSize'); // API call to fetch configuration
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
@@ -41,7 +42,7 @@ const ConfigureTournamentPage = () => {
    */
   const updateTournamentSize = async (newSize) => {
     try {
-      const response = await fetch('/admin/tournaments/updateTournamentSize', {
+      const response = await api.post('/admin/tournaments/updateTournamentSize', {
         method: 'POST', // HTTP POST method for updating data
         headers: {
           'Content-Type': 'application/json', // Indicate JSON payload

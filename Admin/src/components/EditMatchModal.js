@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Select, MenuItem, CircularProgress, Alert } from '@mui/material';
+import api from '../services/api';
 
 /**
  * EditMatchModal Component
@@ -20,70 +21,41 @@ const EditMatchModal = ({ match, onClose, onSave }) => {
   /**
    * Handles saving the updated match information.
    */
-  // const handleSave = async () => {
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     // API call to create or update a round
-  //     const response = await fetch('/admin/tournaments/round', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         tournamentId: match.tournamentId,
-  //         firstPlayerId: match.player1Id,
-  //         secondPlayerId: match.player2Id,
-  //         winnerPlayerId: selectedWinner,
-  //         roundNumber: match.roundNumber,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error('Failed to update match.');
-  //     }
-
-  //     const result = await response.json();
-  //     console.log('Match updated:', result.message);
-
-  //     // Notify parent to refresh state with updated match
-  //     const updatedMatch = { ...match, winner: selectedWinner };
-  //     onSave(updatedMatch);
-  //   } catch (err) {
-  //     setError(err.message || 'An unexpected error occurred.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  /**
-   * Simulates saving the updated match information.
-   */
   const handleSave = async () => {
     setLoading(true);
     setError(null);
-
     try {
-        // Simulate an API call with a delay
-        setTimeout(() => {
-        // Simulated API response
-        const simulatedResponse = {
-          message: 'Match updated successfully.',
-        };
+      // API call to create or update a round
+      const response = await api.post('/admin/tournaments/round', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tournamentId: match.tournamentId,
+          firstPlayerId: match.player1Id,
+          secondPlayerId: match.player2Id,
+          winnerPlayerId: selectedWinner,
+          roundNumber: match.roundNumber,
+        }),
+      });
 
-        console.log('Match updated:', simulatedResponse.message);
+      if (!response.ok) {
+        throw new Error('Failed to update match.');
+      }
 
-        // Notify parent with updated match
-        const updatedMatch = { ...match, winner: selectedWinner };
-        onSave(updatedMatch);
-        setLoading(false);
-        }, 1000);
+      const result = await response.json();
+      console.log('Match updated:', result.message);
+
+      // Notify parent to refresh state with updated match
+      const updatedMatch = { ...match, winner: selectedWinner };
+      onSave(updatedMatch);
     } catch (err) {
-        setError('An unexpected error occurred.');
-        setLoading(false);
+      setError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setLoading(false);
     }
   };
-
   
   return (
     <Box

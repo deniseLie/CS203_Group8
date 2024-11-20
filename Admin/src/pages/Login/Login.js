@@ -61,12 +61,6 @@ const Login = () => {
         setError('Incorrect Username or Password.');
       } else {
         setError('An error occurred. Please try again.');
-
-        // Uncomment below code for testing without backend integration
-        const token = 'randomsetofcharacters';
-        localStorage.setItem('authToken', token);
-        login(token);
-        navigate('/dashboard');
       }
     }
   };

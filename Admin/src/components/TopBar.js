@@ -6,11 +6,7 @@ import adminProfile from '../assets/adminpfp.png'; // Import the admin profile i
  * TopBar Component
  *
  * This component serves as the top bar of the application, typically used for navigation,
- * search functionality, and user profile display.
- *
- * Features:
- * - A search bar for filtering or navigating content.
- * - A user avatar for profile or account management.
+ * search functionality (Not implemented), and user profile display.
  */
 const TopBar = () => (
   <Stack

@@ -15,7 +15,6 @@ import {
   Button,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import defaultProfilePicture from '../assets/summonerIcon/1.jpg';
 
 /**

@@ -4,6 +4,7 @@ import Sidebar from '../../components/Sidebar';
 import TopBar from '../../components/TopBar';
 import TournamentTable from '../../components/TournamentTable';
 import MatchesPopup from '../../components/MatchesPopup';
+import api from '../../services/api';
 
 /**
  * TournamentsPage Component
@@ -18,114 +19,21 @@ const TournamentsPage = () => {
   const [selectedTournament, setSelectedTournament] = useState(null); // Tournament for details popup
 
   // Fetch tournament data from the API
-  // useEffect(() => {
-  //   const fetchTournaments = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const response = await fetch('/admin/tournaments/getAllTournaments');
-  //       if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-  //       const data = await response.json();
-  //       setTournaments(data);
-  //     } catch (err) {
-  //       setError('Failed to fetch tournaments. Please try again.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchTournaments();
-  // }, []);
-
-  // Use dummy data instead of fetching from API
   useEffect(() => {
-    // Simulate fetching data with a timeout
-    setTimeout(() => {
-      setLoading(false);
-
-      const playersFromDataset = [
-        { playerName: "avexx", playerId: 101 },
-        { playerName: "Rodan", playerId: 102 },
-        { playerName: "xDivineSword", playerId: 103 },
-        { playerName: "lilWanton", playerId: 104 },
-        { playerName: "DarkStar", playerId: 105 },
-        { playerName: "Nebula", playerId: 106 },
-        { playerName: "VoidWalker", playerId: 107 },
-        { playerName: "WindRider", playerId: 108 },
-      ];
-
-      // Dummy data to replace API response
-      const dummyTournaments = [
-        {
-          tournamentId: 1,
-          status: 'Ongoing',
-          timestampStart: '2024-11-01T10:00:00Z',
-          timestampEnd: null,
-          totalRounds: 4,
-          currentRound: 2,
-          players: playersFromDataset.slice(0, 4), // Use first 4 players
-          rounds: [
-            {
-              roundNumber: 1,
-              matches: [
-                { id: 1, player1: playersFromDataset[0].playerName, player2: playersFromDataset[1].playerName, winner: playersFromDataset[0].playerName },
-                { id: 2, player1: playersFromDataset[2].playerName, player2: playersFromDataset[3].playerName, winner: playersFromDataset[2].playerName },
-              ],
-            },
-            {
-              roundNumber: 2,
-              matches: [
-                { id: 3, player1: playersFromDataset[0].playerName, player2: playersFromDataset[2].playerName, winner: null },
-              ],
-            },
-          ],
-        },
-        ...Array.from({ length: 9 }).map((_, index) => ({
-          tournamentId: index + 2,
-          status: 'Completed',
-          timestampStart: `2024-10-${String(index + 1).padStart(2, '0')}T10:00:00Z`,
-          timestampEnd: `2024-10-${String(index + 5).padStart(2, '0')}T18:00:00Z`,
-          totalRounds: 3,
-          currentRound: 3,
-          players: playersFromDataset.slice(index % playersFromDataset.length, (index % playersFromDataset.length) + 2), // Rotate players
-          rounds: [
-            {
-              roundNumber: 1,
-              matches: [
-                {
-                  id: index * 10 + 1,
-                  player1: playersFromDataset[index % playersFromDataset.length].playerName,
-                  player2: playersFromDataset[(index + 1) % playersFromDataset.length].playerName,
-                  winner: playersFromDataset[index % playersFromDataset.length].playerName,
-                },
-              ],
-            },
-            {
-              roundNumber: 2,
-              matches: [
-                {
-                  id: index * 10 + 2,
-                  player1: playersFromDataset[index % playersFromDataset.length].playerName,
-                  player2: playersFromDataset[(index + 2) % playersFromDataset.length].playerName,
-                  winner: playersFromDataset[index % playersFromDataset.length].playerName,
-                },
-              ],
-            },
-            {
-              roundNumber: 3,
-              matches: [
-                {
-                  id: index * 10 + 3,
-                  player1: playersFromDataset[index % playersFromDataset.length].playerName,
-                  player2: playersFromDataset[(index + 3) % playersFromDataset.length].playerName,
-                  winner: playersFromDataset[index % playersFromDataset.length].playerName,
-                },
-              ],
-            },
-          ],
-        })),
-      ];
-
-      setTournaments(dummyTournaments);
-    }, 1000);
+    const fetchTournaments = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/admin/tournaments/getAllTournaments');
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        const data = await response.json();
+        setTournaments(data);
+      } catch (err) {
+        setError('Failed to fetch tournaments. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTournaments();
   }, []);
 
   // Filter tournaments based on status

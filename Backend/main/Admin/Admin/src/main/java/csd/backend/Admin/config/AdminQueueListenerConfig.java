@@ -1,4 +1,4 @@
-package csd.backend.config;
+package csd.backend.Admin.config;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

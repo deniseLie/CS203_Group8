@@ -1,5 +1,7 @@
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\AdminApplication.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\AdminQueueListener.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\config\AdminQueueListenerConfig.java
+C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\config\SqsConfig.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Controller\HealthCheckController.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Controller\TournamentController.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Controller\UserController.java
@@ -28,5 +30,3 @@ C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\TournamentService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\User\PlayerService.java
 C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\Admin\Service\UserService.java
-C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\config\AdminQueueListenerConfig.java
-C:\Denise\School\sem 3\colab\CS203_Group8\Backend\main\Admin\Admin\src\main\java\csd\backend\config\SqsConfig.java

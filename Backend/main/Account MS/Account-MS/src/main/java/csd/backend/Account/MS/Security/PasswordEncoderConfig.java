@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Security;
+package csd.backend.Account.MS.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,5 +1,7 @@
-package csd.backend.Account.MS.Controller;
+package csd.backend.Account.MS.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
-import csd.backend.Account.MS.Exception.PlayerNotFoundException;
-import csd.backend.Account.MS.Model.Player.*;
-import csd.backend.Account.MS.Service.Tournament.*;
-import csd.backend.Account.MS.Service.Player.*;
+import csd.backend.Account.MS.exception.player.PlayerNotFoundException;
+import csd.backend.Account.MS.model.player.*;
+import csd.backend.Account.MS.service.player.*;
+import csd.backend.Account.MS.service.tournament.*;
+import csd.backend.Account.MS.utils.*;
 
 import java.util.*;
 
@@ -21,6 +24,9 @@ import java.util.*;
 @RequestMapping("/account")
 public class AccountController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
+  
+     
     private final PlayerService playerService;
     private final PlayerStatsService playerStatsService;
     private final TournamentService tournamentService;
@@ -39,110 +45,70 @@ public class AccountController {
         @PathVariable Long playerId,
         @RequestBody PlayerProfileUpdateRequest updateRequest
     ) {
-        Map<String, Object> response = new HashMap<>();
         try {
-
-            // Update player 
             Player player = playerService.updatePlayerProfile(playerId, updateRequest);
-            
-            response.put("message", "Profile updated successfully.");
-            response.put("player", player);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
+            return ResponseUtil.createSuccessResponse("Profile updated successfully.", player);
+        } catch (PlayerNotFoundException e) {
+            return ResponseUtil.createNotFoundResponse("Player not found.");
         } catch (Exception e) {
-            response.put("error", "Error saving profile picture: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error occurred while updating player profile: {}", playerId, e);
+            return ResponseUtil.createInternalServerErrResponse("Error saving profile.");
         }
     }
 
     @GetMapping("/{playerId}/profile-picture")
     public ResponseEntity<Map<String, Object>> getPlayerProfilePicture(@PathVariable Long playerId) {
-        Map<String, Object> response = new HashMap<>();
         try {
-            // Retrieve player
-            Player player = playerService.getPlayerById(playerId);
-            if (player == null) {
-                response.put("error", "Player not found with ID: " + playerId);
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            String profilePictureUrl = playerService.getProfilePicture(playerId);
+            if (profilePictureUrl != null) {
+                return ResponseUtil.createSuccessResponse("Profile picture found.", Map.of("profilePictureUrl", profilePictureUrl));
             }
-
-            // Get profile picture name
-            String profilePicture = player.getProfilePicture();
-            if (profilePicture == null || profilePicture.isEmpty()) {
-                response.put("message", "No profile picture found for this player");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-
-            // Construct profile picture URL
-            String profilePictureUrl = "/path/to/images/" + profilePicture; // Adjust the URL path to where images are stored
-
-            response.put("profilePictureUrl", profilePictureUrl);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return ResponseUtil.createNotFoundResponse("No profile picture found.");
+        } catch (PlayerNotFoundException e) {
+            return ResponseUtil.createNotFoundResponse("Player not found.");
         } catch (Exception e) {
-            response.put("error", "An error occurred while fetching the profile picture: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error fetching profile picture for player: {}", playerId, e);
+            return ResponseUtil.createInternalServerErrResponse("Error fetching profile picture.");
         }
     }
+
     // Endpoint get top 3 played champions and player stats
     @GetMapping("/{playerId}/profile")
     public ResponseEntity<Map<String, Object>> getPlayerProfile(@PathVariable Long playerId) {
-        Map<String, Object> response = new HashMap<>();
-
         try {
-            // Get formatted top 3 played champions
             List<Map<String, Object>> topChampions = playerService.getFormattedTopChampions(playerId);
-            if (topChampions == null) {
+            Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
+
+            if (topChampions == null || topChampions.isEmpty()) {
                 topChampions = Collections.emptyList();
             }
 
-            // Get player stats
-            Map<String, Object> playerStats = playerService.getPlayerStats(playerId);
-            if (playerStats == null) {
-                response.put("message", "No player stats found for playerId " + playerId);
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            if (playerStats == null || playerStats.isEmpty()) {
+                return ResponseUtil.createNotFoundResponse("No player stats found for playerId " + playerId);
             }
 
-            if (!topChampions.isEmpty() && !playerStats.isEmpty()) {
-                // Combine the results into a response map
-                playerStats.put("topChampions", topChampions);
-                response.putAll(playerStats);
-                return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                response.put("message", "No data found for the player");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
+            playerStats.put("topChampions", topChampions);
+            return ResponseUtil.createSuccessResponse("Player profile retrieved successfully.", playerStats);
         } catch (PlayerNotFoundException e) {
-            response.put("error", "Player not found: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+            return ResponseUtil.createNotFoundResponse("Player not found.");
         } catch (Exception e) {
-            response.put("error", "An error occurred: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error occurred while retrieving player profile: {}", playerId, e);
+            return ResponseUtil.createInternalServerErrResponse("Error retrieving player profile.");
         }
     }
 
-
     // Endpoint to get match history
     @GetMapping("/{playerId}/match-history")
-    public ResponseEntity<Object> getPlayerMatchHistory(@PathVariable Long playerId) {
+    public ResponseEntity<Map<String, Object>> getPlayerMatchHistory(@PathVariable Long playerId) {
         try {
-            // Get player match history via TournamentService
             List<Map<String, Object>> matchHistory = tournamentService.getPlayerMatchHistory(playerId);
-
-            // Check if matchHistory is null or empty
-            if (matchHistory == null || matchHistory.isEmpty()) {
-                Map<String, Object> noDataResponse = new HashMap<>();
-                noDataResponse.put("message", "No match history found for player " + playerId);
-                return new ResponseEntity<>(noDataResponse, HttpStatus.NOT_FOUND);
+            if (matchHistory.isEmpty()) {
+                return ResponseUtil.createNotFoundResponse("No match history found.");
             }
-
-            // Return the match history directly
-            return new ResponseEntity<>(matchHistory, HttpStatus.OK);
-
+            return ResponseUtil.createSuccessResponse("Match history retrieved successfully.", matchHistory);
         } catch (Exception e) {
-            // Handle exceptions and send error response
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("error", "An error occurred while fetching the match history: " + e.getMessage());
-            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error occurred while fetching match history: {}", playerId, e);
+            return ResponseUtil.createInternalServerErrResponse("Error fetching match history.");
         }
     }
 
@@ -150,19 +116,13 @@ public class AccountController {
     // Endpoint to get player's rank name
     @GetMapping("/{playerId}/rank")
     public ResponseEntity<Map<String, Object>> getPlayerRank(@PathVariable Long playerId) {
-        Map<String, Object> response = new HashMap<>();
-
         try {
-            // Get player rank via PlayerService
             String rankName = playerStatsService.getPlayerRankName(playerId);
-
-            // Return the response as formatted JSON
-            response.put("rankName", rankName);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            logger.error("RANKNAMEEEE: {}", rankName);
+            return ResponseUtil.createSuccessResponse("Player rank retrieved successfully.", Map.of("rankName", rankName));
         } catch (Exception e) {
-            // Handle exceptions and send error response
-            response.put("error", "An error occurred while fetching the player's rank: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error("Error occurred while fetching player's rank: {}", playerId, e);
+            return ResponseUtil.createInternalServerErrResponse("Error fetching player rank.");
         }
     }   
 }

@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Service;
+package csd.backend.Account.MS.service;
 
 import java.util.Map;
 

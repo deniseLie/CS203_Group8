@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Rank;
+package csd.backend.Account.MS.model.rank;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,6 +16,17 @@ public class Rank {
     
     private String rankName; 
     private int pointsRequired; 
+
+    // Constructor
+    public Rank() {
+        // Default constructor
+    }
+
+    public Rank(Long rankId, String rankName, int pointsRequired) {
+        this.rankId = rankId;
+        this.rankName = rankName;
+        this.pointsRequired = pointsRequired;
+    }
 
     // Getters and setters
     public Long getRankId() {

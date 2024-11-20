@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Player;
+package csd.backend.Account.MS.model.player;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +15,14 @@ public class Player {
     
     private String profilePicture; // Store Picture name
     
+    // Constructor
+    public Player(){}
+    
+    public Player(Long id, String username, String profilePicture) {
+        this.id = id;
+        this.username = username;
+        this.profilePicture = profilePicture;
+    }
 
     public Long getId() {
         return id;

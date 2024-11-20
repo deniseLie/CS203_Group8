@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Player;
+package csd.backend.Account.MS.model.player;
 
 import jakarta.persistence.*;
 
@@ -10,7 +10,7 @@ public class PlayerChampionStats {
     private Long id;
 
     @Column(name = "playerId")
-    private Long playerId;  
+    private Long playerId;
 
     private Long championId;
     private double averagePlace;
@@ -18,10 +18,35 @@ public class PlayerChampionStats {
     private int totalWins;
     private int totalMatchNumber;
 
-    // Mapping playerId to Player entity using @ManyToOne
     @ManyToOne
     @JoinColumn(name = "playerId", referencedColumnName = "id", insertable = false, updatable = false)
     private Player player;
+
+    // No-arg constructor for JPA and other reflective uses
+    public PlayerChampionStats() {
+    }
+
+    // Constructor for non-ID fields
+    public PlayerChampionStats(Long playerId, Long championId, double averagePlace, double kdRate, int totalWins, int totalMatchNumber) {
+        this.playerId = playerId;
+        this.championId = championId;
+        this.averagePlace = averagePlace;
+        this.kdRate = kdRate;
+        this.totalWins = totalWins;
+        this.totalMatchNumber = totalMatchNumber;
+    }
+
+    // Constructor for all fields
+    public PlayerChampionStats(Long id, Long playerId, Long championId, double averagePlace, double kdRate, int totalWins, int totalMatchNumber, Player player) {
+        this.id = id;
+        this.playerId = playerId;
+        this.championId = championId;
+        this.averagePlace = averagePlace;
+        this.kdRate = kdRate;
+        this.totalWins = totalWins;
+        this.totalMatchNumber = totalMatchNumber;
+        this.player = player;
+    }
 
     // Getters and setters
 

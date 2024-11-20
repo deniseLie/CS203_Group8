@@ -1,39 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, TextField, Stack, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import Sidebar from '../../components/Sidebar';
-import TopBar from '../../components/TopBar';
+import Sidebar from '../../components/Sidebar'; // Sidebar component for navigation
+import TopBar from '../../components/TopBar'; // Top bar for page title or actions
 
+/**
+ * ConfigureTournamentPage Component
+ *
+ * This component allows administrators to configure tournament settings, specifically the maximum number of players.
+ * It fetches the current configuration, validates user input, and updates the settings via an API.
+ */
 const ConfigureTournamentPage = () => {
-  const [maxPlayers, setMaxPlayers] = useState(''); // Initial empty value
-  const [openConfirmation, setOpenConfirmation] = useState(false); // State for confirmation dialog
-  const [error, setError] = useState(''); // State for error handling
-  const [success, setSuccess] = useState(''); // State for success message
-  const [hasInteracted, setHasInteracted] = useState(false); // Track if the user has interacted with the input
+  // State variables
+  const [maxPlayers, setMaxPlayers] = useState(''); // Stores the maximum players value
+  const [openConfirmation, setOpenConfirmation] = useState(false); // Controls the confirmation dialog visibility
+  const [error, setError] = useState(''); // Stores error messages
+  const [success, setSuccess] = useState(''); // Stores success messages
+  const [hasInteracted, setHasInteracted] = useState(false); // Tracks if the user has interacted with the input field
 
-  // Fetch the current tournament configuration
+  /**
+   * Fetch the current tournament configuration from the server.
+   */
   const fetchTournamentSize = async () => {
     try {
-      const response = await fetch('/admin/tournaments/configure');
+      const response = await fetch('/admin/tournaments/getTournamentSize'); // API call to fetch configuration
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
       }
       const data = await response.json();
-      setMaxPlayers(data.maxPlayers); // Update state with the fetched data
+      setMaxPlayers(data.maxPlayers); // Set the current maximum players value
     } catch (error) {
       console.error('Error fetching tournament size:', error);
-      setError('Failed to load tournament size.');
+      setError('Failed to load tournament size.'); // Display an error message
     }
   };
 
-  // Update the tournament configuration
+  /**
+   * Update the tournament configuration by sending the new maximum players value to the server.
+   * 
+   * @param {number} newSize - The new maximum number of players.
+   */
   const updateTournamentSize = async (newSize) => {
     try {
-      const response = await fetch('/admin/tournaments/configure', {
-        method: 'POST',
+      const response = await fetch('/admin/tournaments/updateTournamentSize', {
+        method: 'POST', // HTTP POST method for updating data
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // Indicate JSON payload
         },
-        body: JSON.stringify({ maxPlayers: newSize }),
+        body: JSON.stringify({ maxPlayers: newSize }), // Send the new size as a JSON object
       });
 
       if (!response.ok) {
@@ -41,43 +54,60 @@ const ConfigureTournamentPage = () => {
         throw new Error(errorData.message || 'Failed to update tournament size.');
       }
 
-      setSuccess('Tournament configuration updated successfully!');
+      setSuccess('Tournament configuration updated successfully!'); // Display success message
     } catch (error) {
-      setError('Error updating tournament size. Try again later.');
+      setError('Error updating tournament size. Try again later.'); // Display error message
       console.error('Error updating tournament size:', error);
     }
   };
 
-  // Fetch current tournament size when component mounts
+  /**
+   * Fetch the current tournament configuration when the component mounts.
+   */
   useEffect(() => {
     fetchTournamentSize();
   }, []);
 
+  /**
+   * Validate and open the confirmation dialog when the Save button is clicked.
+   */
   const handleSave = () => {
-    const value = Number(maxPlayers);
+    const value = Number(maxPlayers); // Convert input to a number
     if (isNaN(value) || value % 2 !== 0 || value <= 0) {
-      setError('Please enter a valid even number greater than 0.');
+      setError('Please enter a valid even number greater than 0.'); // Validate input
       return;
     }
     setOpenConfirmation(true); // Open confirmation dialog
   };
 
+  /**
+   * Confirm and save the new tournament configuration.
+   */
   const handleConfirmSave = async () => {
-    setError(''); // Clear existing errors
-    await updateTournamentSize(Number(maxPlayers));
-    setOpenConfirmation(false); // Close the dialog after saving
+    setError(''); // Clear any existing errors
+    await updateTournamentSize(Number(maxPlayers)); // Update the configuration
+    setOpenConfirmation(false); // Close the confirmation dialog
   };
 
+  /**
+   * Close the confirmation dialog without saving.
+   */
   const handleCloseConfirmation = () => {
     setOpenConfirmation(false);
   };
 
+  /**
+   * Handle changes to the max players input field.
+   * Validates that only numeric input is allowed.
+   * 
+   * @param {object} e - Event object from the input field.
+   */
   const handleMaxPlayersChange = (e) => {
-    const value = e.target.value;
-    if (/^\d*$/.test(value)) { // Ensure only digits are allowed
-      setMaxPlayers(value);
-      setError(''); // Clear error if the value is valid
-      setHasInteracted(true); // Mark that the user has interacted with the input
+    const value = e.target.value; // Get input value
+    if (/^\d*$/.test(value)) { // Allow only numeric input
+      setMaxPlayers(value); // Update state
+      setError(''); // Clear any previous errors
+      setHasInteracted(true); // Track that the user has interacted
     }
   };
 
@@ -102,26 +132,29 @@ const ConfigureTournamentPage = () => {
             <Typography variant="h6">Max Players</Typography>
             <TextField
               type="number"
-              value={maxPlayers}
-              onChange={handleMaxPlayersChange}
+              value={maxPlayers} // Bind input to state
+              onChange={handleMaxPlayersChange} // Handle input changes
               fullWidth
               required
               helperText="Enter an even number"
-              error={Boolean(error) && hasInteracted} // Show error only after interaction
+              error={Boolean(error) && hasInteracted} // Show error if it exists and the user has interacted
             />
 
+            {/* Display Error Message */}
             {error && hasInteracted && (
               <Typography color="error" sx={{ mt: 1 }}>
                 {error}
               </Typography>
             )}
 
+            {/* Display Success Message */}
             {success && (
               <Typography color="primary" sx={{ mt: 1 }}>
                 {success}
               </Typography>
             )}
 
+            {/* Save Button */}
             <Button variant="contained" color="primary" onClick={handleSave}>
               Save Configuration
             </Button>

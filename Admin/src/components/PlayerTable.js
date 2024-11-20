@@ -1,31 +1,85 @@
 import React, { useState } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableHead, TableRow, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Button } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import defaultProfilePicture from '../assets/summonerIcon/1.jpg';
 
-const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [selectedPlayerId, setSelectedPlayerId] = useState(null);
+/**
+ * PlayerTable Component
+ *
+ * This component renders a table displaying player details along with options to edit or delete a player.
+ * It includes:
+ * - Player data (user ID, profile picture, username, player name, and email).
+ * - Actions to edit or delete players.
+ * - A confirmation dialog for delete actions.
+ *
+ * @param {object[]} data - Array of player objects to display.
+ * @param {function} onDelete - Callback to handle deleting a player.
+ * @param {function} onEdit - Callback to handle editing a player.
+ * @param {object} profileImages - Object mapping profile picture names to image paths.
+ */
+const PlayerTable = ({ data, onDelete }) => {
+  // State to manage the delete confirmation dialog
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // Dialog visibility
+  const [selectedPlayerId, setSelectedPlayerId] = useState(null); // ID of the player to delete
 
+  /**
+   * Open the delete confirmation dialog for a specific player.
+   *
+   * @param {number} playerId - The ID of the player to delete.
+   */
   const handleOpenDeleteDialog = (playerId) => {
-    setSelectedPlayerId(playerId);
-    setOpenDeleteDialog(true);
+    setSelectedPlayerId(playerId); // Set the ID of the player to delete
+    setOpenDeleteDialog(true); // Open the dialog
   };
 
+  /**
+   * Close the delete confirmation dialog.
+   */
   const handleCloseDeleteDialog = () => {
-    setOpenDeleteDialog(false);
-    setSelectedPlayerId(null);
+    setOpenDeleteDialog(false); // Close the dialog
+    setSelectedPlayerId(null); // Reset the selected player ID
   };
 
+  /**
+   * Confirm the deletion of a player.
+   */
   const handleConfirmDelete = () => {
-    onDelete(selectedPlayerId);
-    handleCloseDeleteDialog();
+    onDelete(selectedPlayerId); // Call the delete callback with the selected player ID
+    handleCloseDeleteDialog(); // Close the dialog
   };
 
   return (
-    <Box sx={{ backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', p: 2 }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>Player Table</Typography>
+    <Box
+      sx={{
+        backgroundColor: '#ffffff', // White background
+        borderRadius: '8px', // Rounded corners
+        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Subtle shadow for depth
+        p: 2, // Padding around the content
+      }}
+    >
+      {/* Title */}
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        Player Table
+      </Typography>
+
+      {/* Player Data Table */}
       <Table>
+        {/* Table Header */}
         <TableHead>
           <TableRow>
             <TableCell>User Id</TableCell>
@@ -37,26 +91,37 @@ const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {/* Table Rows */}
           {data.map((player) => (
             <TableRow key={player.id}>
-              <TableCell>{player.userId}</TableCell> {/* Display User ID */}
+              {/* User ID */}
+              <TableCell>{player.id}</TableCell>
+
+              {/* Profile Picture */}
               <TableCell>
-                {/* Dynamically render the profile picture */}
-                <img 
-                  src={profileImages[`player${player.profilePicture}`]} 
-                  alt={player.username} 
-                  width="50" 
-                  height="50" 
-                  style={{ borderRadius: '50%' }} 
+                <img
+                  src={
+                    player.profilePicture || defaultProfilePicture // Fallback to default picture
+                  }
+                  alt={player.username} // Alternative text for the image
+                  width="50" // Set width for the image
+                  height="50" // Set height for the image
+                  style={{ borderRadius: '50%' }} // Circular style
                 />
               </TableCell>
+
+              {/* Username */}
               <TableCell>{player.username}</TableCell>
+
+              {/* Player Name */}
               <TableCell>{player.playername}</TableCell>
+
+              {/* Email */}
               <TableCell>{player.email}</TableCell>
+
+              {/* Actions (Edit/Delete) */}
               <TableCell>
-                <IconButton color="primary" onClick={() => onEdit(player)}>
-                  <EditIcon />
-                </IconButton>
+                {/* Delete Button */}
                 <IconButton color="error" onClick={() => handleOpenDeleteDialog(player.id)}>
                   <DeleteIcon />
                 </IconButton>
@@ -66,11 +131,12 @@ const PlayerTable = ({ data, onDelete, onEdit, profileImages }) => {
         </TableBody>
       </Table>
 
+      {/* Footer: Showing number of players */}
       <Typography sx={{ mt: 2, fontSize: '0.875rem', color: 'text.secondary' }}>
         Showing {data.length} players
       </Typography>
 
-      {/* Confirmation Dialog */}
+      {/* Delete Confirmation Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDeleteDialog}>
         <DialogTitle>Delete User</DialogTitle>
         <DialogContent>

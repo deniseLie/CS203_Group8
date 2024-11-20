@@ -1,7 +1,8 @@
-package csd.backend.Account.MS.Repository.Rank;
+package csd.backend.Account.MS.repository.rank;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import csd.backend.Account.MS.Model.Rank.Rank;
+
+import csd.backend.Account.MS.model.rank.Rank;
 
 public interface RankRepository extends JpaRepository<Rank, Long>{
     

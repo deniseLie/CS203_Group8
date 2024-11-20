@@ -1,16 +1,18 @@
-package csd.backend.Account.MS.Service.Player;
+package csd.backend.Account.MS.service.player;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import csd.backend.Account.MS.DTO.PlayerProfileUpdateRequest;
-import csd.backend.Account.MS.Exception.*;
-import csd.backend.Account.MS.Model.Champion.Champion;
-import csd.backend.Account.MS.Model.Player.*;
-import csd.backend.Account.MS.Repository.Player.*;
-import csd.backend.Account.MS.Service.*;
-import csd.backend.Account.MS.Service.Champion.ChampionService;
+import csd.backend.Account.MS.exception.player.PlayerChampionStatsNotFoundException;
+import csd.backend.Account.MS.exception.player.PlayerNotFoundException;
+import csd.backend.Account.MS.exception.player.PlayerRegisterExisted;
+import csd.backend.Account.MS.model.champion.Champion;
+import csd.backend.Account.MS.model.player.*;
+import csd.backend.Account.MS.repository.player.*;
+import csd.backend.Account.MS.service.*;
+import csd.backend.Account.MS.service.champion.ChampionService;
 import software.amazon.awssdk.services.sqs.model.MessageAttributeValue;
 
 import java.util.*;

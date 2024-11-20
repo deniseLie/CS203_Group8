@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Champion;
+package csd.backend.Account.MS.model.champion;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +15,16 @@ public class Champion {
     private String championName;
     private String championRole;
 
+    // Default constructor
+    public Champion() {}
+
+    // Constructor for testing or convenience
+    public Champion(Long championId, String championName, String championRole) {
+        this.championId = championId;
+        this.championName = championName;
+        this.championRole = championRole;
+    }
+    
     // Getters and setters
     public Long getChampionId() {
         return championId;

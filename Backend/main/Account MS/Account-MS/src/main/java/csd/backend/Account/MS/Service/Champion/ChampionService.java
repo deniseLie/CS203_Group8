@@ -1,8 +1,8 @@
-package csd.backend.Account.MS.Service.Champion;
+package csd.backend.Account.MS.service.champion;
 
-import csd.backend.Account.MS.Exception.*;
-import csd.backend.Account.MS.Model.Champion.*;
-import csd.backend.Account.MS.Repository.Champion.*;
+import csd.backend.Account.MS.exception.champion.*;
+import csd.backend.Account.MS.model.champion.*;
+import csd.backend.Account.MS.repository.champion.*;
 
 import org.springframework.stereotype.Service;
 

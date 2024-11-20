@@ -1,9 +1,12 @@
-package csd.backend.Account.MS.Exception;
+package csd.backend.Account.MS.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import csd.backend.Account.MS.exception.player.*;
+import csd.backend.Account.MS.exception.rank.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {

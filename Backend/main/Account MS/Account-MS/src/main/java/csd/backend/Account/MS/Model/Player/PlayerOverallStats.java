@@ -1,4 +1,4 @@
-package csd.backend.Account.MS.Model.Player;
+package csd.backend.Account.MS.model.player;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,10 +25,42 @@ public class PlayerOverallStats {
     private int totalFirstPlaceMatches;
     private int totalNumberOfMatches;
 
+    // No-argument constructor (JPA requirement)
+    public PlayerOverallStats() {
+    }
+
     // One-to-one relationship with Player
     @OneToOne
     @JoinColumn(name = "playerId", referencedColumnName = "id", insertable = false, updatable = false)
     private Player player;
+
+    // Constructor for all fields except id
+    public PlayerOverallStats(Long playerId, Long rankId, int rankPoints, double overallAveragePlace, 
+                            double overallKdRate, int totalWins, int totalFirstPlaceMatches, int totalNumberOfMatches) {
+        this.playerId = playerId;
+        this.rankId = rankId;
+        this.rankPoints = rankPoints;
+        this.overallAveragePlace = overallAveragePlace;
+        this.overallKdRate = overallKdRate;
+        this.totalWins = totalWins;
+        this.totalFirstPlaceMatches = totalFirstPlaceMatches;
+        this.totalNumberOfMatches = totalNumberOfMatches;
+    }
+
+    // Constructor for all fields (including id)
+    public PlayerOverallStats(Long id, Long playerId, Long rankId, int rankPoints, double overallAveragePlace, 
+                            double overallKdRate, int totalWins, int totalFirstPlaceMatches, int totalNumberOfMatches, Player player) {
+        this.id = id;
+        this.playerId = playerId;
+        this.rankId = rankId;
+        this.rankPoints = rankPoints;
+        this.overallAveragePlace = overallAveragePlace;
+        this.overallKdRate = overallKdRate;
+        this.totalWins = totalWins;
+        this.totalFirstPlaceMatches = totalFirstPlaceMatches;
+        this.totalNumberOfMatches = totalNumberOfMatches;
+        this.player = player;
+    }
 
     public Long getId() {
         return id;

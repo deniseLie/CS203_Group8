@@ -1,7 +1,7 @@
-package csd.backend.Account.MS.Service.Tournament;
+package csd.backend.Account.MS.service.tournament;
 
-import csd.backend.Account.MS.Model.Tournament.*;
-import csd.backend.Account.MS.Repository.Tournament.*;
+import csd.backend.Account.MS.model.tournament.*;
+import csd.backend.Account.MS.repository.tournament.*;
 
 public class TournamentPlayerStatsService {
 
